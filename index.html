@@ -1,0 +1,2463 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<meta name="theme-color" content="#f7f4f8">
+<meta name="description" content="흐름 카드 한 장, 조언 카드 한 장으로 오늘을 가볍게 돌아보는 보리타로">
+<style>
+
+:root{
+  --bg:#f7f4f8;--paper:#fffdfb;--ink:#2d2730;--muted:#756e79;
+  --lav:#e9e0ef;--lav2:#d8c8e2;--purple:#493451;--purple2:#72547d;
+  --gold:#ad8741;--gold-soft:#f2e7cf;--line:rgba(58,43,65,.11);
+  --shadow:0 18px 48px rgba(74,51,82,.12);--radius:26px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+  radial-gradient(circle at 8% 5%,rgba(178,151,194,.18),transparent 26%),
+  radial-gradient(circle at 94% 22%,rgba(221,193,128,.14),transparent 23%),
+  linear-gradient(180deg,#fbfafc,#f5f0f7 58%,#f8f4ee);
+}
+button{font:inherit}
+.wrap{width:min(760px,calc(100% - 28px));margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0 13px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:900;letter-spacing:-.03em}
+.brandmark{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#eee4f2);border:1px solid rgba(173,135,65,.3);color:var(--gold)}
+.date{font-size:11px;letter-spacing:.07em;color:var(--muted);font-weight:800}
+.top-right{display:flex;align-items:center;gap:9px}.history-link{border:0;background:transparent;color:var(--gold);font-size:11px;font-weight:900;padding:5px 2px;cursor:pointer}
+.hero{text-align:center;padding:38px 0 22px}
+.hero h1{margin:0;font-size:clamp(37px,10vw,58px);line-height:1.04;letter-spacing:-.06em}
+.hero .en{margin-top:10px;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.2em}
+.hero p{margin:10px 0 0;color:var(--muted);font-size:14px}
+.progress{display:flex;justify-content:center;gap:8px;margin:4px 0 18px}
+.progress span{font-size:11px;font-weight:850;color:#918896;background:rgba(255,255,255,.58);border:1px solid var(--line);border-radius:99px;padding:7px 10px}
+.progress span.active{background:var(--purple);color:white;border-color:transparent}
+.stage{background:rgba(255,255,255,.76);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);padding:25px 18px 23px;overflow:hidden}
+.step{text-align:center}
+.step small{display:block;color:var(--gold);font-weight:900;font-size:10px;letter-spacing:.13em;margin-bottom:4px}
+.step h2{margin:0;font-size:25px;letter-spacing:-.045em}
+.step p{margin:8px auto 0;color:var(--muted);font-size:13px;line-height:1.6;max-width:480px}
+.shuffle-bar{display:flex;justify-content:center;align-items:center;margin:19px 0 2px}
+.shuffle-btn{min-height:42px;border:1px solid rgba(80,57,89,.14);border-radius:999px;padding:10px 17px;background:rgba(255,255,255,.80);color:var(--purple);font-weight:900;font-size:12px;letter-spacing:-.01em;cursor:pointer;box-shadow:0 8px 20px rgba(69,49,76,.07);transition:.2s transform,.2s box-shadow,.2s background}
+.shuffle-btn:hover{transform:translateY(-1px);box-shadow:0 11px 24px rgba(69,49,76,.11);background:#fff}
+.shuffle-btn:active{transform:scale(.97)}
+.shuffle-btn:disabled{opacity:.42;cursor:default;transform:none}
+.shuffle-icon{display:inline-block;margin-right:6px;font-size:15px;vertical-align:-1px}
+.deck{display:grid;grid-template-columns:repeat(5,78px);justify-content:center;gap:13px 17px;padding:20px 6px 20px;max-width:560px;margin:0 auto}
+.deck.shuffling .cardback{animation:shufflePulse .42s ease both}
+.deck.shuffling .cardback:nth-child(2n){animation-delay:.035s}
+.deck.shuffling .cardback:nth-child(3n){animation-delay:.07s}
+@keyframes shufflePulse{0%{opacity:.35;transform:translateY(3px) rotate(-2deg) scale(.96)}55%{opacity:.85;transform:translateY(-4px) rotate(2deg) scale(1.02)}100%{opacity:1;transform:none}}
+.cardback{width:78px;aspect-ratio:7/12;border-radius:13px;border:5px solid #cda955;cursor:pointer;position:relative;
+  background:
+  radial-gradient(circle at center,transparent 0 18px,rgba(237,213,147,.88) 19px 21px,transparent 22px),
+  conic-gradient(from 0deg,transparent 0 9deg,rgba(237,213,147,.42) 9deg 11deg,transparent 11deg 30deg),
+  linear-gradient(145deg,#211936,#4d3260 55%,#231a39);
+  box-shadow:0 14px 28px rgba(54,39,64,.19),inset 0 0 0 2px rgba(255,255,255,.12);
+  transition:.2s transform,.2s opacity,.2s box-shadow;
+}
+.cardback:hover{transform:translateY(-5px);box-shadow:0 18px 34px rgba(54,39,64,.25),inset 0 0 0 2px rgba(255,255,255,.12)}
+.cardback:active{transform:translateY(-2px) scale(.97)}
+.cardback.disabled{opacity:.38;pointer-events:none}
+.status{text-align:center;min-height:24px;color:#5e5362;font-size:13px}
+.status b{color:var(--gold)}
+.chosen{display:none;margin:20px auto 2px;max-width:330px;padding:16px;border-radius:21px;background:linear-gradient(180deg,#fcfafc,#f7f1f8);border:1px solid var(--line);box-shadow:0 10px 28px rgba(68,49,76,.07)}
+.chosen.show{display:block}
+.chosen-title{text-align:center;font-size:11px;color:var(--muted);font-weight:800;margin-bottom:10px}
+.chosen-row{display:flex;justify-content:center;gap:18px}
+.mini{width:92px;text-align:center}
+.mini-card{width:92px;aspect-ratio:7/12;border-radius:11px;border:4px solid #cda955;
+  background:linear-gradient(145deg,#211936,#4d3260 55%,#231a39);overflow:hidden;box-shadow:0 10px 22px rgba(54,39,64,.14)}
+.mini-card img{width:100%;height:100%;object-fit:cover;display:block}
+.mini-label{font-size:10px;font-weight:900;color:var(--gold);margin-top:6px}
+.results{display:none;padding:20px 0 42px}
+.results.show{display:block}
+.reading{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:25px 19px;margin-bottom:16px}
+.role{text-align:center;font-size:25px;font-weight:950;letter-spacing:-.05em}
+.role:after{content:"";display:block;width:32px;height:2px;border-radius:9px;background:rgba(173,135,65,.55);margin:9px auto 0}
+.card-img-wrap{display:flex;justify-content:center;margin:17px 0}
+.card-img{width:min(285px,72vw);border-radius:15px;box-shadow:0 18px 38px rgba(59,41,68,.18);background:#eee5f1;display:block}
+.card-img.failed{min-height:470px;object-fit:contain}
+.name{text-align:center;margin:2px 0 2px;font-size:28px;letter-spacing:-.05em}
+.meta{text-align:center;color:var(--muted);font-size:11px}
+.pills{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:10px 0 18px}
+.pill{font-size:10px;font-weight:800;padding:5px 8px;border:1px solid var(--line);border-radius:99px;background:#faf7fb;color:#5f5464}
+.symbol{max-width:640px;margin:0 auto 16px;background:#f8f4fa;border:1px solid var(--line);border-radius:16px;padding:14px 15px}
+.symbol b{display:block;color:var(--gold);font-size:11px;margin-bottom:6px}
+.symbol p{margin:0;color:#5a505e;font-size:14px;line-height:1.8}
+.interp{max-width:640px;margin:auto;font-size:15px;line-height:1.88;color:#3e3642}
+.tipbox{border:1px solid rgba(173,135,65,.25);background:linear-gradient(140deg,rgba(244,231,204,.72),rgba(231,219,238,.73));border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 20px}
+.tiptitle{text-align:center;font-size:15px;font-weight:950;color:var(--gold);margin-bottom:16px}
+.tipsection{max-width:650px;margin:0 auto 14px;padding:0 0 14px;border-bottom:1px solid rgba(97,72,105,.10)}
+.tipsection:last-child{border:0;margin-bottom:0;padding-bottom:0}
+.tiplabel{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:900;color:var(--purple);margin-bottom:7px}
+.tiplabel i{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block}
+.tipline{margin:0;font-size:15px;line-height:1.75;font-weight:720;letter-spacing:-.02em;color:#3a303e}
+.tipline + .tipline{margin-top:2px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}
+.btn{border:0;border-radius:999px;padding:13px 16px;font-weight:900;cursor:pointer;min-height:48px}
+.primary{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;box-shadow:0 10px 23px rgba(73,52,81,.18)}
+.gold{background:linear-gradient(135deg,#9c7738,#bd9650);color:white}
+.secondary{background:rgba(255,255,255,.72);border:1px solid var(--line);color:var(--ink)}
+.full{grid-column:1/-1}
+.auto-note{text-align:center;color:#817787;font-size:10px;line-height:1.6;margin-top:9px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,18px);opacity:0;pointer-events:none;z-index:80;
+  width:min(520px,calc(100% - 30px));background:#2f2734;color:#fff;border-radius:16px;padding:12px 15px;text-align:center;font-size:12px;line-height:1.6;box-shadow:0 18px 45px rgba(0,0,0,.22);transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.overlay{position:fixed;inset:0;background:rgba(43,35,48,.48);backdrop-filter:blur(8px);display:none;align-items:flex-end;z-index:70;padding:14px}
+.overlay.show{display:flex}
+.panel{width:min(650px,100%);max-height:84vh;overflow:auto;margin:auto;background:#fffdfc;border-radius:24px 24px 18px 18px;padding:18px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.panelhead h3{margin:0;font-size:20px;letter-spacing:-.03em}
+.close{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#f7f3f8;font-size:22px}
+.history{display:grid;gap:10px}
+.hist{padding:13px 14px;border-radius:15px;background:#f8f5f9;border:1px solid var(--line)}
+.histdate{font-size:10px;color:var(--gold);font-weight:900;margin-bottom:5px}
+.histcards{font-size:14px;font-weight:900;margin-bottom:5px}
+.histtip{font-size:12px;color:#625765;line-height:1.6}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+footer{text-align:center;padding:4px 0 32px;color:#8b828f}
+.by{font-size:12px;font-weight:900;color:var(--gold);letter-spacing:.03em;margin-bottom:5px}
+.credit{font-size:9px;line-height:1.5}
+.disclaimer{font-size:10px;line-height:1.6;margin:17px auto 0;color:#817787;text-align:center;max-width:620px}
+@media(max-width:620px){
+  .deck{grid-template-columns:repeat(5,62px);gap:11px 10px;max-width:350px;padding-top:18px}
+  .cardback{width:62px;border-width:4px;border-radius:11px}
+}
+@media(max-width:480px){
+  .wrap{width:min(100% - 20px,760px)}
+  .hero{padding:30px 0 18px}.hero h1{font-size:39px}
+  .stage{padding:22px 10px}
+  .deck{grid-template-columns:repeat(5,57px);gap:10px 8px;max-width:320px}
+  .cardback{width:57px;border-width:4px;border-radius:10px}
+  .reading{padding:22px 14px}.card-img{width:min(288px,80vw)}
+  .actions{grid-template-columns:1fr 1fr}
+  .tipbox{padding:21px 16px}.tipline{font-size:14px}
+}
+@media(max-width:355px){
+  .deck{grid-template-columns:repeat(5,51px);gap:9px 7px;max-width:280px}
+  .cardback{width:51px;border-width:3px}
+  .actions{grid-template-columns:1fr}
+}
+
+</style>
+<title>오늘, 보리타로 · 78장 완성본 v6</title>
+</head>
+<body>
+<header class="wrap top">
+  <div class="brand"><span class="brandmark">✦</span><span>오늘, 보리타로</span></div>
+  <div class="top-right"><div class="date" id="topDate"></div><button class="history-link" id="historyBtn">기록</button></div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <h1>두 장으로, 오늘 보리</h1>
+    <div class="en">TODAY · TWO CARDS</div>
+    <p>오늘의 흐름 한 장, 조언 한 장. 마음이 가는 카드를 골라보세요.</p>
+  </section>
+  <div class="progress" id="progress"><span>01 흐름</span><span>02 조언</span><span>03 결과</span></div>
+  <section class="stage" id="stage">
+    <div class="step">
+      <small id="stepSmall"></small><h2 id="stepTitle"></h2><p id="stepDesc"></p>
+    </div>
+    <div class="chosen" id="chosen"><div class="chosen-title" id="chosenTitle"></div><div class="chosen-row" id="chosenRow"></div></div>
+    <div class="shuffle-bar" id="shuffleBar">
+      <button class="shuffle-btn" id="shuffleBtn" type="button" aria-label="카드 다시 섞기"><span class="shuffle-icon">↻</span>카드 섞기</button>
+    </div>
+    <div class="deck" id="deck"></div>
+    <div class="status" id="status"></div>
+  </section>
+
+  <section class="results" id="results">
+    <article class="reading" id="flowCard"></article>
+    <article class="reading" id="adviceCard"></article>
+    <section class="tipbox">
+      <div class="tiptitle">오늘보리 TIP</div>
+      <div class="tipsection"><div class="tiplabel"><i></i>FLOW · 오늘의 흐름</div><div id="tipFlow"></div></div>
+      <div class="tipsection"><div class="tiplabel"><i></i>ADVICE · 오늘의 조언</div><div id="tipAdvice"></div></div>
+    </section>
+    <div class="actions">
+      <button class="btn primary" id="shareBtn" disabled>공유 준비 중…</button>
+      <button class="btn secondary" id="resetBtn">다시 뽑기</button>
+    </div>
+    <div class="auto-note">결과는 자동으로 오늘 기록에 저장됩니다.</div>
+    <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
+  </section>
+</main>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지</div></footer>
+<div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
+<div class="toast" id="toast"></div>
+<script>
+window.TAROT_CARDS = [
+  {
+    "id": "major0",
+    "name": "0 바보",
+    "english": "The Fool",
+    "group": "메이저 아르카나",
+    "image": "The Fool (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "순수",
+      "모험",
+      "가능성"
+    ],
+    "symbol": "벼랑 끝에 선 젊은이가 고개를 들어 하늘을 바라보고, 작은 짐과 흰 장미를 들고 있습니다. 앞을 다 알지 못해도 발을 내딛는 모습은 새로운 시작과 가능성을 상징합니다.",
+    "flow": "오늘은 가볍게 한 발 내딛는 것이 흐름을 여는 날입니다. 완벽히 준비되지 않았더라도 새로운 시도나 낯선 선택이 의외의 활기를 줄 수 있습니다. 다만 즐거운 마음만 앞세워 중요한 현실 점검을 빼먹지는 마세요.",
+    "advice": "지나치게 겁먹기보다 일단 작은 시작을 해보세요. 다만 설렘과 충동을 구분해 필요한 확인은 챙기는 편이 좋습니다.",
+    "flowLead": "새로운 가능성이 열리기 쉬운 흐름이니,",
+    "flowCaution": "들뜬 마음만으로 결정하지 않도록 주의하세요.",
+    "adviceGuide": "작게라도 시작해 보되 필요한 준비는 빠뜨리지 않는 게 좋으니,",
+    "adviceAction": "오늘 해보고 싶었던 일 하나를 가볍게 시작하되 일정·시간·준비물 한 가지만 먼저 확인해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/The_Fool_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Fool_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c0/The_Fool_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 새로운 가능성이 열리기 쉬운 흐름입니다.",
+    "tipFlow2": "들뜬 마음만으로 결정하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 작게라도 시작해 보되 필요한 준비는 빠뜨리지 않는 게 좋습니다.",
+    "tipAdvice2": "오늘 해보고 싶었던 일 하나를 가볍게 시작하되 일정·시간·준비물 한 가지만 먼저 확인해보세요."
+  },
+  {
+    "id": "major1",
+    "name": "1 마법사",
+    "english": "The Magician",
+    "group": "메이저 아르카나",
+    "image": "The Magician (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "창조",
+      "시작",
+      "능력"
+    ],
+    "symbol": "한 손은 하늘을, 다른 손은 땅을 가리키고 있고, 탁자 위에는 네 원소를 상징하는 도구가 놓여 있습니다. 생각을 현실로 연결하는 능력과 주도성을 보여주는 카드입니다.",
+    "flow": "오늘은 머릿속 생각을 실제 행동으로 옮기기 좋은 날입니다. 내 능력이나 아이디어를 꺼내 쓰면 일이 생각보다 빠르게 움직일 수 있습니다. 다만 보여주기식으로 과장하면 흐름이 가벼워질 수 있어요.",
+    "advice": "할 수 있는 것을 분명히 알고 주도적으로 움직이세요. 다만 능력을 증명하려 애쓰기보다 실제 결과로 보여주는 편이 좋습니다.",
+    "flowLead": "생각을 행동으로 옮기기 좋은 흐름이니,",
+    "flowCaution": "말만 앞서거나 과하게 보여주려 하지 않도록 주의하세요.",
+    "adviceGuide": "주도권은 잡되 실질적인 한 걸음을 만드는 게 좋으니,",
+    "adviceAction": "오늘 떠오른 아이디어 하나를 말로만 두지 말고 메모·연락·실행 중 한 가지로 바로 옮겨보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/The_Magician_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Magician_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/The_Magician_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 생각을 행동으로 옮기기 좋은 흐름입니다.",
+    "tipFlow2": "말만 앞서거나 과하게 보여주려 하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 주도권은 잡되 실질적인 한 걸음을 만드는 게 좋습니다.",
+    "tipAdvice2": "오늘 떠오른 아이디어 하나를 말로만 두지 말고 메모·연락·실행 중 한 가지로 바로 옮겨보세요."
+  },
+  {
+    "id": "major2",
+    "name": "2 고위여사제",
+    "english": "The High Priestess",
+    "group": "메이저 아르카나",
+    "image": "The High Priestess (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "지혜",
+      "직관",
+      "비밀"
+    ],
+    "symbol": "검은 기둥과 흰 기둥 사이에 앉아 있는 여사제는 두루마리와 석류 장식을 품고 있습니다. 드러난 정보 너머의 내면, 직감, 조용한 통찰을 상징합니다.",
+    "flow": "오늘은 겉으로 드러난 사실만큼이나 내 안의 느낌과 눈치가 중요하게 작용할 수 있습니다. 서두르기보다 잠시 멈추고 흐름을 읽을수록 더 정확한 판단이 가능합니다. 다만 말을 아끼다가 타이밍을 놓치지는 마세요.",
+    "advice": "급하게 결론내리기보다 조금 더 관찰하고 들여다보세요. 겉으로 보이는 것만 믿지 말고 숨은 의미를 천천히 읽는 편이 좋습니다.",
+    "flowLead": "겉보다 속을 살펴보게 되는 흐름이니,",
+    "flowCaution": "말을 너무 아끼다가 필요한 표현까지 놓치지 않도록 주의하세요.",
+    "adviceGuide": "서두르기보다 한 번 더 관찰하고 마음의 반응을 살피는 게 좋으니,",
+    "adviceAction": "중요한 선택 앞에서는 바로 답하지 말고 메모하거나 한 번 더 생각할 시간을 잠깐 가져보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/The_High_Priestess_(Rider-Waite_Smith_tarot_deck).png/1400px-The_High_Priestess_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/The_High_Priestess_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 겉보다 속을 살펴보게 되는 흐름입니다.",
+    "tipFlow2": "말을 너무 아끼다가 필요한 표현까지 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 서두르기보다 한 번 더 관찰하고 마음의 반응을 살피는 게 좋습니다.",
+    "tipAdvice2": "중요한 선택 앞에서는 바로 답하지 말고 메모하거나 한 번 더 생각할 시간을 잠깐 가져보세요."
+  },
+  {
+    "id": "major3",
+    "name": "3 여황제",
+    "english": "The Empress",
+    "group": "메이저 아르카나",
+    "image": "The Empress (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "풍요",
+      "보살핌",
+      "아름다움"
+    ],
+    "symbol": "풍성한 자연과 곡식 속에서 편안히 앉아 있는 여황제는 풍요와 돌봄, 따뜻한 생명력을 상징합니다. 무엇인가를 키우고 보살피는 힘이 강조됩니다.",
+    "flow": "오늘은 관계나 일에서 부드럽게 돌보고 살피는 태도가 좋은 흐름을 만듭니다. 무언가를 급히 밀어붙이기보다 잘 자랄 수 있게 여유를 주는 편이 더 어울립니다. 다만 챙김이 과해지면 간섭처럼 느껴질 수 있어요.",
+    "advice": "내가 가진 따뜻함과 배려를 자연스럽게 쓰세요. 다만 상대를 위해 한다는 이유로 지나치게 대신해주지는 않는 편이 좋습니다.",
+    "flowLead": "돌보고 키우는 에너지가 강한 흐름이니,",
+    "flowCaution": "챙김이 간섭이나 과보호로 보이지 않도록 주의하세요.",
+    "adviceGuide": "따뜻하게 살피되 상대의 몫은 남겨두는 게 좋으니,",
+    "adviceAction": "도움을 주더라도 전부 대신하기보다 필요한 한 가지 정도만 가볍게 보태보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/The_Empress_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Empress_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/The_Empress_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 돌보고 키우는 에너지가 강한 흐름입니다.",
+    "tipFlow2": "챙김이 간섭이나 과보호로 보이지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 따뜻하게 살피되 상대의 몫은 남겨두는 게 좋습니다.",
+    "tipAdvice2": "도움을 주더라도 전부 대신하기보다 필요한 한 가지 정도만 가볍게 보태보세요."
+  },
+  {
+    "id": "major4",
+    "name": "4 황제",
+    "english": "The Emperor",
+    "group": "메이저 아르카나",
+    "image": "The Emperor (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "질서",
+      "권위",
+      "안정"
+    ],
+    "symbol": "돌로 된 왕좌에 앉은 황제는 견고한 자세와 붉은 옷차림으로 구조와 책임, 질서를 보여줍니다. 기준을 세우고 흔들림을 잡는 힘이 강조됩니다.",
+    "flow": "오늘은 기준을 세우고 정리할수록 일이 안정되기 좋은 날입니다. 규칙, 우선순위, 책임 범위를 분명히 할수록 흐름이 단단해집니다. 다만 내 기준이 맞다는 이유로 지나치게 경직되지는 마세요.",
+    "advice": "분명한 기준과 구조를 만드는 것이 좋습니다. 다만 상대를 통제하려 하기보다 내가 맡을 부분을 분명히 하는 쪽이 더 효과적입니다.",
+    "flowLead": "기준을 세우고 정리할수록 안정되는 흐름이니,",
+    "flowCaution": "내 방식만 옳다고 여기며 너무 경직되지 않도록 주의하세요.",
+    "adviceGuide": "질서는 만들되 통제보다는 책임 범위를 분명히 하는 게 좋으니,",
+    "adviceAction": "오늘 해야 할 일의 우선순위나 규칙 한 가지를 간단히 정리해두고 움직여보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/The_Emperor_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Emperor_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/The_Emperor_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 기준을 세우고 정리할수록 안정되는 흐름입니다.",
+    "tipFlow2": "내 방식만 옳다고 여기며 너무 경직되지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 질서는 만들되 통제보다는 책임 범위를 분명히 하는 게 좋습니다.",
+    "tipAdvice2": "오늘 해야 할 일의 우선순위나 규칙 한 가지를 간단히 정리해두고 움직여보세요."
+  },
+  {
+    "id": "major5",
+    "name": "5 교황",
+    "english": "The Hierophant",
+    "group": "메이저 아르카나",
+    "image": "The Hierophant (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "신뢰",
+      "배움",
+      "전통"
+    ],
+    "symbol": "교황은 두 제자 앞에서 축복의 손짓을 하고 있으며, 전통과 가르침, 공동체의 규범을 상징합니다. 검증된 방식과 배움의 힘이 드러납니다.",
+    "flow": "오늘은 익숙하고 검증된 방식에서 답을 얻기 쉬운 날입니다. 혼자만의 판단보다 조언, 배움, 공통 규칙을 참고하면 안정적입니다. 다만 형식만 따르느라 내 상황을 놓치지는 마세요.",
+    "advice": "이미 검증된 방법이나 믿을 만한 조언을 활용하세요. 혼자 끙끙대기보다 배울 수 있는 곳을 찾는 편이 좋습니다.",
+    "flowLead": "검증된 방식이나 조언이 도움 되는 흐름이니,",
+    "flowCaution": "형식만 따르느라 내 상황에 맞는 판단을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "혼자 결론 내리기보다 믿을 만한 기준과 조언을 참고하는 게 좋으니,",
+    "adviceAction": "막히는 일이 있다면 경험 있는 사람에게 묻거나 이미 해보던 방식부터 다시 적용해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/The_Hierophant_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Hierophant_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/The_Hierophant_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 검증된 방식이나 조언이 도움 되는 흐름입니다.",
+    "tipFlow2": "형식만 따르느라 내 상황에 맞는 판단을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 혼자 결론 내리기보다 믿을 만한 기준과 조언을 참고하는 게 좋습니다.",
+    "tipAdvice2": "막히는 일이 있다면 경험 있는 사람에게 묻거나 이미 해보던 방식부터 다시 적용해보세요."
+  },
+  {
+    "id": "major6",
+    "name": "6 연인",
+    "english": "The Lovers",
+    "group": "메이저 아르카나",
+    "image": "The Lovers (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "관계",
+      "조화",
+      "선택"
+    ],
+    "symbol": "서로 마주 선 두 사람과 위에서 지켜보는 천사는 관계 속 선택과 조화, 마음의 일치를 상징합니다. 끌림과 선택의 책임이 함께 들어 있습니다.",
+    "flow": "오늘은 사람과의 관계나 선택의 문제에서 마음이 크게 움직일 수 있습니다. 무엇이 더 끌리는지 분명해지기도 하지만, 동시에 선택의 책임도 따라옵니다. 감정만 따르기보다 내가 정말 원하는 방향을 함께 살펴보세요.",
+    "advice": "관계든 선택이든 겉으로 좋아 보이는 것보다 내가 진심으로 원하는 쪽을 보세요. 마음과 기준이 함께 가는지를 확인하면 좋습니다.",
+    "flowLead": "관계와 선택이 중요한 흐름으로 들어오니,",
+    "flowCaution": "순간의 끌림만으로 결론 내리지 않도록 주의하세요.",
+    "adviceGuide": "좋아 보이는 것보다 내 마음과 기준이 함께 맞는 쪽을 보는 게 좋으니,",
+    "adviceAction": "중요한 선택 앞에서는 ‘내가 원하는 것’과 ‘지켜야 할 기준’ 한 가지씩을 적어보고 결정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/The_Lovers_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Lovers_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1b/The_Lovers_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 관계와 선택이 중요한 흐름으로 들어옵니다.",
+    "tipFlow2": "순간의 끌림만으로 결론 내리지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 좋아 보이는 것보다 내 마음과 기준이 함께 맞는 쪽을 보는 게 좋습니다.",
+    "tipAdvice2": "중요한 선택 앞에서는 ‘내가 원하는 것’과 ‘지켜야 할 기준’ 한 가지씩을 적어보고 결정해보세요."
+  },
+  {
+    "id": "major7",
+    "name": "7 전차",
+    "english": "The Chariot",
+    "group": "메이저 아르카나",
+    "image": "The Chariot (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "추진력",
+      "승리",
+      "목표"
+    ],
+    "symbol": "전차 위 인물과 서로 다른 색의 스핑크스는 방향이 다른 힘을 하나로 끌고 가는 집중력과 추진력을 상징합니다. 목표를 향한 전진의 카드입니다.",
+    "flow": "오늘은 의지를 모아 밀고 나갈수록 성과가 나는 날입니다. 여러 요소가 흩어져 있어도 중심만 잘 잡으면 생각보다 빠르게 전진할 수 있습니다. 다만 속도에 취해 주변 상황을 놓치지 않도록 주의하세요.",
+    "advice": "목표를 분명히 정하고 한 방향으로 힘을 모으세요. 흔들리는 요소가 있어도 중심을 잃지 않는 태도가 중요합니다.",
+    "flowLead": "목표를 향해 밀고 나가면 성과가 나는 흐름이니,",
+    "flowCaution": "속도에만 집중하다 주변 상황을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "한꺼번에 많은 걸 잡기보다 한 방향으로 힘을 모으는 게 좋으니,",
+    "adviceAction": "오늘 가장 중요한 목표 하나를 정하고 거기에 맞지 않는 일은 잠시 뒤로 미뤄보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/The_Chariot_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Chariot_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/88/The_Chariot_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 목표를 향해 밀고 나가면 성과가 나는 흐름입니다.",
+    "tipFlow2": "속도에만 집중하다 주변 상황을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 한꺼번에 많은 걸 잡기보다 한 방향으로 힘을 모으는 게 좋습니다.",
+    "tipAdvice2": "오늘 가장 중요한 목표 하나를 정하고 거기에 맞지 않는 일은 잠시 뒤로 미뤄보세요."
+  },
+  {
+    "id": "major8",
+    "name": "8 힘",
+    "english": "Strength",
+    "group": "메이저 아르카나",
+    "image": "Strength (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "인내",
+      "내면의 힘",
+      "부드러움"
+    ],
+    "symbol": "여인이 사자의 입을 부드럽게 다루는 장면은 힘으로 제압하기보다 차분함과 내면의 인내로 다루는 진짜 힘을 상징합니다.",
+    "flow": "오늘은 강하게 밀어붙이기보다 부드럽게 다루는 태도가 더 큰 힘을 발휘합니다. 감정이나 상황이 거칠게 올라오더라도 차분히 다루면 흐름이 안정됩니다. 다만 참기만 하며 억누르지는 마세요.",
+    "advice": "세게 밀기보다 차분하고 단단하게 버티는 힘을 믿어보세요. 감정을 통제하려 하기보다 다루는 편이 좋습니다.",
+    "flowLead": "부드럽게 다루는 태도가 힘이 되는 흐름이니,",
+    "flowCaution": "무조건 참기만 하며 억누르지 않도록 주의하세요.",
+    "adviceGuide": "강하게 몰아붙이기보다 차분하게 조절하는 게 좋으니,",
+    "adviceAction": "감정이 올라올 때는 바로 반응하지 말고 숨을 한 번 고른 뒤 필요한 말만 차분히 전해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Strength_(Rider-Waite_Smith_tarot_deck).png/1400px-Strength_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Strength_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 부드럽게 다루는 태도가 힘이 되는 흐름입니다.",
+    "tipFlow2": "무조건 참기만 하며 억누르지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 강하게 몰아붙이기보다 차분하게 조절하는 게 좋습니다.",
+    "tipAdvice2": "감정이 올라올 때는 바로 반응하지 말고 숨을 한 번 고른 뒤 필요한 말만 차분히 전해보세요."
+  },
+  {
+    "id": "major9",
+    "name": "9 은둔자",
+    "english": "The Hermit",
+    "group": "메이저 아르카나",
+    "image": "The Hermit (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "성찰",
+      "지혜",
+      "고독"
+    ],
+    "symbol": "산 위에 홀로 선 노인이 랜턴을 들고 조용히 길을 비춥니다. 바깥의 소음보다 내면의 성찰과 조용한 지혜를 상징하는 카드입니다.",
+    "flow": "오늘은 사람들 속에서 답을 찾기보다 잠깐 물러서서 생각을 정리하는 시간이 필요할 수 있습니다. 혼자만의 정리와 성찰이 오히려 더 정확한 방향을 보여줍니다. 다만 세상과 완전히 단절되지는 마세요.",
+    "advice": "조용히 돌아보는 시간을 의식적으로 만들어보세요. 답을 빨리 내기보다 무엇이 본질인지 천천히 보는 편이 좋습니다.",
+    "flowLead": "잠시 물러서 생각을 정리하면 길이 보이는 흐름이니,",
+    "flowCaution": "혼자만의 생각에 갇혀 필요한 소통까지 피하지 않도록 주의하세요.",
+    "adviceGuide": "서두르기보다 잠깐 멈춰 본질을 정리하는 게 좋으니,",
+    "adviceAction": "바쁘더라도 10분 정도 혼자 생각을 정리하거나 산책하며 머릿속을 비워보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/The_Hermit_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Hermit_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1a/The_Hermit_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 잠시 물러서 생각을 정리하면 길이 보이는 흐름입니다.",
+    "tipFlow2": "혼자만의 생각에 갇혀 필요한 소통까지 피하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 서두르기보다 잠깐 멈춰 본질을 정리하는 게 좋습니다.",
+    "tipAdvice2": "바쁘더라도 10분 정도 혼자 생각을 정리하거나 산책하며 머릿속을 비워보세요."
+  },
+  {
+    "id": "major10",
+    "name": "10 운명의 수레바퀴",
+    "english": "Wheel of Fortune",
+    "group": "메이저 아르카나",
+    "image": "Wheel of Fortune (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "변화",
+      "순환",
+      "전환점"
+    ],
+    "symbol": "거대한 수레바퀴와 네 방향의 상징들은 흐름의 순환과 시기의 변화를 보여줍니다. 내 의지 밖의 큰 흐름이 돌아가는 시점을 암시합니다.",
+    "flow": "오늘은 계획한 것 외의 흐름이 함께 작용할 수 있습니다. 예상치 못한 전환이나 타이밍이 들어오더라도 너무 억지로 붙잡지 말고 흐름을 읽는 편이 좋습니다. 다만 운에만 맡기며 수동적으로 있지는 마세요.",
+    "advice": "내가 조절할 수 없는 부분은 받아들이고, 움직일 수 있는 타이밍은 놓치지 마세요. 변화가 들어오면 유연하게 반응하는 태도가 중요합니다.",
+    "flowLead": "흐름의 전환이나 타이밍 변화가 들어오기 쉬운 날이니,",
+    "flowCaution": "운에만 맡기며 수동적으로 머물지 않도록 주의하세요.",
+    "adviceGuide": "내가 바꿀 수 없는 것은 받아들이고 움직일 수 있는 타이밍은 잡는 게 좋으니,",
+    "adviceAction": "오늘 변수가 생기면 불평보다 지금 할 수 있는 대응 한 가지를 바로 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Wheel_of_Fortune_(Rider-Waite_Smith_tarot_deck).png/1400px-Wheel_of_Fortune_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/03/Wheel_of_Fortune_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 흐름의 전환이나 타이밍 변화가 들어오기 쉬운 날입니다.",
+    "tipFlow2": "운에만 맡기며 수동적으로 머물지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 내가 바꿀 수 없는 것은 받아들이고 움직일 수 있는 타이밍은 잡는 게 좋습니다.",
+    "tipAdvice2": "오늘 변수가 생기면 불평보다 지금 할 수 있는 대응 한 가지를 바로 정해보세요."
+  },
+  {
+    "id": "major11",
+    "name": "11 정의",
+    "english": "Justice",
+    "group": "메이저 아르카나",
+    "image": "Justice (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "균형",
+      "공정",
+      "책임"
+    ],
+    "symbol": "정의의 여신이 한 손에는 저울, 다른 손에는 검을 들고 정면을 바라봅니다. 감정에 치우치지 않는 균형, 판단, 책임을 상징합니다.",
+    "flow": "오늘은 감정보다 기준과 균형이 중요하게 작용합니다. 사실을 분명히 보고 공정하게 판단할수록 흐름이 정돈됩니다. 다만 너무 차갑고 계산적으로 보이지 않도록 주의하세요.",
+    "advice": "무엇이 공정한지, 무엇이 내가 책임져야 할 부분인지 분명히 보세요. 감정에 치우치지 않되 말투는 부드럽게 가져가는 편이 좋습니다.",
+    "flowLead": "기준과 균형이 중요한 흐름이니,",
+    "flowCaution": "옳음을 따지느라 차갑거나 계산적으로 보이지 않도록 주의하세요.",
+    "adviceGuide": "사실과 기준을 분명히 하되 표현은 부드럽게 하는 게 좋으니,",
+    "adviceAction": "판단이 필요한 일은 감정 표현보다 기준 두세 가지를 먼저 세워보고 말해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Justice_(Rider-Waite_Smith_tarot_deck).png/1400px-Justice_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/85/Justice_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 기준과 균형이 중요한 흐름입니다.",
+    "tipFlow2": "옳음을 따지느라 차갑거나 계산적으로 보이지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 사실과 기준을 분명히 하되 표현은 부드럽게 하는 게 좋습니다.",
+    "tipAdvice2": "판단이 필요한 일은 감정 표현보다 기준 두세 가지를 먼저 세워보고 말해보세요."
+  },
+  {
+    "id": "major12",
+    "name": "12 거꾸로 매달린 사람",
+    "english": "The Hanged Man",
+    "group": "메이저 아르카나",
+    "image": "The Hanged Man (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "멈춤",
+      "관점전환",
+      "인내"
+    ],
+    "symbol": "한 발이 묶인 채 거꾸로 매달린 인물은 겉으로는 멈춰 있지만 표정은 평온합니다. 억지로 나아가기보다 멈추어 다른 관점에서 보는 시간을 상징합니다.",
+    "flow": "오늘은 억지로 속도를 내기보다 잠시 멈춰 보는 것이 더 나은 답을 줄 수 있습니다. 답답함이 있어도 관점을 바꾸면 놓쳤던 부분이 보일 수 있습니다. 다만 멈춤을 핑계로 계속 미루지는 마세요.",
+    "advice": "지금 당장 밀어붙이기보다 잠시 거리를 두고 다른 각도에서 보세요. 멈춤 자체에도 의미가 있다는 걸 받아들이면 좋습니다.",
+    "flowLead": "잠시 멈춰 보며 관점을 바꾸는 흐름이 필요하니,",
+    "flowCaution": "멈춤이 곧 포기나 미루기가 되지 않도록 주의하세요.",
+    "adviceGuide": "억지로 결론을 내기보다 다른 각도에서 다시 보는 게 좋으니,",
+    "adviceAction": "답답한 문제 하나를 정해 ‘반대로 생각하면 어떨까?’를 잠깐 적어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/The_Hanged_Man_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Hanged_Man_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/The_Hanged_Man_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 잠시 멈춰 보며 관점을 바꾸는 흐름이 필요합니다.",
+    "tipFlow2": "멈춤이 곧 포기나 미루기가 되지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 억지로 결론을 내기보다 다른 각도에서 다시 보는 게 좋습니다.",
+    "tipAdvice2": "답답한 문제 하나를 정해 ‘반대로 생각하면 어떨까?’를 잠깐 적어보세요."
+  },
+  {
+    "id": "major13",
+    "name": "13 죽음",
+    "english": "Death",
+    "group": "메이저 아르카나",
+    "image": "Death (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "끝맺음",
+      "전환",
+      "새 출발"
+    ],
+    "symbol": "갑옷을 입은 해골 기사가 흰 말을 타고 앞으로 나아가며, 검은 깃발에는 흰 장미가 그려져 있습니다. 끝과 상실의 이미지 속에 동시에 정화와 새 출발의 상징이 들어 있습니다.",
+    "flow": "오늘은 무엇인가를 정리하고 다음 단계로 넘어가는 흐름이 강합니다. 계속 붙잡고 있던 일이나 생각을 내려놓으면 오히려 새로운 공간이 생길 수 있습니다. 익숙하다는 이유만으로 이미 끝난 것을 붙들지는 마세요.",
+    "advice": "끝나는 것을 실패라고 생각하지 마세요. 정리가 필요한 것은 과감히 정리해야 다음 흐름이 시작됩니다.",
+    "flowLead": "정리하고 다음 단계로 넘어가기 좋은 흐름이니,",
+    "flowCaution": "익숙하다는 이유로 이미 끝난 것을 붙잡지 않도록 주의하세요.",
+    "adviceGuide": "정리할 것은 미루지 말고 끝낸 뒤 바로 다음 행동으로 넘어가는 게 좋으니,",
+    "adviceAction": "오늘 필요 없는 일이나 생각 하나를 정리하고 그다음 할 일 한 가지까지 이어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Death_(Rider-Waite_Smith_tarot_deck).png/1400px-Death_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Death_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 정리하고 다음 단계로 넘어가기 좋은 흐름입니다.",
+    "tipFlow2": "익숙하다는 이유로 이미 끝난 것을 붙잡지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 정리할 것은 미루지 말고 끝낸 뒤 바로 다음 행동으로 넘어가는 게 좋습니다.",
+    "tipAdvice2": "오늘 필요 없는 일이나 생각 하나를 정리하고 그다음 할 일 한 가지까지 이어보세요."
+  },
+  {
+    "id": "major14",
+    "name": "14 절제",
+    "english": "Temperance",
+    "group": "메이저 아르카나",
+    "image": "Temperance (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "조화",
+      "균형",
+      "인내"
+    ],
+    "symbol": "천사가 두 컵 사이로 물을 옮기며 한 발은 땅에, 다른 발은 물에 두고 있습니다. 서로 다른 요소를 조율하고 균형을 맞추는 힘을 상징합니다.",
+    "flow": "오늘은 빠르게 결론내리기보다 적절히 섞고 조율할수록 흐름이 좋아집니다. 사람과 일, 감정과 이성을 균형 있게 다루는 태도가 중요합니다. 다만 모두를 맞추려 하다 애매해지지 않도록 주의하세요.",
+    "advice": "조금 느리더라도 조화롭게 맞추는 방향을 선택하세요. 극단으로 치우치기보다 중간 지점을 찾는 편이 좋습니다.",
+    "flowLead": "속도보다 조율과 균형이 중요한 흐름이니,",
+    "flowCaution": "모두를 맞추려다 애매하게 흐르지 않도록 주의하세요.",
+    "adviceGuide": "극단을 피하고 적절한 속도와 균형을 찾는 게 좋으니,",
+    "adviceAction": "오늘 중요한 결정은 너무 빠르게 몰아가지 말고 중간 지점이 있는지 한 번 더 살펴보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Temperance_(Rider-Waite_Smith_tarot_deck).png/1400px-Temperance_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/66/Temperance_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 속도보다 조율과 균형이 중요한 흐름입니다.",
+    "tipFlow2": "모두를 맞추려다 애매하게 흐르지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 극단을 피하고 적절한 속도와 균형을 찾는 게 좋습니다.",
+    "tipAdvice2": "오늘 중요한 결정은 너무 빠르게 몰아가지 말고 중간 지점이 있는지 한 번 더 살펴보세요."
+  },
+  {
+    "id": "major15",
+    "name": "15 악마",
+    "english": "The Devil",
+    "group": "메이저 아르카나",
+    "image": "The Devil (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "유혹",
+      "집착",
+      "속박"
+    ],
+    "symbol": "악마 아래 쇠사슬에 느슨하게 묶인 두 인물은 벗어날 수 없을 것 같은 집착과 욕망, 중독적 관계를 상징합니다. 스스로 묶여 있는 부분을 알아차리게 합니다.",
+    "flow": "오늘은 유혹, 습관, 집착처럼 나를 붙잡는 것이 평소보다 강하게 느껴질 수 있습니다. 즐거움 자체가 나쁜 것은 아니지만 내가 끌려가고 있는 부분은 없는지 돌아볼 필요가 있습니다. 다만 자기비난으로만 흐르지 마세요.",
+    "advice": "무조건 억누르기보다 내가 어디에 묶여 있는지 먼저 알아차리세요. 욕망을 의식적으로 다루는 태도가 필요합니다.",
+    "flowLead": "유혹이나 익숙한 집착이 크게 느껴질 수 있는 흐름이니,",
+    "flowCaution": "끌리는 마음을 이유로 무심코 반복하지 않도록 주의하세요.",
+    "adviceGuide": "무조건 참기보다 무엇이 나를 붙잡는지 먼저 자각하는 게 좋으니,",
+    "adviceAction": "오늘 반복되는 습관이나 욕구 하나를 의식하고, 그 대신할 행동 한 가지를 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/The_Devil_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Devil_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b5/The_Devil_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 유혹이나 익숙한 집착이 크게 느껴질 수 있는 흐름입니다.",
+    "tipFlow2": "끌리는 마음을 이유로 무심코 반복하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 무조건 참기보다 무엇이 나를 붙잡는지 먼저 자각하는 게 좋습니다.",
+    "tipAdvice2": "오늘 반복되는 습관이나 욕구 하나를 의식하고, 그 대신할 행동 한 가지를 정해보세요."
+  },
+  {
+    "id": "major16",
+    "name": "16 탑",
+    "english": "The Tower",
+    "group": "메이저 아르카나",
+    "image": "The Tower (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "변화",
+      "깨달음",
+      "재정비"
+    ],
+    "symbol": "높은 탑에 번개가 내리치고 왕관이 날아가며 사람들이 아래로 떨어집니다. 갑작스러운 붕괴처럼 보이지만, 오래 버티던 구조가 깨지며 감춰졌던 진실이 드러나는 장면이기도 합니다.",
+    "flow": "계획과 다른 일이 생기거나 예상하지 못한 변화가 나타날 수 있습니다. 하지만 그 변화가 오히려 문제의 핵심을 드러내는 계기가 될 수 있습니다. 예상 밖의 상황에 감정적으로 반응하기보다 무엇이 바뀌어야 하는지 살펴보세요.",
+    "advice": "계획이 흔들린다고 모든 것이 잘못된 것은 아닙니다. 바꿔야 할 것이 무엇인지 찾아보세요.",
+    "flowLead": "예상 밖의 변화가 방향을 다시 보게 할 수 있는 흐름이니,",
+    "flowCaution": "당황해서 원래 방식만 고집하지 않도록 주의하세요.",
+    "adviceGuide": "원인을 오래 붙잡기보다 바꿀 수 있는 부분부터 손보는 게 좋으니,",
+    "adviceAction": "계획이 틀어진 순간 대안 한 가지를 정해 바로 실행해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/The_Tower_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Tower_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8c/The_Tower_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 예상 밖의 변화가 방향을 다시 보게 할 수 있는 흐름입니다.",
+    "tipFlow2": "당황해서 원래 방식만 고집하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 원인을 오래 붙잡기보다 바꿀 수 있는 부분부터 손보는 게 좋습니다.",
+    "tipAdvice2": "계획이 틀어진 순간 대안 한 가지를 정해 바로 실행해보세요."
+  },
+  {
+    "id": "major17",
+    "name": "17 별",
+    "english": "The Star",
+    "group": "메이저 아르카나",
+    "image": "The Star (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "희망",
+      "치유",
+      "평화"
+    ],
+    "symbol": "별빛 아래 인물이 물을 길어 땅과 물에 나누어 붓고 있습니다. 고요한 밤의 장면은 회복, 희망, 마음의 치유를 상징합니다.",
+    "flow": "오늘은 다급하게 몰아가기보다 천천히 숨을 고르고 회복의 리듬을 찾기 좋은 날입니다. 조용하지만 맑은 희망이 다시 보일 수 있습니다. 다만 막연한 기대만으로 움직임을 대신하지는 마세요.",
+    "advice": "서두르지 말고 마음을 회복시키는 시간을 조금 허락하세요. 작더라도 믿을 수 있는 희망의 근거를 붙잡는 편이 좋습니다.",
+    "flowLead": "조용히 회복되고 다시 믿음이 생기기 쉬운 흐름이니,",
+    "flowCaution": "막연한 기대만으로 행동을 미루지 않도록 주의하세요.",
+    "adviceGuide": "마음을 다독이며 작게라도 희망을 현실 행동으로 잇는 게 좋으니,",
+    "adviceAction": "오늘 나를 조금 편안하게 해주는 루틴 하나를 하고, 그다음 해야 할 일 한 가지를 이어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/The_Star_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Star_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/09/The_Star_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 조용히 회복되고 다시 믿음이 생기기 쉬운 흐름입니다.",
+    "tipFlow2": "막연한 기대만으로 행동을 미루지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 마음을 다독이며 작게라도 희망을 현실 행동으로 잇는 게 좋습니다.",
+    "tipAdvice2": "오늘 나를 조금 편안하게 해주는 루틴 하나를 하고, 그다음 해야 할 일 한 가지를 이어보세요."
+  },
+  {
+    "id": "major18",
+    "name": "18 달",
+    "english": "The Moon",
+    "group": "메이저 아르카나",
+    "image": "The Moon (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "직감",
+      "감수성",
+      "불확실성"
+    ],
+    "symbol": "달빛 아래 두 탑 사이로 길이 이어지고, 개와 늑대가 달을 향해 울며 물에서는 가재가 올라옵니다. 익숙한 것과 본능, 무의식이 한 화면에 섞여 있어 모호함과 직감을 함께 보여줍니다.",
+    "flow": "오늘은 상황이 평소보다 모호하게 느껴질 수 있습니다. 눈앞의 정보만 보기보다는 내 마음이 무엇을 불편해하는지도 살펴보면 도움이 됩니다. 다만 느낌만으로 결론을 내리면 오해가 커질 수 있어요.",
+    "advice": "느낌을 무시하지는 말되, 느낌만으로 결론을 내리지 마세요. 확실하지 않은 일은 한 번 더 확인하는 것이 좋습니다.",
+    "flowLead": "상황이 다소 모호하고 감정이 크게 느껴지는 흐름이니,",
+    "flowCaution": "느낌만으로 사실을 단정하지 않도록 주의하세요.",
+    "adviceGuide": "직감은 참고하되 확인된 정보를 기준으로 판단하는 게 좋으니,",
+    "adviceAction": "중요한 결정 하나만큼은 바로 답하지 말고 한 번 더 확인한 뒤 움직여보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/The_Moon_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Moon_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/18/The_Moon_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 상황이 다소 모호하고 감정이 크게 느껴지는 흐름입니다.",
+    "tipFlow2": "느낌만으로 사실을 단정하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 직감은 참고하되 확인된 정보를 기준으로 판단하는 게 좋습니다.",
+    "tipAdvice2": "중요한 결정 하나만큼은 바로 답하지 말고 한 번 더 확인한 뒤 움직여보세요."
+  },
+  {
+    "id": "major19",
+    "name": "19 태양",
+    "english": "The Sun",
+    "group": "메이저 아르카나",
+    "image": "The Sun (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "기쁨",
+      "활력",
+      "자신감"
+    ],
+    "symbol": "커다란 태양 아래 아이가 흰 말을 타고 붉은 깃발을 듭니다. 밝은 빛과 열린 자세는 활력과 자신감을, 흰 말은 순수한 힘을 상징합니다.",
+    "flow": "오늘은 내 에너지가 자연스럽게 밖으로 드러나는 날입니다. 사람들과 어울리거나 내가 가진 생각과 능력을 표현할수록 좋은 흐름을 만들 가능성이 큽니다. 다만 잘 풀린다고 너무 들뜨거나 내 속도만 앞세우지는 마세요.",
+    "advice": "자신감을 숨길 필요는 없습니다. 다만 내 기분과 속도만 앞세우지 말고 주변의 반응도 함께 살펴보세요.",
+    "flowLead": "밝고 활기 있는 흐름이 들어오는 날이니,",
+    "flowCaution": "잘 풀린다는 느낌에 내 속도만 앞세우지 않도록 주의하세요.",
+    "adviceGuide": "자신감은 살리되 주변의 반응도 함께 살피는 게 좋으니,",
+    "adviceAction": "발언이나 제안을 하기 전 상대가 받아들일 여지를 한 번 살펴보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/The_Sun_(Rider-Waite_Smith_tarot_deck).png/1400px-The_Sun_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Sun_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 밝고 활기 있는 흐름이 들어오는 날입니다.",
+    "tipFlow2": "잘 풀린다는 느낌에 내 속도만 앞세우지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 자신감은 살리되 주변의 반응도 함께 살피는 게 좋습니다.",
+    "tipAdvice2": "발언이나 제안을 하기 전 상대가 받아들일 여지를 한 번 살펴보세요."
+  },
+  {
+    "id": "major20",
+    "name": "20 심판",
+    "english": "Judgement",
+    "group": "메이저 아르카나",
+    "image": "Judgement (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "각성",
+      "기회",
+      "책임"
+    ],
+    "symbol": "천사의 나팔 소리에 사람들이 관에서 일어나고 있습니다. 지나간 것을 깨닫고 새롭게 응답하는 장면으로, 각성과 결단의 순간을 상징합니다.",
+    "flow": "오늘은 미뤄온 일이나 마음속에 남아 있던 문제가 다시 떠오르며 분명한 결단을 요구할 수 있습니다. 피하던 것을 마주할수록 오히려 가벼워질 수 있습니다. 다만 과거의 실수에만 머물며 자기비난으로 흐르지 마세요.",
+    "advice": "지금 필요한 깨달음이 왔다면 외면하지 마세요. 다시 시작할 기회로 받아들이는 태도가 중요합니다.",
+    "flowLead": "되돌아보고 분명한 결단을 요구하는 흐름이 들어오니,",
+    "flowCaution": "과거에만 머물며 자기비난으로 흐르지 않도록 주의하세요.",
+    "adviceGuide": "깨달은 것을 미루지 말고 새로운 선택으로 연결하는 게 좋으니,",
+    "adviceAction": "마음에 걸리던 일 하나를 정해 사과·정리·시작 중 어떤 행동이 필요한지 바로 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Judgement_(Rider-Waite_Smith_tarot_deck).png/1400px-Judgement_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Judgement_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 되돌아보고 분명한 결단을 요구하는 흐름이 들어옵니다.",
+    "tipFlow2": "과거에만 머물며 자기비난으로 흐르지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 깨달은 것을 미루지 말고 새로운 선택으로 연결하는 게 좋습니다.",
+    "tipAdvice2": "마음에 걸리던 일 하나를 정해 사과·정리·시작 중 어떤 행동이 필요한지 바로 정해보세요."
+  },
+  {
+    "id": "major21",
+    "name": "21 세계",
+    "english": "The World",
+    "group": "메이저 아르카나",
+    "image": "The World (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "완성",
+      "통합",
+      "마무리"
+    ],
+    "symbol": "월계관 안에서 춤추는 인물과 네 방향의 상징은 하나의 주기가 잘 마무리되고 전체가 조화롭게 연결된 상태를 나타냅니다. 성취와 완성의 카드입니다.",
+    "flow": "오늘은 해오던 일이 정리되거나 전체 그림이 맞춰지는 느낌을 받을 수 있습니다. 작은 성취라도 스스로 인정할수록 다음 흐름도 자연스럽게 열립니다. 다만 끝났다는 허전함 속에 멈춰 있지는 마세요.",
+    "advice": "잘 마무리한 것은 충분히 인정하고, 그다음 순환을 준비하세요. 완성의 기쁨과 다음 시작의 리듬을 함께 보는 편이 좋습니다.",
+    "flowLead": "하나의 흐름이 정리되고 완성되기 쉬운 날이니,",
+    "flowCaution": "마무리의 허전함 속에 멈춰 있지 않도록 주의하세요.",
+    "adviceGuide": "해낸 것은 인정하고 다음 순환을 가볍게 준비하는 게 좋으니,",
+    "adviceAction": "오늘 끝난 일 하나를 스스로 칭찬한 뒤 다음 단계에서 할 첫 행동 한 가지를 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/The_World_(Rider-Waite_Smith_tarot_deck).png/1400px-The_World_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/The_World_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 하나의 흐름이 정리되고 완성되기 쉬운 날입니다.",
+    "tipFlow2": "마무리의 허전함 속에 멈춰 있지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 해낸 것은 인정하고 다음 순환을 가볍게 준비하는 게 좋습니다.",
+    "tipAdvice2": "오늘 끝난 일 하나를 스스로 칭찬한 뒤 다음 단계에서 할 첫 행동 한 가지를 정해보세요."
+  },
+  {
+    "id": "wands1",
+    "name": "완드 에이스",
+    "english": "Ace of Wands",
+    "group": "완드 · 불",
+    "image": "Ace of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "열정",
+      "시작",
+      "생명력"
+    ],
+    "symbol": "구름 속 손이 새싹 돋은 완드를 들고 있습니다. 막 시작되는 불의 기운과 생동감, 새로운 추진력을 상징합니다.",
+    "flow": "새로운 일에 불이 붙기 쉬운 날입니다. 하고 싶었던 일에 첫 불씨를 붙이면 흐름이 살아날 수 있습니다. 다만 시작의 열정만 크고 마무리 계획이 없으면 쉽게 식을 수 있어요.",
+    "advice": "시작의 힘을 믿고 작은 첫걸음을 내보세요. 다만 한꺼번에 크게 벌이기보다 현실적인 출발점을 정하는 편이 좋습니다.",
+    "flowLead": "새로운 열정이 살아나는 흐름이니,",
+    "flowCaution": "열정만 앞서고 준비가 비어 있지 않도록 주의하세요.",
+    "adviceGuide": "떠오른 의욕을 작게라도 실행으로 옮기는 게 좋으니,",
+    "adviceAction": "오늘 시작하고 싶은 일 하나를 정해 첫 행동 한 가지를 바로 해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ace_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Ace_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Ace_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 새로운 열정이 살아나는 흐름입니다.",
+    "tipFlow2": "열정만 앞서고 준비가 비어 있지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 떠오른 의욕을 작게라도 실행으로 옮기는 게 좋습니다.",
+    "tipAdvice2": "오늘 시작하고 싶은 일 하나를 정해 첫 행동 한 가지를 바로 해보세요."
+  },
+  {
+    "id": "wands2",
+    "name": "완드 2",
+    "english": "Two of Wands",
+    "group": "완드 · 불",
+    "image": "Two of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "계획",
+      "선택",
+      "시야"
+    ],
+    "symbol": "높은 곳에서 지구본을 든 인물이 멀리 바깥세계를 바라봅니다. 이미 가진 기반 위에서 다음 가능성을 바라보는 카드입니다.",
+    "flow": "오늘은 이미 가진 것을 바탕으로 다음 방향을 계획하기 좋은 날입니다. 당장 움직이기보다 어디로 갈지 시야를 넓히는 시간이 도움이 됩니다. 다만 생각만 길어지고 선택을 미루지는 마세요.",
+    "advice": "가능성을 넓게 보되 결국 한 방향을 정하는 것이 중요합니다. 무엇을 선택할지 기준을 세우는 편이 좋습니다.",
+    "flowLead": "다음 방향을 계획하기 좋은 흐름이니,",
+    "flowCaution": "생각만 길어지고 선택을 미루지 않도록 주의하세요.",
+    "adviceGuide": "넓게 보되 결국 한 방향을 정하는 게 좋으니,",
+    "adviceAction": "앞으로 나아갈 선택지 두세 개를 적고 오늘은 기준 하나만 분명히 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Two_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Two_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/Two_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 다음 방향을 계획하기 좋은 흐름입니다.",
+    "tipFlow2": "생각만 길어지고 선택을 미루지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 넓게 보되 결국 한 방향을 정하는 게 좋습니다.",
+    "tipAdvice2": "앞으로 나아갈 선택지 두세 개를 적고 오늘은 기준 하나만 분명히 정해보세요."
+  },
+  {
+    "id": "wands3",
+    "name": "완드 3",
+    "english": "Three of Wands",
+    "group": "완드 · 불",
+    "image": "Three of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "확장",
+      "기대",
+      "전망"
+    ],
+    "symbol": "절벽 위 인물이 바다를 바라보며 세 개의 완드 곁에 서 있습니다. 이미 시작한 일이 바깥세상으로 확장되기를 기다리는 장면입니다.",
+    "flow": "오늘은 시작한 일이 바깥으로 뻗어 나갈 가능성을 살펴보기 좋은 날입니다. 결과를 조급하게 당기기보다 흐름을 보며 다음 준비를 하면 좋습니다. 다만 기다림이 막연한 방치가 되지는 않게 하세요.",
+    "advice": "눈앞의 일만 보기보다 한 발 앞선 준비를 해두세요. 움직임이 오기 전 미리 길을 넓혀두는 태도가 좋습니다.",
+    "flowLead": "확장과 다음 전망을 살피기 좋은 흐름이니,",
+    "flowCaution": "기다림이 막연한 방치가 되지 않도록 주의하세요.",
+    "adviceGuide": "결과를 재촉하기보다 다음 준비를 해두는 게 좋으니,",
+    "adviceAction": "오늘은 바로 눈앞의 결과보다 이후에 이어질 단계 한 가지를 미리 준비해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Three_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Three_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/Three_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 확장과 다음 전망을 살피기 좋은 흐름입니다.",
+    "tipFlow2": "기다림이 막연한 방치가 되지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 결과를 재촉하기보다 다음 준비를 해두는 게 좋습니다.",
+    "tipAdvice2": "오늘은 바로 눈앞의 결과보다 이후에 이어질 단계 한 가지를 미리 준비해보세요."
+  },
+  {
+    "id": "wands4",
+    "name": "완드 4",
+    "english": "Four of Wands",
+    "group": "완드 · 불",
+    "image": "Four of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "안정",
+      "축하",
+      "조화"
+    ],
+    "symbol": "꽃과 장식이 걸린 네 개의 완드 아래 사람들이 기뻐하고 있습니다. 안정된 기반과 함께 누리는 기쁨, 잠깐의 축하를 상징합니다.",
+    "flow": "오늘은 마음을 놓고 안정감을 누리기 좋은 흐름이 들어옵니다. 작은 성과라도 함께 기뻐하면 기분 좋은 분위기가 만들어질 수 있습니다. 다만 편안함에만 머물며 다음 움직임을 잊지는 마세요.",
+    "advice": "쉴 수 있을 때 잠시 숨을 고르고 기쁜 순간을 나누세요. 다만 현재의 안정에 안주하기보다는 좋은 흐름을 이어갈 여지도 남겨두면 좋습니다.",
+    "flowLead": "안정과 기쁨을 누리기 좋은 흐름이니,",
+    "flowCaution": "편안함에만 머물며 다음 움직임을 잊지 않도록 주의하세요.",
+    "adviceGuide": "작은 성과를 누리되 흐름을 이어갈 여지를 남기는 게 좋으니,",
+    "adviceAction": "기분 좋은 일 하나는 충분히 즐기고, 그다음 이어갈 행동도 가볍게 정해두세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Four_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Four_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Four_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 안정과 기쁨을 누리기 좋은 흐름입니다.",
+    "tipFlow2": "편안함에만 머물며 다음 움직임을 잊지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 작은 성과를 누리되 흐름을 이어갈 여지를 남기는 게 좋습니다.",
+    "tipAdvice2": "기분 좋은 일 하나는 충분히 즐기고, 그다음 이어갈 행동도 가볍게 정해두세요."
+  },
+  {
+    "id": "wands5",
+    "name": "완드 5",
+    "english": "Five of Wands",
+    "group": "완드 · 불",
+    "image": "Five of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "경쟁",
+      "도전",
+      "갈등"
+    ],
+    "symbol": "여러 인물이 완드를 맞부딪치고 있습니다. 진짜 싸움이라기보다 서로 부딪치며 에너지가 분산되는 경쟁과 소란을 보여줍니다.",
+    "flow": "오늘은 의견 충돌이나 경쟁이 생기기 쉬운 날입니다. 다툼처럼 보여도 잘 활용하면 실력을 끌어올리는 자극이 될 수 있습니다. 다만 이기려는 마음이 과해지면 불필요한 소모로 흐를 수 있어요.",
+    "advice": "부딪침을 무조건 피하기보다 무엇을 배우거나 조정할지 보세요. 감정 소모보다 핵심 쟁점을 분명히 하는 편이 좋습니다.",
+    "flowLead": "경쟁과 부딪침이 생기기 쉬운 흐름이니,",
+    "flowCaution": "이기려는 마음만 커져 소모전이 되지 않도록 주의하세요.",
+    "adviceGuide": "부딪침 속에서도 핵심 쟁점을 분명히 보는 게 좋으니,",
+    "adviceAction": "의견이 다른 상황에서는 감정 표현보다 지금 논점이 무엇인지 먼저 정리해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Five_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Five_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Five_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 경쟁과 부딪침이 생기기 쉬운 흐름입니다.",
+    "tipFlow2": "이기려는 마음만 커져 소모전이 되지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 부딪침 속에서도 핵심 쟁점을 분명히 보는 게 좋습니다.",
+    "tipAdvice2": "의견이 다른 상황에서는 감정 표현보다 지금 논점이 무엇인지 먼저 정리해보세요."
+  },
+  {
+    "id": "wands6",
+    "name": "완드 6",
+    "english": "Six of Wands",
+    "group": "완드 · 불",
+    "image": "Six of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "성공",
+      "인정",
+      "자신감"
+    ],
+    "symbol": "승리의 화관을 쓴 인물이 말을 타고 사람들의 주목을 받습니다. 인정받는 순간과 자신감, 한 단계 올라선 성취를 상징합니다.",
+    "flow": "오늘은 내가 한 일이 눈에 띄거나 인정받을 가능성이 있는 날입니다. 자신 있게 나서면 흐름이 더 좋아질 수 있습니다. 다만 인정받는 기쁨이 자만으로 보이지 않도록 균형을 잡는 것이 좋습니다.",
+    "advice": "기회를 피하지 말고 당당하게 보여주세요. 다만 나만의 성공이 아니라 함께 만든 흐름도 기억하면 더 좋습니다.",
+    "flowLead": "인정과 성과가 드러나기 쉬운 흐름이니,",
+    "flowCaution": "인정받는 기쁨이 자만처럼 보이지 않도록 주의하세요.",
+    "adviceGuide": "당당하게 보여주되 함께 만든 흐름도 잊지 않는 게 좋으니,",
+    "adviceAction": "성과를 말할 기회가 오면 자신 있게 설명하되 도움받은 부분도 함께 전해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Six_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Six_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Six_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 인정과 성과가 드러나기 쉬운 흐름입니다.",
+    "tipFlow2": "인정받는 기쁨이 자만처럼 보이지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 당당하게 보여주되 함께 만든 흐름도 잊지 않는 게 좋습니다.",
+    "tipAdvice2": "성과를 말할 기회가 오면 자신 있게 설명하되 도움받은 부분도 함께 전해보세요."
+  },
+  {
+    "id": "wands7",
+    "name": "완드 7",
+    "english": "Seven of Wands",
+    "group": "완드 · 불",
+    "image": "Seven of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "용기",
+      "방어",
+      "버팀"
+    ],
+    "symbol": "한 인물이 높은 곳에서 아래에서 올라오는 완드들을 막아내고 있습니다. 유리한 자리를 지키기 위한 방어와 버팀의 장면입니다.",
+    "flow": "오늘은 내 입장이나 자리를 지켜야 하는 상황이 생길 수 있습니다. 쉽지는 않아도 물러서지 않고 버티는 힘이 필요합니다. 다만 모든 상황을 공격처럼 받아들이며 예민해지지는 마세요.",
+    "advice": "내가 지켜야 할 기준은 분명히 하세요. 그러나 방어해야 할 것과 지나치게 예민하게 받아들이는 것을 구분하는 편이 좋습니다.",
+    "flowLead": "내 입장을 지켜야 하는 흐름이니,",
+    "flowCaution": "모든 상황을 공격처럼 받아들이지 않도록 주의하세요.",
+    "adviceGuide": "지켜야 할 기준은 분명히 하되 과하게 예민해지지 않는 게 좋으니,",
+    "adviceAction": "중요한 자리에서는 내가 지키고 싶은 원칙 한 가지를 먼저 정리하고 말해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Seven_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Seven_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Seven_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 내 입장을 지켜야 하는 흐름입니다.",
+    "tipFlow2": "모든 상황을 공격처럼 받아들이지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 지켜야 할 기준은 분명히 하되 과하게 예민해지지 않는 게 좋습니다.",
+    "tipAdvice2": "중요한 자리에서는 내가 지키고 싶은 원칙 한 가지를 먼저 정리하고 말해보세요."
+  },
+  {
+    "id": "wands8",
+    "name": "완드 8",
+    "english": "Eight of Wands",
+    "group": "완드 · 불",
+    "image": "Eight of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "속도",
+      "진전",
+      "좋은 소식"
+    ],
+    "symbol": "여덟 개의 완드가 한 방향으로 빠르게 날아가고 아래에는 탁 트인 풍경이 펼쳐집니다. 막힘 없이 움직이는 모습이 속도, 소식, 빠른 전개를 상징합니다.",
+    "flow": "오늘은 일이 예상보다 빠르게 진행될 수 있습니다. 연락, 결정, 새로운 제안처럼 흐름을 앞으로 밀어주는 일이 생기기 좋은 날입니다. 속도가 빠를수록 서두르다 실수하지 않도록 한 번 더 확인하세요.",
+    "advice": "기회가 왔다면 지나치게 망설이지 마세요. 다만 속도가 빠를수록 확인은 더 꼼꼼히 해야 합니다.",
+    "flowLead": "연락·결정·실행이 빠르게 이어질 수 있는 흐름이니,",
+    "flowCaution": "서두르다 중요한 확인을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "기회는 놓치지 않되 마지막 확인을 한 번 거치는 게 좋으니,",
+    "adviceAction": "메시지나 결정을 보내기 전 이름·시간·핵심 내용만 다시 확인해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Eight_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Eight_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Eight_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 연락·결정·실행이 빠르게 이어질 수 있는 흐름입니다.",
+    "tipFlow2": "서두르다 중요한 확인을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 기회는 놓치지 않되 마지막 확인을 한 번 거치는 게 좋습니다.",
+    "tipAdvice2": "메시지나 결정을 보내기 전 이름·시간·핵심 내용만 다시 확인해보세요."
+  },
+  {
+    "id": "wands9",
+    "name": "완드 9",
+    "english": "Nine of Wands",
+    "group": "완드 · 불",
+    "image": "Nine of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "인내",
+      "경계",
+      "방어"
+    ],
+    "symbol": "상처 입은 인물이 하나의 완드를 붙잡고 뒤의 완드들을 경계하며 서 있습니다. 지친 상태에서도 끝까지 버티는 인내와 경계를 상징합니다.",
+    "flow": "오늘은 이미 피곤한 상태에서도 끝까지 버텨야 하는 일이 있을 수 있습니다. 그동안 쌓아온 경험 덕분에 쉽게 무너지지는 않겠지만 경계심이 너무 커질 수 있습니다. 다만 모든 사람과 상황을 의심의 눈으로만 보지는 마세요.",
+    "advice": "버틸 힘은 충분하지만 휴식과 경계를 함께 챙겨야 합니다. 긴장을 유지하되 과도하게 방어적으로 굳어지지는 않는 편이 좋습니다.",
+    "flowLead": "끝까지 버텨야 하는 흐름이 들어오니,",
+    "flowCaution": "경계심이 과해져 모든 상황을 의심하지 않도록 주의하세요.",
+    "adviceGuide": "버티되 필요한 휴식과 여유도 챙기는 게 좋으니,",
+    "adviceAction": "마무리해야 할 일은 붙잡되 중간에 짧은 휴식 한 번을 의식적으로 넣어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Nine_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Nine_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Nine_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 끝까지 버텨야 하는 흐름이 들어옵니다.",
+    "tipFlow2": "경계심이 과해져 모든 상황을 의심하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 버티되 필요한 휴식과 여유도 챙기는 게 좋습니다.",
+    "tipAdvice2": "마무리해야 할 일은 붙잡되 중간에 짧은 휴식 한 번을 의식적으로 넣어보세요."
+  },
+  {
+    "id": "wands10",
+    "name": "완드 10",
+    "english": "Ten of Wands",
+    "group": "완드 · 불",
+    "image": "Ten of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "책임",
+      "부담",
+      "마무리"
+    ],
+    "symbol": "한 사람이 열 개의 완드를 한꺼번에 끌어안고 마을을 향해 걷습니다. 목적지는 가까워 보이지만 짐이 시야를 가릴 만큼 무거워 책임과 과부하를 동시에 보여줍니다.",
+    "flow": "해야 할 일이 많거나 책임이 무겁게 느껴질 수 있습니다. 그동안 열심히 해왔다는 뜻이기도 하지만 모든 일을 혼자 떠안을 필요는 없습니다. 무리해서 버티기보다 우선순위를 정하는 편이 좋습니다.",
+    "advice": "끝까지 책임지는 태도는 좋지만 내가 다 해야 한다는 생각은 내려놓으세요.",
+    "flowLead": "해야 할 일과 책임이 한꺼번에 몰릴 수 있는 흐름이니,",
+    "flowCaution": "모든 일을 혼자 떠안으려 하지 않도록 주의하세요.",
+    "adviceGuide": "우선순위를 줄이고 도움을 나누는 게 좋으니,",
+    "adviceAction": "오늘 해야 할 일 중 하나는 미루거나 부탁하거나 줄여보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Ten_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Ten_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Ten_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 해야 할 일과 책임이 한꺼번에 몰릴 수 있는 흐름입니다.",
+    "tipFlow2": "모든 일을 혼자 떠안으려 하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 우선순위를 줄이고 도움을 나누는 게 좋습니다.",
+    "tipAdvice2": "오늘 해야 할 일 중 하나는 미루거나 부탁하거나 줄여보세요."
+  },
+  {
+    "id": "wandspage",
+    "name": "완드 페이지",
+    "english": "Page of Wands",
+    "group": "완드 · 불",
+    "image": "Page of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "호기심",
+      "도전",
+      "새 소식"
+    ],
+    "symbol": "젊은 인물이 완드를 호기심 어린 눈으로 바라보고 있습니다. 새로운 가능성, 도전 정신, 가벼운 소식의 기운을 담고 있습니다.",
+    "flow": "오늘은 호기심이 가는 방향에서 새로운 신호나 재미있는 제안이 들어올 수 있습니다. 가볍고 신선한 에너지가 흐르지만 아직 완전히 성숙한 단계는 아닙니다. 다만 말만 앞서고 책임은 빠지는 태도는 주의하세요.",
+    "advice": "새로운 가능성을 반갑게 받아들이되 끝까지 가져갈 수 있을지 한 번 생각해보세요. 설렘과 실행을 연결하는 것이 중요합니다.",
+    "flowLead": "새로운 소식과 가능성이 들어오기 쉬운 흐름이니,",
+    "flowCaution": "가벼운 흥분만 남기고 책임을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "설렘을 실행으로 잇되 끝까지 갈 수 있을지 한 번 생각하는 게 좋으니,",
+    "adviceAction": "흥미로운 제안이 보이면 바로 좋다 하기보다 내가 실제로 해볼 수 있는지 한 번 점검해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Page_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Page_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/Page_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 새로운 소식과 가능성이 들어오기 쉬운 흐름입니다.",
+    "tipFlow2": "가벼운 흥분만 남기고 책임을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 설렘을 실행으로 잇되 끝까지 갈 수 있을지 한 번 생각하는 게 좋습니다.",
+    "tipAdvice2": "흥미로운 제안이 보이면 바로 좋다 하기보다 내가 실제로 해볼 수 있는지 한 번 점검해보세요."
+  },
+  {
+    "id": "wandsknight",
+    "name": "완드 나이트",
+    "english": "Knight of Wands",
+    "group": "완드 · 불",
+    "image": "Knight of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "행동",
+      "추진",
+      "열정"
+    ],
+    "symbol": "말을 탄 기사와 불타는 배경은 강한 추진력과 모험심, 빠른 행동 에너지를 상징합니다. 움직임이 크고 화끈한 카드입니다.",
+    "flow": "오늘은 망설이기보다 바로 움직이고 싶은 에너지가 강할 수 있습니다. 추진력이 좋아 기회를 잡기 쉽지만 성급함이 함께 따라붙을 수 있습니다. 다만 너무 앞서가며 지속성을 잃지 않도록 주의하세요.",
+    "advice": "지금 필요한 행동력은 살리되 속도를 조금 조절하세요. 시작의 힘이 좋은 만큼 끝까지 갈 수 있는 페이스가 중요합니다.",
+    "flowLead": "강한 추진력이 살아나는 흐름이니,",
+    "flowCaution": "성급하게 앞서가다 지속성을 잃지 않도록 주의하세요.",
+    "adviceGuide": "행동력은 살리되 속도를 조금 조절하는 게 좋으니,",
+    "adviceAction": "하고 싶은 일이 있다면 바로 시작하되 중간에 멈추지 않도록 현실적인 분량을 먼저 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Knight_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Knight_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Knight_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 강한 추진력이 살아나는 흐름입니다.",
+    "tipFlow2": "성급하게 앞서가다 지속성을 잃지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 행동력은 살리되 속도를 조금 조절하는 게 좋습니다.",
+    "tipAdvice2": "하고 싶은 일이 있다면 바로 시작하되 중간에 멈추지 않도록 현실적인 분량을 먼저 정해보세요."
+  },
+  {
+    "id": "wandsqueen",
+    "name": "완드 퀸",
+    "english": "Queen of Wands",
+    "group": "완드 · 불",
+    "image": "Queen of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "자신감",
+      "매력",
+      "생동감"
+    ],
+    "symbol": "검은 고양이와 해바라기, 당당한 자세의 여왕은 따뜻한 카리스마와 생동감, 자신감 있는 존재감을 상징합니다.",
+    "flow": "오늘은 내가 가진 매력과 존재감이 자연스럽게 드러나기 쉽습니다. 자신 있게 움직일수록 좋은 흐름이 만들어질 수 있습니다. 다만 자신감이 과시처럼 보이지 않도록 균형을 잡는 것이 좋습니다.",
+    "advice": "스스로를 믿고 밝게 표현하세요. 그러나 내 빛을 드러내는 것과 남보다 우위에 서려는 태도는 구분하는 편이 좋습니다.",
+    "flowLead": "존재감과 자신감이 살아나는 흐름이니,",
+    "flowCaution": "자신감이 과시처럼 보이지 않도록 주의하세요.",
+    "adviceGuide": "밝게 표현하되 타인을 눌러 보이려 하지는 않는 게 좋으니,",
+    "adviceAction": "사람들 앞에 설 일이 있다면 주저하지 말고 나서되 상대를 함께 세워주는 표현을 곁들여보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Queen_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-Queen_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Queen_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 존재감과 자신감이 살아나는 흐름입니다.",
+    "tipFlow2": "자신감이 과시처럼 보이지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 밝게 표현하되 타인을 눌러 보이려 하지는 않는 게 좋습니다.",
+    "tipAdvice2": "사람들 앞에 설 일이 있다면 주저하지 말고 나서되 상대를 함께 세워주는 표현을 곁들여보세요."
+  },
+  {
+    "id": "wandsking",
+    "name": "완드 킹",
+    "english": "King of Wands",
+    "group": "완드 · 불",
+    "image": "King of Wands (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "리더십",
+      "비전",
+      "결단"
+    ],
+    "symbol": "불의 문양 속 왕좌에 앉은 왕은 넓은 시야와 주도적인 리더십을 상징합니다. 큰 그림을 보고 사람을 이끄는 힘이 드러납니다.",
+    "flow": "오늘은 앞에서 방향을 제시하거나 결단을 내려야 할 수 있습니다. 큰 그림을 보고 주도적으로 움직이면 흐름을 이끌기 좋습니다. 다만 독단적으로 보이지 않도록 주변의 의견도 듣는 편이 좋습니다.",
+    "advice": "비전을 분명히 보여주되 혼자 다 결정하려 하지는 마세요. 리더십은 방향 제시와 경청이 함께 갈 때 더 안정적입니다.",
+    "flowLead": "방향을 잡고 이끌어야 하는 흐름이니,",
+    "flowCaution": "큰 그림만 보다가 주변의 의견을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "비전을 제시하되 의견을 함께 듣는 게 좋으니,",
+    "adviceAction": "결정을 내려야 한다면 먼저 방향을 말하고 짧게라도 다른 사람의 의견을 받아본 뒤 정리해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/King_of_Wands_(Rider-Waite_Smith_tarot_deck).png/1400px-King_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/King_of_Wands_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 방향을 잡고 이끌어야 하는 흐름입니다.",
+    "tipFlow2": "큰 그림만 보다가 주변의 의견을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 비전을 제시하되 의견을 함께 듣는 게 좋습니다.",
+    "tipAdvice2": "결정을 내려야 한다면 먼저 방향을 말하고 짧게라도 다른 사람의 의견을 받아본 뒤 정리해보세요."
+  },
+  {
+    "id": "cups1",
+    "name": "컵 에이스",
+    "english": "Ace of Cups",
+    "group": "컵 · 물",
+    "image": "Ace of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "감정의 시작",
+      "기쁨",
+      "사랑"
+    ],
+    "symbol": "구름 속 손이 넘치는 물이 담긴 컵을 들고 있고, 물방울이 사방으로 흘러내립니다. 풍부한 감정과 새롭게 열리는 마음을 상징합니다.",
+    "flow": "오늘은 마음이 열리고 관계나 감정의 흐름이 부드럽게 시작되기 좋은 날입니다. 따뜻한 감정이나 기쁜 제안이 들어올 수 있습니다. 다만 감정이 풍부한 만큼 쉽게 흔들리거나 과해지지 않도록 살펴보세요.",
+    "advice": "좋은 감정의 시작을 반갑게 받아들이세요. 다만 마음이 움직인다고 해서 모든 경계를 한꺼번에 내려놓지는 않는 편이 좋습니다.",
+    "flowLead": "감정의 문이 부드럽게 열리는 흐름이니,",
+    "flowCaution": "좋은 감정에 쉽게 휩쓸리지 않도록 주의하세요.",
+    "adviceGuide": "열린 마음은 살리되 경계도 함께 챙기는 게 좋으니,",
+    "adviceAction": "반가운 감정이나 제안이 오면 기쁘게 받아들이되 내 속도를 지키며 천천히 반응해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ace_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Ace_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ace_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 감정의 문이 부드럽게 열리는 흐름입니다.",
+    "tipFlow2": "좋은 감정에 쉽게 휩쓸리지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 열린 마음은 살리되 경계도 함께 챙기는 게 좋습니다.",
+    "tipAdvice2": "반가운 감정이나 제안이 오면 기쁘게 받아들이되 내 속도를 지키며 천천히 반응해보세요."
+  },
+  {
+    "id": "cups2",
+    "name": "컵 2",
+    "english": "Two of Cups",
+    "group": "컵 · 물",
+    "image": "Two of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "관계",
+      "조화",
+      "소통"
+    ],
+    "symbol": "두 사람이 서로 마주 보며 컵을 주고받고, 그 위에는 두 뱀이 얽힌 지팡이와 사자 머리가 떠 있습니다. 서로의 마음을 주고받는 관계, 균형, 교감을 보여주는 장면입니다.",
+    "flow": "오늘은 사람과 사람 사이의 연결에서 좋은 흐름이 생길 수 있습니다. 대화, 협력, 화해가 평소보다 자연스럽게 이루어질 가능성이 있습니다. 다만 상대에게 맞추느라 내 생각까지 잃지는 마세요.",
+    "advice": "상대를 이해하려 노력하되 내 생각까지 포기할 필요는 없습니다.",
+    "flowLead": "사람과의 연결이 부드럽게 이어질 수 있는 흐름이니,",
+    "flowCaution": "상대에게 맞추느라 내 생각을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "대화를 통해 조율하되 내 생각도 함께 드러내는 게 좋으니,",
+    "adviceAction": "중요한 대화에서는 내 말을 한 뒤 상대의 생각도 한 번 꼭 물어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Two_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Two_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Two_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 사람과의 연결이 부드럽게 이어질 수 있는 흐름입니다.",
+    "tipFlow2": "상대에게 맞추느라 내 생각을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 대화를 통해 조율하되 내 생각도 함께 드러내는 게 좋습니다.",
+    "tipAdvice2": "중요한 대화에서는 내 말을 한 뒤 상대의 생각도 한 번 꼭 물어보세요."
+  },
+  {
+    "id": "cups3",
+    "name": "컵 3",
+    "english": "Three of Cups",
+    "group": "컵 · 물",
+    "image": "Three of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "즐거움",
+      "우정",
+      "공동체"
+    ],
+    "symbol": "세 여인이 컵을 들어 올리며 함께 축하하고 있습니다. 우정과 연대, 함께 나누는 기쁨을 상징하는 카드입니다.",
+    "flow": "오늘은 함께할 때 더 즐겁고 힘이 나는 흐름입니다. 친구, 동료, 가까운 사람들과 기분 좋은 연결이 생길 수 있습니다. 다만 분위기에 휩쓸려 해야 할 일까지 놓치지는 않도록 균형을 잡으세요.",
+    "advice": "혼자 끌고 가기보다 함께 나누세요. 기쁨을 나누되 무리 의식이나 뒷말 같은 가벼운 소모는 줄이는 편이 좋습니다.",
+    "flowLead": "함께할수록 즐거움이 커지는 흐름이니,",
+    "flowCaution": "분위기에만 휩쓸려 해야 할 일을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "기쁨은 나누되 가벼운 소모는 줄이는 게 좋으니,",
+    "adviceAction": "기분 좋은 자리가 생기면 충분히 즐기되 꼭 해야 할 일 하나는 먼저 마무리하고 가보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Three_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Three_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Three_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 함께할수록 즐거움이 커지는 흐름입니다.",
+    "tipFlow2": "분위기에만 휩쓸려 해야 할 일을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 기쁨은 나누되 가벼운 소모는 줄이는 게 좋습니다.",
+    "tipAdvice2": "기분 좋은 자리가 생기면 충분히 즐기되 꼭 해야 할 일 하나는 먼저 마무리하고 가보세요."
+  },
+  {
+    "id": "cups4",
+    "name": "컵 4",
+    "english": "Four of Cups",
+    "group": "컵 · 물",
+    "image": "Four of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "권태",
+      "재정비",
+      "내면점검"
+    ],
+    "symbol": "팔짱 낀 인물 앞에 세 개의 컵이 있고, 구름 속 손이 또 하나의 컵을 내밀지만 시선이 닿지 않습니다. 권태와 무관심, 감정의 재점검을 상징합니다.",
+    "flow": "오늘은 마음이 쉽게 채워지지 않거나 무언가 시큰둥하게 느껴질 수 있습니다. 억지로 흥미를 만들기보다 왜 이런 기분인지 들여다보면 도움이 됩니다. 다만 좋은 기회까지 무심코 흘려보내지 않도록 살펴보세요.",
+    "advice": "권태를 탓하기보다 잠시 마음을 점검해보세요. 쉬어야 할 때인지, 새로운 자극이 필요한 때인지 구분하는 편이 좋습니다.",
+    "flowLead": "마음이 조금 가라앉거나 권태로울 수 있는 흐름이니,",
+    "flowCaution": "좋은 기회까지 무심코 지나치지 않도록 주의하세요.",
+    "adviceGuide": "내 마음 상태를 먼저 점검하는 게 좋으니,",
+    "adviceAction": "오늘은 억지로 신나려 하기보다 내가 무엇에 지쳤는지 한 번 조용히 정리해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Four_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Four_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Four_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 마음이 조금 가라앉거나 권태로울 수 있는 흐름입니다.",
+    "tipFlow2": "좋은 기회까지 무심코 지나치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 내 마음 상태를 먼저 점검하는 게 좋습니다.",
+    "tipAdvice2": "오늘은 억지로 신나려 하기보다 내가 무엇에 지쳤는지 한 번 조용히 정리해보세요."
+  },
+  {
+    "id": "cups5",
+    "name": "컵 5",
+    "english": "Five of Cups",
+    "group": "컵 · 물",
+    "image": "Five of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "상실",
+      "후회",
+      "회복"
+    ],
+    "symbol": "검은 망토를 두른 인물이 엎어진 세 개의 컵을 바라보고 있고, 등 뒤에는 아직 두 개의 컵이 서 있습니다. 잃은 것에 시선이 머물러 있지만 남아 있는 가능성도 분명히 존재한다는 그림입니다.",
+    "flow": "원하는 만큼 잘되지 않은 일이 마음에 남을 수 있습니다. 하지만 이미 지나간 결과보다 지금 남아 있는 가능성을 보는 것이 중요합니다. 후회에 오래 머물기보다 배운 것을 다음 행동으로 옮겨보세요.",
+    "advice": "아쉬운 마음은 충분히 인정하되 그곳에 오래 머물지는 마세요.",
+    "flowLead": "아쉬움이 오래 남기 쉬운 흐름이니,",
+    "flowCaution": "후회만 반복하며 다음 선택을 미루지 않도록 주의하세요.",
+    "adviceGuide": "남아 있는 가능성으로 시선을 옮기는 게 좋으니,",
+    "adviceAction": "속상한 일이 있었다면 배운 점 한 줄만 남기고 그다음 할 수 있는 행동을 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Five_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Five_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/Five_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 아쉬움이 오래 남기 쉬운 흐름입니다.",
+    "tipFlow2": "후회만 반복하며 다음 선택을 미루지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 남아 있는 가능성으로 시선을 옮기는 게 좋습니다.",
+    "tipAdvice2": "속상한 일이 있었다면 배운 점 한 줄만 남기고 그다음 할 수 있는 행동을 정해보세요."
+  },
+  {
+    "id": "cups6",
+    "name": "컵 6",
+    "english": "Six of Cups",
+    "group": "컵 · 물",
+    "image": "Six of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "추억",
+      "순수함",
+      "정서회복"
+    ],
+    "symbol": "두 아이가 꽃이 담긴 컵을 주고받는 장면은 순수한 정서, 과거의 기억, 따뜻한 추억을 상징합니다.",
+    "flow": "오늘은 익숙하고 따뜻한 기억이 마음을 편안하게 해줄 수 있습니다. 오래된 관계나 추억 속에서 위로를 얻을 수도 있습니다. 다만 과거가 좋았다는 생각에 현재를 놓치지는 않도록 주의하세요.",
+    "advice": "따뜻한 기억은 위로로 삼되 과거에 머물지 마세요. 지금 내 곁의 사람과 현재의 감정으로 연결하는 편이 좋습니다.",
+    "flowLead": "따뜻한 추억과 정서적 위로가 흐르는 날이니,",
+    "flowCaution": "과거가 더 좋았다는 생각에 현재를 놓치지 않도록 주의하세요.",
+    "adviceGuide": "추억을 위로로 삼되 지금의 관계와 감정으로 이어가는 게 좋으니,",
+    "adviceAction": "생각나는 사람에게 안부를 전하거나, 좋은 기억을 오늘의 작은 힘으로 연결해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Six_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Six_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Six_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 따뜻한 추억과 정서적 위로가 흐르는 날입니다.",
+    "tipFlow2": "과거가 더 좋았다는 생각에 현재를 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 추억을 위로로 삼되 지금의 관계와 감정으로 이어가는 게 좋습니다.",
+    "tipAdvice2": "생각나는 사람에게 안부를 전하거나, 좋은 기억을 오늘의 작은 힘으로 연결해보세요."
+  },
+  {
+    "id": "cups7",
+    "name": "컵 7",
+    "english": "Seven of Cups",
+    "group": "컵 · 물",
+    "image": "Seven of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "상상",
+      "혼란",
+      "선택"
+    ],
+    "symbol": "구름 위 여러 컵 안에 다양한 상징이 떠 있습니다. 가능성이 많아 보이지만 무엇이 진짜인지 헷갈리기 쉬운 상태를 보여줍니다.",
+    "flow": "오늘은 선택지가 많아 보여도 오히려 더 헷갈릴 수 있습니다. 상상력은 커지지만 실제와 환상을 구분하는 눈이 필요합니다. 다만 다 좋아 보여서 아무것도 선택하지 못하는 상태에 머물지 않도록 하세요.",
+    "advice": "무엇이 가능성이고 무엇이 환상인지 차분히 구분해보세요. 선택지를 줄여 현실적인 것부터 잡는 편이 좋습니다.",
+    "flowLead": "가능성이 많아 보이지만 헷갈리기 쉬운 흐름이니,",
+    "flowCaution": "다 좋아 보여서 아무것도 못 고르지 않도록 주의하세요.",
+    "adviceGuide": "현실적인 선택지부터 좁혀가는 게 좋으니,",
+    "adviceAction": "지금 떠오르는 선택지들을 적어보고 오늘 바로 움직일 수 있는 것만 남겨보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Seven_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Seven_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Seven_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 가능성이 많아 보이지만 헷갈리기 쉬운 흐름입니다.",
+    "tipFlow2": "다 좋아 보여서 아무것도 못 고르지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 현실적인 선택지부터 좁혀가는 게 좋습니다.",
+    "tipAdvice2": "지금 떠오르는 선택지들을 적어보고 오늘 바로 움직일 수 있는 것만 남겨보세요."
+  },
+  {
+    "id": "cups8",
+    "name": "컵 8",
+    "english": "Eight of Cups",
+    "group": "컵 · 물",
+    "image": "Eight of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "떠남",
+      "변화",
+      "성장"
+    ],
+    "symbol": "인물이 여덟 개의 컵을 뒤로하고 달 아래 먼 길을 떠납니다. 이미 가진 것에서 더 깊은 의미를 찾아 나서는 장면입니다.",
+    "flow": "오늘은 익숙한 감정이나 관계에서 한 발 물러서야 할 필요를 느낄 수 있습니다. 아쉬움이 있어도 더 나은 의미를 위해 떠나는 선택이 필요할 수 있습니다. 다만 단순히 피하고 싶은 마음으로 도망치지는 마세요.",
+    "advice": "회피와 성장을 구분해보세요. 정말 필요한 거리 두기라면 의미 있지만, 감정을 피하려는 움직임이라면 다시 돌아보는 편이 좋습니다.",
+    "flowLead": "정서적 거리 두기나 새로운 의미를 찾게 되는 흐름이니,",
+    "flowCaution": "피하고 싶은 마음을 성장으로 착각하지 않도록 주의하세요.",
+    "adviceGuide": "정말 필요한 거리 두기인지 확인하는 게 좋으니,",
+    "adviceAction": "관계나 감정이 답답하다면 바로 끊기보다 왜 멀어지고 싶은지부터 먼저 정리해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Eight_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Eight_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Eight_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 정서적 거리 두기나 새로운 의미를 찾게 되는 흐름입니다.",
+    "tipFlow2": "피하고 싶은 마음을 성장으로 착각하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 정말 필요한 거리 두기인지 확인하는 게 좋습니다.",
+    "tipAdvice2": "관계나 감정이 답답하다면 바로 끊기보다 왜 멀어지고 싶은지부터 먼저 정리해보세요."
+  },
+  {
+    "id": "cups9",
+    "name": "컵 9",
+    "english": "Nine of Cups",
+    "group": "컵 · 물",
+    "image": "Nine of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "만족",
+      "풍요",
+      "소원성취"
+    ],
+    "symbol": "컵 아홉 개 앞에 앉은 인물이 만족스러운 표정으로 팔짱을 끼고 있습니다. 정서적 만족과 작은 소원 성취를 상징합니다.",
+    "flow": "오늘은 마음이 비교적 충만하고 만족스러운 흐름이 들어올 수 있습니다. 원하는 바가 잘 맞아떨어질 가능성도 있습니다. 다만 편안함이 지나쳐 안일함이나 자기만족으로 흐르지 않도록 살펴보세요.",
+    "advice": "충분히 누릴 것은 누리되 거기서 멈추지만은 마세요. 만족을 다음 동력으로 연결하는 편이 좋습니다.",
+    "flowLead": "정서적 만족과 여유가 흐르는 날이니,",
+    "flowCaution": "편안함이 안일함으로 바뀌지 않도록 주의하세요.",
+    "adviceGuide": "만족을 누리되 다음 동력으로 연결하는 게 좋으니,",
+    "adviceAction": "기분 좋은 일이 생기면 즐긴 뒤 오늘 꼭 할 일 하나는 마무리하며 흐름을 이어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Nine_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Nine_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Nine_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 정서적 만족과 여유가 흐르는 날입니다.",
+    "tipFlow2": "편안함이 안일함으로 바뀌지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 만족을 누리되 다음 동력으로 연결하는 게 좋습니다.",
+    "tipAdvice2": "기분 좋은 일이 생기면 즐긴 뒤 오늘 꼭 할 일 하나는 마무리하며 흐름을 이어보세요."
+  },
+  {
+    "id": "cups10",
+    "name": "컵 10",
+    "english": "Ten of Cups",
+    "group": "컵 · 물",
+    "image": "Ten of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "행복",
+      "조화",
+      "안정"
+    ],
+    "symbol": "무지개 아래 열 개의 컵이 떠 있고 가족이 함께 서 있습니다. 정서적 완성과 안정, 함께하는 행복을 상징하는 장면입니다.",
+    "flow": "오늘은 관계와 마음이 비교적 편안하게 맞아들어가기 좋은 날입니다. 가까운 사람들과의 조화 속에서 안정감을 느낄 수 있습니다. 다만 겉으로만 평화로운 척하며 불편함을 덮어두지는 마세요.",
+    "advice": "좋은 분위기를 충분히 누리세요. 다만 진짜 조화는 불편한 감정도 부드럽게 다룰 수 있을 때 더 단단해집니다.",
+    "flowLead": "관계의 조화와 정서적 안정이 흐르는 날이니,",
+    "flowCaution": "겉보기 평화를 위해 불편함을 덮어두지 않도록 주의하세요.",
+    "adviceGuide": "따뜻한 분위기를 누리되 필요한 말은 부드럽게 꺼내는 게 좋으니,",
+    "adviceAction": "가까운 사람과 편안한 시간을 보내되 마음에 걸린 점이 있다면 조용히 한마디는 나눠보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Ten_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Ten_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Ten_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 관계의 조화와 정서적 안정이 흐르는 날입니다.",
+    "tipFlow2": "겉보기 평화를 위해 불편함을 덮어두지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 따뜻한 분위기를 누리되 필요한 말은 부드럽게 꺼내는 게 좋습니다.",
+    "tipAdvice2": "가까운 사람과 편안한 시간을 보내되 마음에 걸린 점이 있다면 조용히 한마디는 나눠보세요."
+  },
+  {
+    "id": "cupspage",
+    "name": "컵 페이지",
+    "english": "Page of Cups",
+    "group": "컵 · 물",
+    "image": "Page of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "설렘",
+      "감수성",
+      "좋은 소식"
+    ],
+    "symbol": "컵 속에서 물고기가 고개를 내미는 장면은 예상치 못한 감정의 소식, 순수한 설렘, 섬세한 감수성을 상징합니다.",
+    "flow": "오늘은 마음이 부드럽게 흔들리거나 기분 좋은 소식이 들어올 수 있습니다. 예상치 못한 감정의 신호가 반갑게 다가올 수 있습니다. 다만 설렘만 앞서고 현실 감각을 잃지는 않도록 조심하세요.",
+    "advice": "열린 마음으로 받아들이되 아직은 가벼운 신호일 수 있음을 기억하세요. 감정을 즐기되 천천히 확인하는 편이 좋습니다.",
+    "flowLead": "새로운 감정의 소식이 들어오기 쉬운 흐름이니,",
+    "flowCaution": "설렘만으로 큰 의미를 단정하지 않도록 주의하세요.",
+    "adviceGuide": "감정을 즐기되 천천히 확인하는 게 좋으니,",
+    "adviceAction": "반가운 말이나 제안이 오면 기쁘게 받아들이되 바로 큰 기대를 얹지는 말고 조금 지켜보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Page_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Page_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Page_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 새로운 감정의 소식이 들어오기 쉬운 흐름입니다.",
+    "tipFlow2": "설렘만으로 큰 의미를 단정하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 감정을 즐기되 천천히 확인하는 게 좋습니다.",
+    "tipAdvice2": "반가운 말이나 제안이 오면 기쁘게 받아들이되 바로 큰 기대를 얹지는 말고 조금 지켜보세요."
+  },
+  {
+    "id": "cupsknight",
+    "name": "컵 나이트",
+    "english": "Knight of Cups",
+    "group": "컵 · 물",
+    "image": "Knight of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "제안",
+      "낭만",
+      "초대"
+    ],
+    "symbol": "컵을 든 기사가 천천히 말을 타고 다가옵니다. 감성적인 제안, 초대, 부드러운 접근을 상징하는 카드입니다.",
+    "flow": "오늘은 부드러운 제안이나 감성적인 접근이 흐름을 만들 수 있습니다. 내 마음을 표현하고 싶거나 누군가의 마음이 다가올 수도 있습니다. 다만 이상적인 감정만 좇다 현실을 놓치지는 마세요.",
+    "advice": "감정을 표현하는 것은 좋지만 실제 가능한 방식인지도 함께 보세요. 아름다운 말만큼 일관된 태도가 중요합니다.",
+    "flowLead": "감성적인 제안과 표현이 흐르는 날이니,",
+    "flowCaution": "이상적인 기대만 앞세우지 않도록 주의하세요.",
+    "adviceGuide": "감정 표현과 현실 감각을 함께 가져가는 게 좋으니,",
+    "adviceAction": "전하고 싶은 마음이 있다면 부드럽게 표현하되 약속이나 계획은 구체적으로 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Knight_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Knight_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/16/Knight_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 감성적인 제안과 표현이 흐르는 날입니다.",
+    "tipFlow2": "이상적인 기대만 앞세우지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 감정 표현과 현실 감각을 함께 가져가는 게 좋습니다.",
+    "tipAdvice2": "전하고 싶은 마음이 있다면 부드럽게 표현하되 약속이나 계획은 구체적으로 정해보세요."
+  },
+  {
+    "id": "cupsqueen",
+    "name": "컵 퀸",
+    "english": "Queen of Cups",
+    "group": "컵 · 물",
+    "image": "Queen of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "공감",
+      "보살핌",
+      "감정지혜"
+    ],
+    "symbol": "정교한 컵을 바라보는 여왕은 깊은 감수성과 공감, 보살핌의 에너지를 상징합니다. 마음을 읽고 감정을 품는 힘이 큽니다.",
+    "flow": "오늘은 남의 마음을 잘 헤아리거나 감정의 결을 섬세하게 읽을 수 있는 날입니다. 따뜻하게 공감할수록 좋은 흐름이 만들어질 수 있습니다. 다만 남의 감정을 너무 많이 끌어안아 스스로 지치지 않도록 하세요.",
+    "advice": "공감은 큰 장점이지만 경계도 필요합니다. 함께 느끼되 모두를 내 마음속으로 들이지는 않는 편이 좋습니다.",
+    "flowLead": "공감과 보살핌의 힘이 커지는 흐름이니,",
+    "flowCaution": "남의 감정을 너무 많이 끌어안지 않도록 주의하세요.",
+    "adviceGuide": "공감하되 스스로의 경계도 지키는 게 좋으니,",
+    "adviceAction": "누군가를 위로하더라도 내가 할 수 있는 만큼만 도와주고 내 감정도 함께 돌아봐주세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Queen_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-Queen_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Queen_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 공감과 보살핌의 힘이 커지는 흐름입니다.",
+    "tipFlow2": "남의 감정을 너무 많이 끌어안지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 공감하되 스스로의 경계도 지키는 게 좋습니다.",
+    "tipAdvice2": "누군가를 위로하더라도 내가 할 수 있는 만큼만 도와주고 내 감정도 함께 돌아봐주세요."
+  },
+  {
+    "id": "cupsking",
+    "name": "컵 킹",
+    "english": "King of Cups",
+    "group": "컵 · 물",
+    "image": "King of Cups (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "성숙",
+      "포용",
+      "감정조절"
+    ],
+    "symbol": "바다 위 왕좌에 앉은 왕은 파도 속에서도 중심을 잃지 않는 감정적 성숙과 포용을 상징합니다.",
+    "flow": "오늘은 감정이 오가더라도 비교적 차분하게 중심을 잡을 수 있습니다. 감정적인 상황 속에서도 성숙하게 대응하는 힘이 중요합니다. 다만 너무 무던한 척하며 속마음을 완전히 숨기지는 마세요.",
+    "advice": "감정을 통제하기보다 안정적으로 다뤄보세요. 부드럽게 표현하되 흔들리지 않는 중심을 지키는 편이 좋습니다.",
+    "flowLead": "감정 속에서도 중심을 지키기 좋은 흐름이니,",
+    "flowCaution": "괜찮은 척하며 속마음을 모두 숨기지 않도록 주의하세요.",
+    "adviceGuide": "차분하게 다루되 필요한 마음은 표현하는 게 좋으니,",
+    "adviceAction": "감정적인 상황이 오면 바로 흔들리지 말고 숨을 고른 뒤 필요한 말만 차분히 전해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/King_of_Cups_(Rider-Waite_Smith_tarot_deck).png/1400px-King_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/King_of_Cups_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 감정 속에서도 중심을 지키기 좋은 흐름입니다.",
+    "tipFlow2": "괜찮은 척하며 속마음을 모두 숨기지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 차분하게 다루되 필요한 마음은 표현하는 게 좋습니다.",
+    "tipAdvice2": "감정적인 상황이 오면 바로 흔들리지 말고 숨을 고른 뒤 필요한 말만 차분히 전해보세요."
+  },
+  {
+    "id": "swords1",
+    "name": "검 에이스",
+    "english": "Ace of Swords",
+    "group": "검 · 공기",
+    "image": "One of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "명료함",
+      "판단",
+      "결단"
+    ],
+    "symbol": "구름 속에서 나온 손이 검을 곧게 들어 올리고, 검 끝에는 왕관이 놓여 있습니다. 검은 복잡한 것을 가르고 핵심을 드러내는 명확한 판단과 결단을 상징하지만, 양날의 검처럼 말과 판단이 날카로워질 수도 있습니다.",
+    "flow": "복잡했던 생각이 정리되거나 해결책이 보이기 좋은 날입니다. 미뤄왔던 결정을 내리는 데에도 힘이 실릴 수 있습니다. 다만 내가 옳다고 확신할수록 말이 날카로워지지 않도록 주의하세요.",
+    "advice": "명확하게 말하되 날카롭게 말할 필요는 없습니다.",
+    "flowLead": "생각이 또렷해지고 결정을 내리기 좋은 흐름이니,",
+    "flowCaution": "내 판단이 분명할수록 말이 단정적이거나 날카롭게 들리지 않도록 주의하세요.",
+    "adviceGuide": "판단은 분명하게 하되 표현은 한 톤 부드럽게 하는 게 좋으니,",
+    "adviceAction": "하고 싶은 말을 먼저 적어본 뒤 한 문장만 부드럽게 바꿔 전달해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/One_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-One_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/One_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 생각이 또렷해지고 결정을 내리기 좋은 흐름입니다.",
+    "tipFlow2": "내 판단이 분명할수록 말이 단정적이거나 날카롭게 들리지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 판단은 분명하게 하되 표현은 한 톤 부드럽게 하는 게 좋습니다.",
+    "tipAdvice2": "하고 싶은 말을 먼저 적어본 뒤 한 문장만 부드럽게 바꿔 전달해보세요."
+  },
+  {
+    "id": "swords2",
+    "name": "검 2",
+    "english": "Two of Swords",
+    "group": "검 · 공기",
+    "image": "Two of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "갈등",
+      "균형",
+      "보류"
+    ],
+    "symbol": "눈을 가린 인물이 두 개의 검을 교차해 들고 있습니다. 결정을 미루며 균형을 유지하려는 상태, 감정과 판단 사이의 보류를 상징합니다.",
+    "flow": "오늘은 선택을 쉽게 내리기보다 잠시 멈추고 균형을 잡아야 하는 상황이 있을 수 있습니다. 어느 한쪽만 보기보다 양쪽을 함께 보는 태도가 필요합니다. 다만 계속 미루기만 하며 정체되지 않도록 주의하세요.",
+    "advice": "즉답을 피하는 것이 나쁠 때만은 아닙니다. 다만 생각할 시간을 가진 뒤에는 어느 쪽이든 정리할 기준을 세우는 편이 좋습니다.",
+    "flowLead": "결정 전 잠시 멈춰 균형을 잡아야 하는 흐름이니,",
+    "flowCaution": "계속 미루기만 하며 정체되지 않도록 주의하세요.",
+    "adviceGuide": "양쪽을 다 본 뒤 기준을 정하는 게 좋으니,",
+    "adviceAction": "바로 답하기 어렵다면 시간을 잠깐 갖되, 언제까지 결정할지 스스로 기한을 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Two_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Two_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Two_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 결정 전 잠시 멈춰 균형을 잡아야 하는 흐름입니다.",
+    "tipFlow2": "계속 미루기만 하며 정체되지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 양쪽을 다 본 뒤 기준을 정하는 게 좋습니다.",
+    "tipAdvice2": "바로 답하기 어렵다면 시간을 잠깐 갖되, 언제까지 결정할지 스스로 기한을 정해보세요."
+  },
+  {
+    "id": "swords3",
+    "name": "검 3",
+    "english": "Three of Swords",
+    "group": "검 · 공기",
+    "image": "Three of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "아픔",
+      "진실직시",
+      "상처"
+    ],
+    "symbol": "비 내리는 하늘 아래 심장을 세 개의 검이 꿰뚫고 있습니다. 상처, 실망, 아픔과 동시에 피하고 싶지 않은 진실을 마주하는 장면입니다.",
+    "flow": "오늘은 마음을 찌르는 말이나 현실을 직시해야 하는 순간이 있을 수 있습니다. 아프더라도 외면하지 않으면 오히려 정리가 시작될 수 있습니다. 다만 상처만 반복해서 붙들고 있지는 마세요.",
+    "advice": "아픈 감정을 애써 부정하지 말고 인정해보세요. 다만 상처에 갇히지 않도록 정리할 방향도 함께 보아야 합니다.",
+    "flowLead": "마음이 예민해지거나 진실을 직시하게 되는 흐름이니,",
+    "flowCaution": "상처만 붙들고 오래 머물지 않도록 주의하세요.",
+    "adviceGuide": "아픈 감정을 인정하되 정리할 방향도 함께 보는 게 좋으니,",
+    "adviceAction": "속상한 일이 있다면 감정을 한 번 써내려간 뒤 내가 정리할 수 있는 한 가지를 찾아보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Three_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Three_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Three_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 마음이 예민해지거나 진실을 직시하게 되는 흐름입니다.",
+    "tipFlow2": "상처만 붙들고 오래 머물지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 아픈 감정을 인정하되 정리할 방향도 함께 보는 게 좋습니다.",
+    "tipAdvice2": "속상한 일이 있다면 감정을 한 번 써내려간 뒤 내가 정리할 수 있는 한 가지를 찾아보세요."
+  },
+  {
+    "id": "swords4",
+    "name": "검 4",
+    "english": "Four of Swords",
+    "group": "검 · 공기",
+    "image": "Four of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "휴식",
+      "치유",
+      "재정비"
+    ],
+    "symbol": "누운 기사와 벽의 검들은 멈춤과 휴식, 재정비의 시간을 보여줍니다. 활동보다 회복이 우선인 장면입니다.",
+    "flow": "오늘은 계속 밀어붙이기보다 잠시 쉬어야 흐름이 다시 살아납니다. 휴식과 재정비가 필요한 신호일 수 있습니다. 다만 쉬는 것이 회피로 바뀌지 않도록 적절한 선을 잡는 편이 좋습니다.",
+    "advice": "멈추는 시간을 허락하세요. 몸과 마음을 쉬게 한 뒤 다시 움직이는 것이 오히려 효율적입니다.",
+    "flowLead": "쉬어가며 재정비해야 하는 흐름이니,",
+    "flowCaution": "휴식이 회피가 되지 않도록 주의하세요.",
+    "adviceGuide": "짧게라도 회복 시간을 의식적으로 만드는 게 좋으니,",
+    "adviceAction": "오늘은 잠깐 눈을 감고 쉬거나 산책하며 머릿속을 비우는 시간을 꼭 한번 가져보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Four_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Four_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/61/Four_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 쉬어가며 재정비해야 하는 흐름입니다.",
+    "tipFlow2": "휴식이 회피가 되지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 짧게라도 회복 시간을 의식적으로 만드는 게 좋습니다.",
+    "tipAdvice2": "오늘은 잠깐 눈을 감고 쉬거나 산책하며 머릿속을 비우는 시간을 꼭 한번 가져보세요."
+  },
+  {
+    "id": "swords5",
+    "name": "검 5",
+    "english": "Five of Swords",
+    "group": "검 · 공기",
+    "image": "Five of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "갈등",
+      "상실",
+      "소모전"
+    ],
+    "symbol": "승리한 듯 보이는 인물 뒤로 다른 사람들이 등을 돌리고 떠납니다. 이겨도 찝찝한 갈등, 상처뿐인 승리를 상징합니다.",
+    "flow": "오늘은 이기고 지는 문제에 마음이 쉽게 걸릴 수 있습니다. 당장은 내 말이 맞더라도 관계나 분위기에서는 손해가 남을 수 있습니다. 다만 꼭 이겨야 하는 싸움인지부터 돌아보는 편이 좋습니다.",
+    "advice": "맞고 틀림보다 무엇을 남길지 생각하세요. 이겨도 상처만 남는다면 물러나는 판단이 더 나을 수 있습니다.",
+    "flowLead": "이겨도 편하지 않은 갈등이 생기기 쉬운 흐름이니,",
+    "flowCaution": "꼭 이겨야 한다는 마음만 커지지 않도록 주의하세요.",
+    "adviceGuide": "무엇을 남길지를 먼저 생각하는 게 좋으니,",
+    "adviceAction": "말다툼이나 경쟁 상황에서는 ‘내가 지금 꼭 얻어야 하는 것’이 무엇인지 먼저 확인해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Five_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Five_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Five_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 이겨도 편하지 않은 갈등이 생기기 쉬운 흐름입니다.",
+    "tipFlow2": "꼭 이겨야 한다는 마음만 커지지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 무엇을 남길지를 먼저 생각하는 게 좋습니다.",
+    "tipAdvice2": "말다툼이나 경쟁 상황에서는 ‘내가 지금 꼭 얻어야 하는 것’이 무엇인지 먼저 확인해보세요."
+  },
+  {
+    "id": "swords6",
+    "name": "검 6",
+    "english": "Six of Swords",
+    "group": "검 · 공기",
+    "image": "Six of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "회복",
+      "이동",
+      "전환"
+    ],
+    "symbol": "배를 타고 물을 건너는 장면은 익숙한 곳을 떠나 조금 더 평온한 방향으로 이동하는 과정을 보여줍니다. 완전한 해결보다 점진적 회복의 카드입니다.",
+    "flow": "오늘은 한 번에 해결되지는 않더라도 조금씩 나아지는 흐름이 가능합니다. 익숙한 방식에서 벗어나 이동하거나 분위기를 바꾸는 선택이 도움이 됩니다. 다만 떠나기만 하고 정작 정리해야 할 문제를 잊지는 마세요.",
+    "advice": "변화는 크지 않아도 괜찮습니다. 지금보다 덜 소모되는 방향으로 조용히 옮겨가는 판단을 해보세요.",
+    "flowLead": "조금씩 회복되고 전환되는 흐름이니,",
+    "flowCaution": "떠나는 것만으로 모든 문제가 끝난다고 여기지 않도록 주의하세요.",
+    "adviceGuide": "덜 소모되는 방향으로 조용히 옮겨가는 게 좋으니,",
+    "adviceAction": "답답한 상황이라면 환경이나 방식 한 가지라도 바꿔 작은 전환을 만들어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Six_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Six_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Six_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 조금씩 회복되고 전환되는 흐름입니다.",
+    "tipFlow2": "떠나는 것만으로 모든 문제가 끝난다고 여기지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 덜 소모되는 방향으로 조용히 옮겨가는 게 좋습니다.",
+    "tipAdvice2": "답답한 상황이라면 환경이나 방식 한 가지라도 바꿔 작은 전환을 만들어보세요."
+  },
+  {
+    "id": "swords7",
+    "name": "검 7",
+    "english": "Seven of Swords",
+    "group": "검 · 공기",
+    "image": "Seven of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "전략",
+      "회피",
+      "조심성"
+    ],
+    "symbol": "검을 안고 몰래 빠져나가는 인물은 임기응변과 전략, 때로는 숨김과 회피를 상징합니다. 정직함과 영리함의 경계를 생각하게 하는 카드입니다.",
+    "flow": "오늘은 직접 부딪치기보다 우회하거나 눈치를 보게 될 수 있습니다. 상황을 영리하게 읽는 건 장점이지만 솔직해야 할 부분까지 숨기면 불신이 생길 수 있습니다. 다만 무모하게 정면승부만 하지는 마세요.",
+    "advice": "전략은 필요하지만 속임수로 흐르지 않도록 주의하세요. 똑똑하게 움직이되 나중에 설명할 수 있는 선택인지 돌아보는 편이 좋습니다.",
+    "flowLead": "영리함과 우회가 필요한 흐름이니,",
+    "flowCaution": "편리하다는 이유로 숨기거나 회피하지 않도록 주의하세요.",
+    "adviceGuide": "전략은 쓰되 나중에 설명 가능한 선택을 하는 게 좋으니,",
+    "adviceAction": "애매한 상황에서는 대놓고 숨기기보다 필요한 만큼만 솔직하게 말하는 방식을 찾아보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Seven_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Seven_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/04/Seven_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 영리함과 우회가 필요한 흐름입니다.",
+    "tipFlow2": "편리하다는 이유로 숨기거나 회피하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 전략은 쓰되 나중에 설명 가능한 선택을 하는 게 좋습니다.",
+    "tipAdvice2": "애매한 상황에서는 대놓고 숨기기보다 필요한 만큼만 솔직하게 말하는 방식을 찾아보세요."
+  },
+  {
+    "id": "swords8",
+    "name": "검 8",
+    "english": "Eight of Swords",
+    "group": "검 · 공기",
+    "image": "Eight of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "속박감",
+      "두려움",
+      "자기제한"
+    ],
+    "symbol": "눈이 가려지고 느슨하게 묶인 인물이 검들 사이에 서 있습니다. 실제로 완전히 갇히기보다 스스로 움직일 수 없다고 느끼는 상태를 상징합니다.",
+    "flow": "오늘은 상황보다 내 생각이 더 나를 묶을 수 있습니다. 못 할 것 같다는 마음이 먼저 올라와 움직임을 막을 수 있습니다. 다만 정말 불가능한 것인지, 내가 겁을 크게 느끼는 것인지 구분해볼 필요가 있습니다.",
+    "advice": "제한을 모두 없애려 하기보다 한 걸음 움직일 수 있는 틈을 찾아보세요. 두려움을 인정하되 그것이 전부는 아니라는 것을 기억하면 좋습니다.",
+    "flowLead": "스스로 한계를 크게 느끼기 쉬운 흐름이니,",
+    "flowCaution": "두려움이 곧 현실이라고 단정하지 않도록 주의하세요.",
+    "adviceGuide": "한 걸음 움직일 수 있는 틈을 찾는 게 좋으니,",
+    "adviceAction": "막막한 일이 있다면 완성보다 첫 단계 하나만 정해 그 부분부터 움직여보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Eight_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Eight_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/be/Eight_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 스스로 한계를 크게 느끼기 쉬운 흐름입니다.",
+    "tipFlow2": "두려움이 곧 현실이라고 단정하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 한 걸음 움직일 수 있는 틈을 찾는 게 좋습니다.",
+    "tipAdvice2": "막막한 일이 있다면 완성보다 첫 단계 하나만 정해 그 부분부터 움직여보세요."
+  },
+  {
+    "id": "swords9",
+    "name": "검 9",
+    "english": "Nine of Swords",
+    "group": "검 · 공기",
+    "image": "Nine of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "걱정",
+      "불안",
+      "성찰"
+    ],
+    "symbol": "한 사람이 밤에 침대에서 몸을 일으킨 채 얼굴을 감싸고 있고, 벽에는 아홉 개의 검이 나란히 걸려 있습니다. 실제 사건보다 머릿속 걱정이 크게 느껴지는 불안과 과도한 생각을 보여줍니다.",
+    "flow": "실제 상황보다 생각이 더 커질 수 있는 날입니다. 걱정이 생기더라도 머릿속에서 반복하기보다 구체적으로 확인해 보는 것이 좋습니다. 아직 일어나지 않은 일을 미리 걱정하느라 에너지를 쓰지 마세요.",
+    "advice": "걱정 자체를 없애려고 하지 말고 지금 내가 할 수 있는 일과 구분해 보세요.",
+    "flowLead": "걱정과 생각이 커지기 쉬운 흐름이니,",
+    "flowCaution": "아직 일어나지 않은 일까지 미리 걱정하지 않도록 주의하세요.",
+    "adviceGuide": "걱정을 해결 가능한 것과 아닌 것으로 나누는 게 좋으니,",
+    "adviceAction": "지금 할 수 있는 행동 하나만 정하고 나머지는 오늘의 고민 목록에서 내려놓아보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Nine_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Nine_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Nine_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 걱정과 생각이 커지기 쉬운 흐름입니다.",
+    "tipFlow2": "아직 일어나지 않은 일까지 미리 걱정하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 걱정을 해결 가능한 것과 아닌 것으로 나누는 게 좋습니다.",
+    "tipAdvice2": "지금 할 수 있는 행동 하나만 정하고 나머지는 오늘의 고민 목록에서 내려놓아보세요."
+  },
+  {
+    "id": "swords10",
+    "name": "검 10",
+    "english": "Ten of Swords",
+    "group": "검 · 공기",
+    "image": "Ten of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "끝",
+      "고통",
+      "전환점"
+    ],
+    "symbol": "땅에 쓰러진 인물의 등에 열 개의 검이 꽂혀 있습니다. 극단처럼 보이지만 더는 내려갈 곳이 없는 끝, 그리고 이후의 새벽을 함께 상징합니다.",
+    "flow": "오늘은 끝을 인정해야 비로소 다음 단계가 보일 수 있습니다. 힘들었던 흐름이 정점에 다다르며 정리의 필요성이 커질 수 있습니다. 다만 모든 것이 끝났다는 식의 극단적 사고로만 흐르지 않도록 주의하세요.",
+    "advice": "무너짐 자체보다 그 뒤의 전환을 보세요. 붙잡을 수 없는 것은 인정하고 회복의 방향으로 돌아서는 편이 좋습니다.",
+    "flowLead": "끝을 인정해야 전환이 시작되는 흐름이니,",
+    "flowCaution": "극단적인 해석으로 스스로를 더 몰아붙이지 않도록 주의하세요.",
+    "adviceGuide": "붙잡을 수 없는 것은 내려놓고 전환의 방향을 보는 게 좋으니,",
+    "adviceAction": "힘들었던 일 하나는 오늘 기준으로 정리하고 다음에 회복하기 위해 할 일 한 가지를 정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ten_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Ten_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/Ten_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 끝을 인정해야 전환이 시작되는 흐름입니다.",
+    "tipFlow2": "극단적인 해석으로 스스로를 더 몰아붙이지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 붙잡을 수 없는 것은 내려놓고 전환의 방향을 보는 게 좋습니다.",
+    "tipAdvice2": "힘들었던 일 하나는 오늘 기준으로 정리하고 다음에 회복하기 위해 할 일 한 가지를 정해보세요."
+  },
+  {
+    "id": "swordspage",
+    "name": "검 페이지",
+    "english": "Page of Swords",
+    "group": "검 · 공기",
+    "image": "Page of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "관찰",
+      "정보",
+      "민감함"
+    ],
+    "symbol": "젊은 인물이 검을 들고 바람 부는 곳에 서 있습니다. 예민한 감각, 관찰력, 새 정보에 대한 민첩함을 보여주는 카드입니다.",
+    "flow": "오늘은 주변 분위기와 정보를 빨리 캐치할 수 있습니다. 호기심과 관찰력이 도움이 되지만 지나치게 예민해질 수 있습니다. 다만 사실을 확인하기 전에 추측으로 판단하지 않도록 주의하세요.",
+    "advice": "먼저 보고 듣는 태도를 살리세요. 다만 아는 척하거나 의심을 키우기보다 정보를 차분히 정리하는 편이 좋습니다.",
+    "flowLead": "관찰력과 정보 감각이 예민해지는 흐름이니,",
+    "flowCaution": "추측만으로 판단하지 않도록 주의하세요.",
+    "adviceGuide": "먼저 관찰하고 사실을 정리하는 게 좋으니,",
+    "adviceAction": "궁금한 일이 생기면 바로 단정하지 말고 필요한 정보 한 가지만 더 확인해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Page_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Page_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Page_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 관찰력과 정보 감각이 예민해지는 흐름입니다.",
+    "tipFlow2": "추측만으로 판단하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 먼저 관찰하고 사실을 정리하는 게 좋습니다.",
+    "tipAdvice2": "궁금한 일이 생기면 바로 단정하지 말고 필요한 정보 한 가지만 더 확인해보세요."
+  },
+  {
+    "id": "swordsknight",
+    "name": "검 나이트",
+    "english": "Knight of Swords",
+    "group": "검 · 공기",
+    "image": "Knight of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "돌파",
+      "목표",
+      "속도"
+    ],
+    "symbol": "검을 들고 말이 빠르게 질주하는 장면은 강한 돌파력과 신속한 판단, 직선적인 추진을 상징합니다.",
+    "flow": "오늘은 망설임보다 돌파가 필요한 흐름일 수 있습니다. 머뭇거리던 일에 속도가 붙을 수 있지만 너무 공격적으로 보일 위험도 함께 있습니다. 다만 옳다고 느껴도 상대를 몰아세우지 않도록 조심하세요.",
+    "advice": "결정이 섰다면 움직이되, 강한 추진력이 공격성으로 바뀌지 않게 조절하세요. 빠름과 배려를 함께 챙기는 편이 좋습니다.",
+    "flowLead": "빠른 판단과 돌파가 필요한 흐름이니,",
+    "flowCaution": "추진력이 공격성으로 바뀌지 않도록 주의하세요.",
+    "adviceGuide": "빠르게 움직이되 상대를 몰아세우지 않는 게 좋으니,",
+    "adviceAction": "급하게 결론내야 하는 일이 있다면 핵심만 분명히 말하고 나머지는 짧게 정리해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Knight_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Knight_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Knight_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 빠른 판단과 돌파가 필요한 흐름입니다.",
+    "tipFlow2": "추진력이 공격성으로 바뀌지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 빠르게 움직이되 상대를 몰아세우지 않는 게 좋습니다.",
+    "tipAdvice2": "급하게 결론내야 하는 일이 있다면 핵심만 분명히 말하고 나머지는 짧게 정리해보세요."
+  },
+  {
+    "id": "swordsqueen",
+    "name": "검 퀸",
+    "english": "Queen of Swords",
+    "group": "검 · 공기",
+    "image": "Queen of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "명료함",
+      "진실",
+      "결단력"
+    ],
+    "symbol": "하늘을 배경으로 왕좌에 앉은 여왕이 한 손을 내밀고 검을 세웁니다. 감정보다 진실과 명료함, 핵심을 짚는 힘을 상징합니다.",
+    "flow": "오늘은 군더더기 없이 핵심을 보는 시선이 살아날 수 있습니다. 냉정함이 도움이 되지만 차갑게 느껴질 수 있다는 점은 함께 기억해야 합니다. 다만 필요 이상의 비판으로 흐르지 않도록 조절하세요.",
+    "advice": "명확하고 솔직한 태도는 좋습니다. 하지만 진실을 말하는 방식이 곧 관계를 자르듯 되지 않게 조금 부드럽게 다듬는 편이 좋습니다.",
+    "flowLead": "핵심을 또렷하게 보는 흐름이니,",
+    "flowCaution": "명료함이 지나친 비판처럼 들리지 않도록 주의하세요.",
+    "adviceGuide": "진실은 말하되 표현은 한결 부드럽게 하는 게 좋으니,",
+    "adviceAction": "말해야 할 것이 있다면 핵심만 간단히 정리하고, 말투는 한 단계 부드럽게 바꿔 전해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Queen_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-Queen_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Queen_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 핵심을 또렷하게 보는 흐름입니다.",
+    "tipFlow2": "명료함이 지나친 비판처럼 들리지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 진실은 말하되 표현은 한결 부드럽게 하는 게 좋습니다.",
+    "tipAdvice2": "말해야 할 것이 있다면 핵심만 간단히 정리하고, 말투는 한 단계 부드럽게 바꿔 전해보세요."
+  },
+  {
+    "id": "swordsking",
+    "name": "검 킹",
+    "english": "King of Swords",
+    "group": "검 · 공기",
+    "image": "King of Swords (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "원칙",
+      "논리",
+      "공정한판단"
+    ],
+    "symbol": "검을 든 왕이 단단한 자세로 앉아 있습니다. 이성적 판단, 원칙, 공정한 결단을 상징하는 카드입니다.",
+    "flow": "오늘은 감정보다 원칙과 논리를 세울수록 일이 정리되기 좋습니다. 중요한 판단이나 결정을 맡게 될 수도 있습니다. 다만 원칙을 내세우느라 사람의 감정을 너무 배제하지 않도록 주의하세요.",
+    "advice": "공정한 기준으로 보되 딱딱하게만 가지는 마세요. 원칙은 지키되 사람을 다루는 태도는 유연할수록 좋습니다.",
+    "flowLead": "원칙과 공정한 판단이 필요한 흐름이니,",
+    "flowCaution": "원칙만 앞세워 사람의 감정을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "기준은 분명히 하되 태도는 유연하게 가져가는 게 좋으니,",
+    "adviceAction": "판단이 필요한 일에서는 기준을 먼저 말하고, 그 기준이 상대에게 어떤 의미인지도 함께 설명해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/King_of_Swords_(Rider-Waite_Smith_tarot_deck).png/1400px-King_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/85/King_of_Swords_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 원칙과 공정한 판단이 필요한 흐름입니다.",
+    "tipFlow2": "원칙만 앞세워 사람의 감정을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 기준은 분명히 하되 태도는 유연하게 가져가는 게 좋습니다.",
+    "tipAdvice2": "판단이 필요한 일에서는 기준을 먼저 말하고, 그 기준이 상대에게 어떤 의미인지도 함께 설명해보세요."
+  },
+  {
+    "id": "pentacles1",
+    "name": "펜타클 에이스",
+    "english": "Ace of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "One of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "기회",
+      "실질적 시작",
+      "기반"
+    ],
+    "symbol": "구름 속 손이 커다란 펜타클을 내밀고 있고 아래에는 정원과 길이 보입니다. 눈에 보이는 기회와 현실적인 출발, 기반 마련을 상징합니다.",
+    "flow": "오늘은 실질적인 기회나 기반을 만들 수 있는 흐름이 들어옵니다. 작지만 확실한 시작이 나중에 큰 결과로 이어질 수 있습니다. 다만 기회가 보여도 잡지 않고 미루지만은 마세요.",
+    "advice": "머릿속 구상보다 실제로 손에 잡히는 시작을 만들어보세요. 작더라도 현실적인 한 걸음을 만드는 편이 좋습니다.",
+    "flowLead": "실질적인 기회가 들어오기 쉬운 흐름이니,",
+    "flowCaution": "가능성만 보고 미루지 않도록 주의하세요.",
+    "adviceGuide": "작지만 현실적인 시작을 만드는 게 좋으니,",
+    "adviceAction": "새 기회가 보이면 준비만 하지 말고 신청·연락·정리 같은 실제 행동 하나를 해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/One_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-One_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/54/One_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 실질적인 기회가 들어오기 쉬운 흐름입니다.",
+    "tipFlow2": "가능성만 보고 미루지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 작지만 현실적인 시작을 만드는 게 좋습니다.",
+    "tipAdvice2": "새 기회가 보이면 준비만 하지 말고 신청·연락·정리 같은 실제 행동 하나를 해보세요."
+  },
+  {
+    "id": "pentacles2",
+    "name": "펜타클 2",
+    "english": "Two of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Two of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "유연성",
+      "균형",
+      "조절"
+    ],
+    "symbol": "두 개의 펜타클을 리본처럼 연결한 채 균형을 잡는 인물 뒤로 파도가 칩니다. 여러 일을 동시에 다루며 조절하는 유연성을 상징합니다.",
+    "flow": "오늘은 여러 일을 함께 조절해야 할 수 있습니다. 완벽히 안정되진 않아도 유연하게 움직이면 균형을 맞출 수 있습니다. 다만 너무 가볍게 넘기다 중요한 것을 놓치지는 않도록 보세요.",
+    "advice": "우왕좌왕하기보다 우선순위를 가볍게 조절하며 흐름을 타세요. 지금은 딱 떨어지는 완벽함보다 유연함이 더 중요합니다.",
+    "flowLead": "여러 일을 조절해야 하는 흐름이니,",
+    "flowCaution": "가볍게 넘기다 중요한 것을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "완벽함보다 유연하게 조절하는 게 좋으니,",
+    "adviceAction": "해야 할 일 두세 개의 순서를 바꾸거나 시간을 조절해 가장 덜 흔들리는 방식으로 맞춰보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Two_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Two_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/14/Two_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 여러 일을 조절해야 하는 흐름입니다.",
+    "tipFlow2": "가볍게 넘기다 중요한 것을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 완벽함보다 유연하게 조절하는 게 좋습니다.",
+    "tipAdvice2": "해야 할 일 두세 개의 순서를 바꾸거나 시간을 조절해 가장 덜 흔들리는 방식으로 맞춰보세요."
+  },
+  {
+    "id": "pentacles3",
+    "name": "펜타클 3",
+    "english": "Three of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Three of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "협업",
+      "기술",
+      "기반구축"
+    ],
+    "symbol": "건축 공간에서 장인이 작업하고 두 사람이 도면을 들고 그와 이야기를 나눕니다. 각자의 역할과 전문성이 만나 결과물을 만드는 협업과 실력의 장면입니다.",
+    "flow": "내가 가진 능력을 실제로 보여줄 기회가 생길 수 있습니다. 혼자 잘하는 것보다 다른 사람과 함께할 때 결과가 더 좋아질 수 있는 날입니다. 남의 평가에만 매달리기보다 배우고 협력하는 과정에 집중해 보세요.",
+    "advice": "내 실력을 다른 사람의 평가와만 연결하지 마세요. 배우고 협력하는 과정 자체가 성장입니다.",
+    "flowLead": "실력과 협업이 함께 살아나는 흐름이니,",
+    "flowCaution": "평가와 비교에만 신경 쓰지 않도록 주의하세요.",
+    "adviceGuide": "함께 만들고 배우는 태도를 살리는 게 좋으니,",
+    "adviceAction": "막히는 부분 하나를 골라 다른 사람에게 구체적으로 의견을 물어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Three_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Three_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Three_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 실력과 협업이 함께 살아나는 흐름입니다.",
+    "tipFlow2": "평가와 비교에만 신경 쓰지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 함께 만들고 배우는 태도를 살리는 게 좋습니다.",
+    "tipAdvice2": "막히는 부분 하나를 골라 다른 사람에게 구체적으로 의견을 물어보세요."
+  },
+  {
+    "id": "pentacles4",
+    "name": "펜타클 4",
+    "english": "Four of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Four of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "안정",
+      "집착",
+      "소유"
+    ],
+    "symbol": "펜타클을 꼭 끌어안고 놓지 않는 인물은 안정 추구와 동시에 지나친 소유욕, 경직된 방어를 상징합니다.",
+    "flow": "오늘은 지키고 싶은 것이 분명해질 수 있습니다. 자원을 관리하고 안정감을 챙기는 데는 도움이 되지만, 지나치게 움켜쥐면 흐름이 막힐 수 있습니다. 다만 잃을까 봐 지나치게 움츠러들지는 마세요.",
+    "advice": "안정을 지키되 필요한 흐름은 조금 열어두세요. 무조건 아끼고 막기보다 무엇을 지켜야 하고 무엇은 흘려보내도 되는지 구분하는 편이 좋습니다.",
+    "flowLead": "안정과 자원 관리가 중요해지는 흐름이니,",
+    "flowCaution": "잃을까 봐 지나치게 움츠러들지 않도록 주의하세요.",
+    "adviceGuide": "지킬 것과 풀어둘 것을 구분하는 게 좋으니,",
+    "adviceAction": "돈·시간·에너지 중 꼭 지켜야 할 것 하나와 조금은 써도 되는 것 하나를 구분해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Four_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Four_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Four_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 안정과 자원 관리가 중요해지는 흐름입니다.",
+    "tipFlow2": "잃을까 봐 지나치게 움츠러들지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 지킬 것과 풀어둘 것을 구분하는 게 좋습니다.",
+    "tipAdvice2": "돈·시간·에너지 중 꼭 지켜야 할 것 하나와 조금은 써도 되는 것 하나를 구분해보세요."
+  },
+  {
+    "id": "pentacles5",
+    "name": "펜타클 5",
+    "english": "Five of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Five of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "결핍",
+      "소외",
+      "인내"
+    ],
+    "symbol": "눈 내리는 길 위 두 인물이 힘겹게 걸어가고, 뒤로는 따뜻한 빛의 창문이 보입니다. 결핍과 외로움, 도움을 필요로 하는 상태를 상징합니다.",
+    "flow": "오늘은 부족함이나 외로움이 크게 느껴질 수 있습니다. 혼자 견디려 하면 더 힘들게 느껴질 수 있으니 주변의 도움을 생각해보는 편이 좋습니다. 다만 스스로를 완전히 고립시키지는 마세요.",
+    "advice": "약해 보일까 봐 도움을 거절하지 마세요. 필요한 지원이나 연결을 요청하는 것이 오히려 흐름을 바꿔줄 수 있습니다.",
+    "flowLead": "결핍이나 외로움이 크게 느껴질 수 있는 흐름이니,",
+    "flowCaution": "스스로를 완전히 고립시키지 않도록 주의하세요.",
+    "adviceGuide": "도움을 요청하고 연결을 찾는 게 좋으니,",
+    "adviceAction": "힘든 일이 있다면 혼자 버티기보다 도움받을 수 있는 사람이나 방법 한 가지를 떠올려보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Five_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Five_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Five_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 결핍이나 외로움이 크게 느껴질 수 있는 흐름입니다.",
+    "tipFlow2": "스스로를 완전히 고립시키지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 도움을 요청하고 연결을 찾는 게 좋습니다.",
+    "tipAdvice2": "힘든 일이 있다면 혼자 버티기보다 도움받을 수 있는 사람이나 방법 한 가지를 떠올려보세요."
+  },
+  {
+    "id": "pentacles6",
+    "name": "펜타클 6",
+    "english": "Six of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Six of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "균형",
+      "나눔",
+      "공정"
+    ],
+    "symbol": "한 인물이 저울을 들고 두 사람에게 동전을 나누어 줍니다. 주고받음의 균형, 도움, 현실적 공정을 상징하는 카드입니다.",
+    "flow": "오늘은 나누고 받는 균형이 중요합니다. 도움을 주거나 받을 일이 생길 수 있으며, 현실적인 균형감각이 흐름을 좋게 만듭니다. 다만 호의가 계산처럼 느껴지지 않도록 태도를 살피는 편이 좋습니다.",
+    "advice": "베풀 수 있을 때는 베풀고 필요할 때는 받으세요. 다만 관계가 일방으로 기울지 않도록 균형을 보는 것이 중요합니다.",
+    "flowLead": "주고받음의 균형이 중요해지는 흐름이니,",
+    "flowCaution": "호의가 계산처럼 느껴지지 않도록 주의하세요.",
+    "adviceGuide": "필요한 만큼 주고받는 균형을 보는 게 좋으니,",
+    "adviceAction": "도움을 주거나 받을 일이 있다면 서로에게 무리 없는 선이 어디인지 먼저 생각해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Six_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Six_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Six_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 주고받음의 균형이 중요해지는 흐름입니다.",
+    "tipFlow2": "호의가 계산처럼 느껴지지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 필요한 만큼 주고받는 균형을 보는 게 좋습니다.",
+    "tipAdvice2": "도움을 주거나 받을 일이 있다면 서로에게 무리 없는 선이 어디인지 먼저 생각해보세요."
+  },
+  {
+    "id": "pentacles7",
+    "name": "펜타클 7",
+    "english": "Seven of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Seven of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "인내",
+      "성장",
+      "점검"
+    ],
+    "symbol": "인물이 자라난 펜타클 나무를 바라보며 잠시 쉬고 있습니다. 노력의 중간 과정과 성과 점검, 기다림의 시간을 상징합니다.",
+    "flow": "오늘은 당장 큰 결과가 없더라도 차곡차곡 쌓인 과정을 점검하기 좋은 날입니다. 조급함을 줄이고 성장의 속도를 믿을 필요가 있습니다. 다만 아직 결과가 부족하다는 생각만 키우지는 마세요.",
+    "advice": "지금은 멈춘 것이 아니라 자라는 과정일 수 있습니다. 결과를 재촉하기보다 어디까지 왔는지 점검하며 다음 수를 보는 편이 좋습니다.",
+    "flowLead": "결과를 기다리며 점검해야 하는 흐름이니,",
+    "flowCaution": "성장이 느리다고 자책만 하지 않도록 주의하세요.",
+    "adviceGuide": "과정을 점검하며 다음 수를 보는 게 좋으니,",
+    "adviceAction": "오늘은 성과를 탓하기보다 그동안 해온 것 중 잘 자라고 있는 부분 한 가지를 확인해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Seven_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Seven_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Seven_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 결과를 기다리며 점검해야 하는 흐름입니다.",
+    "tipFlow2": "성장이 느리다고 자책만 하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 과정을 점검하며 다음 수를 보는 게 좋습니다.",
+    "tipAdvice2": "오늘은 성과를 탓하기보다 그동안 해온 것 중 잘 자라고 있는 부분 한 가지를 확인해보세요."
+  },
+  {
+    "id": "pentacles8",
+    "name": "펜타클 8",
+    "english": "Eight of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Eight of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "꾸준함",
+      "숙련",
+      "반복훈련"
+    ],
+    "symbol": "한 장인이 작업대에 앉아 펜타클을 하나씩 새기고, 이미 완성한 펜타클들이 옆에 차곡차곡 놓여 있습니다. 반복과 연습이 실력으로 쌓이는 과정을 그대로 보여줍니다.",
+    "flow": "오늘은 새로운 것을 벌이기보다 하던 일을 제대로 해내는 데 힘이 실립니다. 작은 반복이 생각보다 큰 결과를 만들 수 있습니다. 완벽하게 하려다 스스로를 몰아붙이기보다 꾸준히 이어가는 것이 좋습니다.",
+    "advice": "완벽하게 하려 하지 말고 꾸준히 하는 데 집중하세요.",
+    "flowLead": "작은 반복이 성과로 이어지는 흐름이니,",
+    "flowCaution": "완벽하게 하려다 스스로를 지치게 하지 않도록 주의하세요.",
+    "adviceGuide": "정해진 시간 동안 꾸준히 이어가는 게 좋으니,",
+    "adviceAction": "30분 타이머를 맞추고 한 가지 일만 끝까지 이어보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eight_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Eight_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/45/Eight_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 작은 반복이 성과로 이어지는 흐름입니다.",
+    "tipFlow2": "완벽하게 하려다 스스로를 지치게 하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 정해진 시간 동안 꾸준히 이어가는 게 좋습니다.",
+    "tipAdvice2": "30분 타이머를 맞추고 한 가지 일만 끝까지 이어보세요."
+  },
+  {
+    "id": "pentacles9",
+    "name": "펜타클 9",
+    "english": "Nine of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Nine of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "성취",
+      "자립",
+      "여유"
+    ],
+    "symbol": "풍성한 정원 속 여인이 새와 함께 서 있습니다. 스스로 이룬 풍요와 안정, 여유로운 자립을 상징하는 카드입니다.",
+    "flow": "오늘은 내가 쌓아온 성과를 느끼거나 여유를 회복하기 좋은 날입니다. 스스로 해낸 부분을 인정할수록 자신감이 차분하게 살아납니다. 다만 혼자 잘해낸 만족이 거리감으로 이어지지는 않도록 보세요.",
+    "advice": "나를 충분히 인정하고 누릴 것은 누리세요. 다만 혼자만의 세계에 머물기보다 안정된 마음을 주변과도 나눌 수 있으면 더 좋습니다.",
+    "flowLead": "스스로의 성취와 여유를 느끼기 좋은 흐름이니,",
+    "flowCaution": "만족이 거리감으로 이어지지 않도록 주의하세요.",
+    "adviceGuide": "해낸 것을 인정하되 주변과도 연결을 남기는 게 좋으니,",
+    "adviceAction": "오늘 스스로 잘한 점 하나를 충분히 인정하고, 그 안정감을 바탕으로 누군가와도 편하게 소통해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Nine_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Nine_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Nine_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 스스로의 성취와 여유를 느끼기 좋은 흐름입니다.",
+    "tipFlow2": "만족이 거리감으로 이어지지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 해낸 것을 인정하되 주변과도 연결을 남기는 게 좋습니다.",
+    "tipAdvice2": "오늘 스스로 잘한 점 하나를 충분히 인정하고, 그 안정감을 바탕으로 누군가와도 편하게 소통해보세요."
+  },
+  {
+    "id": "pentacles10",
+    "name": "펜타클 10",
+    "english": "Ten of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Ten of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "안정",
+      "풍요",
+      "지속성"
+    ],
+    "symbol": "가족과 개, 도시 풍경이 함께 보이는 장면은 한 개인을 넘어 이어지는 안정과 축적된 가치, 오래가는 기반을 상징합니다.",
+    "flow": "오늘은 단기적인 결과보다 오래가는 안정과 기반을 생각하기 좋은 날입니다. 가족, 공동체, 장기적 계획이 중요하게 느껴질 수 있습니다. 다만 익숙한 틀만 고집하며 닫히지 않도록 주의하세요.",
+    "advice": "지금의 선택이 오래가려면 어떤 기반이 필요한지 생각해보세요. 눈앞의 이익보다 지속 가능한 방향이 더 잘 맞습니다.",
+    "flowLead": "오래가는 안정과 기반을 생각하게 되는 흐름이니,",
+    "flowCaution": "익숙한 틀만 고집하며 닫히지 않도록 주의하세요.",
+    "adviceGuide": "지속 가능한 방향을 보는 게 좋으니,",
+    "adviceAction": "오늘의 선택이 일시적인지 오래갈 수 있는지 한 번 더 따져보고 결정해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Ten_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Ten_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Ten_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 오래가는 안정과 기반을 생각하게 되는 흐름입니다.",
+    "tipFlow2": "익숙한 틀만 고집하며 닫히지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 지속 가능한 방향을 보는 게 좋습니다.",
+    "tipAdvice2": "오늘의 선택이 일시적인지 오래갈 수 있는지 한 번 더 따져보고 결정해보세요."
+  },
+  {
+    "id": "pentaclespage",
+    "name": "펜타클 페이지",
+    "english": "Page of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Page of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "배움",
+      "실용성",
+      "새 기회"
+    ],
+    "symbol": "펜타클을 두 손으로 바라보는 젊은 인물은 성실한 배움, 현실적인 준비, 실용적인 새 기회를 상징합니다.",
+    "flow": "오늘은 작지만 실용적인 기회가 눈에 들어올 수 있습니다. 배워야 할 것, 준비해야 할 것을 차근히 쌓기에 좋은 날입니다. 다만 지나치게 신중해져 시작을 놓치지는 마세요.",
+    "advice": "성실하게 준비하되, 준비만 하다 멈추지는 마세요. 배움과 실행을 함께 붙이는 편이 좋습니다.",
+    "flowLead": "실용적인 배움과 새 기회가 들어오는 흐름이니,",
+    "flowCaution": "너무 신중해져 시작을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "준비와 실행을 함께 붙이는 게 좋으니,",
+    "adviceAction": "배워야 할 것이 보이면 자료만 모으지 말고 오늘 바로 해볼 연습 한 가지도 함께 해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Page_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Page_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Page_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 실용적인 배움과 새 기회가 들어오는 흐름입니다.",
+    "tipFlow2": "너무 신중해져 시작을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 준비와 실행을 함께 붙이는 게 좋습니다.",
+    "tipAdvice2": "배워야 할 것이 보이면 자료만 모으지 말고 오늘 바로 해볼 연습 한 가지도 함께 해보세요."
+  },
+  {
+    "id": "pentaclesknight",
+    "name": "펜타클 나이트",
+    "english": "Knight of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Knight of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "성실함",
+      "꾸준함",
+      "전략"
+    ],
+    "symbol": "느리지만 단단하게 말을 탄 기사는 꾸준함과 책임감, 현실적인 계획을 상징합니다. 화려하진 않아도 끝까지 가는 힘이 큽니다.",
+    "flow": "오늘은 화려한 변화보다 묵묵한 꾸준함이 힘을 발휘합니다. 느려 보여도 한 걸음씩 가는 태도가 오히려 안정적입니다. 다만 너무 느리거나 완고해져 흐름을 놓치지는 않도록 보세요.",
+    "advice": "꾸준함을 믿고 정해진 리듬을 지켜보세요. 급하게 바꾸기보다 실용적인 계획을 그대로 이어가는 편이 좋습니다.",
+    "flowLead": "묵묵한 꾸준함이 힘이 되는 흐름이니,",
+    "flowCaution": "너무 느리거나 완고해져 흐름을 놓치지 않도록 주의하세요.",
+    "adviceGuide": "정해진 리듬을 차분히 이어가는 게 좋으니,",
+    "adviceAction": "오늘 할 일을 특별하게 바꾸기보다 계획한 순서대로 하나씩 끝내는 데 집중해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Knight_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Knight_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Knight_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 묵묵한 꾸준함이 힘이 되는 흐름입니다.",
+    "tipFlow2": "너무 느리거나 완고해져 흐름을 놓치지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 정해진 리듬을 차분히 이어가는 게 좋습니다.",
+    "tipAdvice2": "오늘 할 일을 특별하게 바꾸기보다 계획한 순서대로 하나씩 끝내는 데 집중해보세요."
+  },
+  {
+    "id": "pentaclesqueen",
+    "name": "펜타클 퀸",
+    "english": "Queen of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "Queen of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "돌봄",
+      "안정",
+      "실용지혜"
+    ],
+    "symbol": "자연 속 왕좌에 앉은 여왕은 펜타클을 품에 안고 있습니다. 현실적 돌봄과 안정감, 생활 속 지혜를 상징합니다.",
+    "flow": "오늘은 따뜻하지만 현실적인 챙김이 좋은 흐름을 만듭니다. 사람이나 일을 돌보되 실제로 도움이 되는 방식이 잘 맞습니다. 다만 챙김이 과해 상대를 대신 떠안지는 않도록 조심하세요.",
+    "advice": "마음을 쓰되 실질적인 도움의 형태를 생각해보세요. 편안한 분위기와 현실적 배려를 함께 주는 것이 좋습니다.",
+    "flowLead": "현실적인 돌봄과 안정감이 흐르는 날이니,",
+    "flowCaution": "챙김이 과해 상대를 대신 떠안지 않도록 주의하세요.",
+    "adviceGuide": "따뜻함을 실질적인 도움으로 연결하는 게 좋으니,",
+    "adviceAction": "누군가를 도울 일이 있다면 말보다 실제로 도움이 되는 한 가지를 가볍게 챙겨보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Queen_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-Queen_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Queen_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 현실적인 돌봄과 안정감이 흐르는 날입니다.",
+    "tipFlow2": "챙김이 과해 상대를 대신 떠안지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 따뜻함을 실질적인 도움으로 연결하는 게 좋습니다.",
+    "tipAdvice2": "누군가를 도울 일이 있다면 말보다 실제로 도움이 되는 한 가지를 가볍게 챙겨보세요."
+  },
+  {
+    "id": "pentaclesking",
+    "name": "펜타클 킹",
+    "english": "King of Pentacles",
+    "group": "펜타클 · 흙",
+    "image": "King of Pentacles (Rider-Waite Smith tarot deck).png",
+    "keywords": [
+      "성공",
+      "안정",
+      "책임감"
+    ],
+    "symbol": "풍요의 상징들 속 왕좌에 앉은 왕은 현실적인 성공, 책임감 있는 관리, 안정된 기반을 상징합니다.",
+    "flow": "오늘은 현실적인 판단과 책임감이 좋은 결과를 만듭니다. 가진 자원이나 성과를 안정적으로 관리하는 데 힘이 실립니다. 다만 물질적 기준만으로 모든 것을 재단하지는 마세요.",
+    "advice": "안정적으로 관리하고 책임 있게 결정하세요. 풍요를 지키는 것만큼 그것을 어떻게 쓰고 나눌지도 중요합니다.",
+    "flowLead": "현실적인 성공과 책임감이 중요한 흐름이니,",
+    "flowCaution": "물질적 기준만으로 모든 것을 재단하지 않도록 주의하세요.",
+    "adviceGuide": "안정적으로 관리하되 쓰임도 함께 보는 게 좋으니,",
+    "adviceAction": "돈·시간·자원에 대한 결정이 있다면 지키는 것과 활용하는 것의 균형을 함께 생각해보세요.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/King_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png/1400px-King_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a5/King_of_Pentacles_(Rider-Waite_Smith_tarot_deck).png",
+    "tipFlow1": "오늘은 현실적인 성공과 책임감이 중요한 흐름입니다.",
+    "tipFlow2": "물질적 기준만으로 모든 것을 재단하지 않도록 주의하세요.",
+    "tipAdvice1": "이럴 때는 안정적으로 관리하되 쓰임도 함께 보는 게 좋습니다.",
+    "tipAdvice2": "돈·시간·자원에 대한 결정이 있다면 지키는 것과 활용하는 것의 균형을 함께 생각해보세요."
+  }
+];
+
+</script>
+<script>
+
+(() => {
+const cards = window.TAROT_CARDS;
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const HISTORY_KEY = "boritarot.history.v2";
+let picked = [], spread = [], step = "flow", currentReading = null, shareBlob = null, shareFile = null, clipboardBlob = null;
+
+const now = () => new Date();
+const keyDate = (d=now()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const compactDate = (d=now()) => `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")} ${["SUN","MON","TUE","WED","THU","FRI","SAT"][d.getDay()]}`;
+const prettyDate = (s) => new Intl.DateTimeFormat("ko-KR",{month:"long",day:"numeric",weekday:"short"}).format(new Date(s+"T12:00:00"));
+$("#topDate").textContent = compactDate();
+
+const history = () => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||"{}"); } catch { return {}; } };
+const saveHistory = (h) => localStorage.setItem(HISTORY_KEY, JSON.stringify(h));
+function persistReading(){
+  if(!currentReading) return;
+  const h = history(); h[keyDate()] = {...currentReading, savedAt:new Date().toISOString()}; saveHistory(h);
+}
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("show"),3300); }
+
+function updateProgress(n){
+  $$("#progress span").forEach((x,i)=>x.classList.toggle("active",i===n));
+}
+function setStep(s){
+  step=s;
+  if(s==="flow"){
+    updateProgress(0); $("#stepSmall").textContent="01 · FLOW CARD"; $("#stepTitle").textContent="오늘의 흐름 카드";
+    $("#stepDesc").textContent="78장 중 10장의 카드를 펼쳤어요. 마음이 가는 흐름 카드 한 장을 골라주세요.";
+    $("#status").innerHTML='마음이 가는 <b>흐름 카드 한 장</b>을 골라보세요.';
+    $("#shuffleBar").style.display="flex"; $("#shuffleBtn").disabled=false;
+  } else if(s==="advice"){
+    updateProgress(1); $("#stepSmall").textContent="02 · ADVICE CARD"; $("#stepTitle").textContent="오늘의 조언 카드";
+    $("#stepDesc").textContent="흐름 카드는 덮어둔 채, 다시 펼친 10장 중 오늘의 조언 카드 한 장을 골라주세요.";
+    $("#status").innerHTML='이제 마음이 가는 <b>조언 카드 한 장</b>을 골라보세요.';
+    $("#shuffleBar").style.display="flex"; $("#shuffleBtn").disabled=false;
+  } else {
+    updateProgress(2); $("#stepSmall").textContent="FLOW + ADVICE"; $("#stepTitle").textContent="두 장의 카드";
+    $("#stepDesc").textContent="두 장을 모두 골랐어요. 잠시 후 함께 공개합니다.";
+    $("#status").innerHTML='<b>첫 번째는 흐름, 두 번째는 조언</b>입니다.';
+    $("#shuffleBar").style.display="none"; $("#shuffleBtn").disabled=true;
+  }
+}
+function renderChosen(revealed=false){
+  const box=$("#chosen");
+  if(!picked.length){ box.classList.remove("show"); $("#chosenRow").innerHTML=""; return; }
+  box.classList.add("show");
+  $("#chosenTitle").textContent = picked.length===1 ? "흐름 카드 선택 완료 · 아직 공개하지 않아요" : (revealed ? "오늘의 두 카드" : "두 장 모두 선택 완료");
+  $("#chosenRow").innerHTML = picked.map((c,i)=>{
+    const label=i===0?"01 흐름":"02 조언";
+    const imgSrc=c.originalUrl||c.imageUrl;
+    return `<div class="mini"><div class="mini-card">${revealed?`<img src="${imgSrc}" alt="${c.name}">`:""}</div><div class="mini-label">${label}</div></div>`;
+  }).join("");
+}
+function renderDeck(){
+  $("#deck").innerHTML = spread.map((c,i)=>`<button class="cardback" data-i="${i}" aria-label="${step==="flow"?"흐름":"조언"} 카드 ${i+1} 선택"></button>`).join("");
+  $$("#deck .cardback").forEach(btn=>btn.addEventListener("click",()=>choose(+btn.dataset.i,btn)));
+}
+function reshuffleVisible(){
+  if(step!=="flow" && step!=="advice") return;
+  const pool = step==="advice" && picked[0]
+    ? cards.filter(x=>x.id!==picked[0].id)
+    : cards;
+
+  // 현재 보이는 10장과 완전히 같은 순서가 나오지 않도록 몇 번까지 다시 섞습니다.
+  const prev = spread.map(x=>x.id).join("|");
+  let next = spread;
+  for(let tries=0; tries<5; tries++){
+    next = shuffle(pool).slice(0,10);
+    if(next.map(x=>x.id).join("|") !== prev) break;
+  }
+  spread = next;
+  renderDeck();
+  const deck=$("#deck");
+  deck.classList.remove("shuffling");
+  void deck.offsetWidth;
+  deck.classList.add("shuffling");
+  setTimeout(()=>deck.classList.remove("shuffling"),520);
+  $("#status").innerHTML = step==="flow"
+    ? '카드를 다시 섞었어요. 이제 마음이 가는 <b>흐름 카드 한 장</b>을 골라보세요.'
+    : '카드를 다시 섞었어요. 이제 마음이 가는 <b>조언 카드 한 장</b>을 골라보세요.';
+}
+function start(){
+  picked=[]; currentReading=null; shareBlob=null; shareFile=null; clipboardBlob=null; $("#results").classList.remove("show"); $("#chosen").classList.remove("show");
+  spread=shuffle(cards).slice(0,10); setStep("flow"); renderDeck(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function choose(i,btn){
+  if(btn.disabled) return;
+  $("#shuffleBtn").disabled=true;
+  $$("#deck .cardback").forEach(b=>{b.disabled=true;b.classList.add("disabled")});
+  const c=spread[i];
+  if(step==="flow"){
+    picked=[c]; renderChosen(false); $("#status").innerHTML="<b>흐름 카드 선택 완료.</b> 아직 열지 않을게요.";
+    setTimeout(()=>{
+      spread=shuffle(cards.filter(x=>x.id!==picked[0].id)).slice(0,10); setStep("advice"); renderDeck(); renderChosen(false);
+    },480);
+  } else {
+    picked=[picked[0],c]; renderChosen(false); setStep("ready"); $("#deck").innerHTML="";
+    setTimeout(()=>reveal(),620);
+  }
+}
+function reveal(){
+  renderChosen(true); showResult();
+}
+const pill = a => a.map(x=>`<span class="pill">${x}</span>`).join("");
+function readingHTML(c,role,body){
+  return `<div class="role">${role}</div>
+  <div class="card-img-wrap"><img class="card-img" crossorigin="anonymous" src="${c.originalUrl||c.imageUrl}" alt="${c.name}" data-fallback="${c.name}"></div>
+  <h3 class="name">${c.name}</h3><div class="meta">${c.english} · ${c.group}</div>
+  <div class="pills">${pill(c.keywords)}</div>
+  <div class="symbol"><b>그림이 말하는 것</b><p>${c.symbol}</p></div>
+  <div class="interp">${body}</div>`;
+}
+function showResult(){
+  const [f,a]=picked;
+  $("#flowCard").innerHTML=readingHTML(f,"오늘의 흐름 카드",f.flow);
+  $("#adviceCard").innerHTML=readingHTML(a,"오늘의 조언 카드",a.advice);
+  $("#tipFlow").innerHTML=`<p class="tipline">${f.tipFlow1}</p><p class="tipline">${f.tipFlow2}</p>`;
+  $("#tipAdvice").innerHTML=`<p class="tipline">${a.tipAdvice1}</p><p class="tipline">${a.tipAdvice2}</p>`;
+  currentReading={flowId:f.id,flowName:f.name,adviceId:a.id,adviceName:a.name,tipFlow:[f.tipFlow1,f.tipFlow2],tipAdvice:[a.tipAdvice1,a.tipAdvice2]};
+  persistReading();
+  $("#results").classList.add("show");
+  setTimeout(()=>$("#results").scrollIntoView({behavior:"smooth",block:"start"}),80);
+  prepareShareImage();
+}
+function loadImage(src){
+  return new Promise((resolve,reject)=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>resolve(im);im.onerror=reject;im.src=src;});
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function wrap(ctx,text,max){
+  const words=text.split(" "), out=[]; let line="";
+  for(const w of words){const t=line?line+" "+w:w;if(ctx.measureText(t).width>max&&line){out.push(line);line=w;} else line=t;} if(line)out.push(line); return out;
+}
+async function makeCanvas(){
+  const [f,a]=picked; const W=1080,H=1920, c=document.createElement("canvas"); c.width=W;c.height=H; const x=c.getContext("2d");
+  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#fbfafc");g.addColorStop(.55,"#f1e9f5");g.addColorStop(1,"#f8f0df");x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(92,70,103,.11)";for(let yy=80;yy<H;yy+=150)for(let xx=65;xx<W;xx+=165){x.beginPath();x.arc(xx+((yy/150)%2)*45,yy,2,0,Math.PI*2);x.fill();}
+  x.textAlign="left";x.fillStyle="#2d2730";x.font="800 31px sans-serif";x.fillText("오늘, 보리타로",64,82);
+  x.textAlign="right";x.fillStyle="#756e79";x.font="700 22px sans-serif";x.fillText(compactDate(),1016,82);
+  x.textAlign="center";x.fillStyle="#2d2730";x.font="900 56px sans-serif";x.fillText("두 장으로, 오늘 보리",W/2,174);
+  x.fillStyle="#ad8741";x.font="800 19px sans-serif";x.fillText("TODAY · TWO CARDS",W/2,216);
+  let fi=null,ai=null; try{[fi,ai]=await Promise.all([loadImage(f.originalUrl||f.imageUrl),loadImage(a.originalUrl||a.imageUrl)]);}catch{}
+  const cardW=310,cardH=531,gap=70,sx=(W-(cardW*2+gap))/2, cy=290;
+  function drawCard(im,left,label,card){
+    x.fillStyle="rgba(255,255,255,.83)";rr(x,left-15,cy-16,cardW+30,cardH+117,25);x.fill();
+    if(im)x.drawImage(im,left,cy,cardW,cardH);else{x.fillStyle="#e6dbea";x.fillRect(left,cy,cardW,cardH);}
+    x.textAlign="center";x.fillStyle="#ad8741";x.font="800 20px sans-serif";x.fillText(label,left+cardW/2,cy+cardH+39);
+    x.fillStyle="#2d2730";x.font="900 29px sans-serif";x.fillText(card.name,left+cardW/2,cy+cardH+79);
+  }
+  drawCard(fi,sx,"오늘의 흐름",f);drawCard(ai,sx+cardW+gap,"오늘의 조언",a);
+
+  const by=1000, bh=660; x.fillStyle="rgba(244,231,204,.76)";x.strokeStyle="rgba(173,135,65,.34)";x.lineWidth=2;rr(x,62,by,956,bh,34);x.fill();x.stroke();
+  x.textAlign="center";x.fillStyle="#ad8741";x.font="900 30px sans-serif";x.fillText("오늘보리 TIP",W/2,by+60);
+  const drawSection=(label,lines,startY)=>{
+    x.textAlign="left";x.fillStyle="#493451";x.font="900 22px sans-serif";x.fillText(label,112,startY);
+    x.fillStyle="#342c38";x.font="700 28px sans-serif";let y=startY+48;
+    for(const t of lines){for(const ln of wrap(x,t,850)){x.fillText(ln,112,y);y+=45;}y+=7;} return y;
+  };
+  let y=drawSection("FLOW · 흐름",currentReading.tipFlow,by+118);
+  y=drawSection("ADVICE · 조언",currentReading.tipAdvice,y+22);
+  x.textAlign="center";x.fillStyle="#ad8741";x.font="800 23px sans-serif";x.fillText("G O B O R I",W/2,1790);
+  x.fillStyle="#827987";x.font="500 17px sans-serif";x.fillText("오늘을 가볍게 돌아보는 두 장의 카드 메시지",W/2,1830);
+  x.fillStyle="#9a929d";x.font="500 13px sans-serif";x.fillText("Rider–Waite–Smith Tarot · Pamela Colman Smith · Public domain",W/2,1870);
+  return c;
+}
+async function prepareShareImage(){
+  $("#shareBtn").disabled=true;
+  $("#shareBtn").textContent="공유 준비 중…";
+  try{
+    const canvas=await makeCanvas();
+    shareBlob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",.94));
+    clipboardBlob=await new Promise(r=>canvas.toBlob(r,"image/png",1));
+    if(!shareBlob) throw new Error("share image encoding failed");
+    shareFile=new File([shareBlob],`bori-tarot-${keyDate()}.jpg`,{type:"image/jpeg",lastModified:Date.now()});
+    $("#shareBtn").textContent="공유하기";
+    $("#shareBtn").disabled=false;
+  }catch(e){
+    console.warn(e);
+    $("#shareBtn").textContent="공유하기";
+    toast("공유 이미지를 준비하지 못했어요. 인터넷 연결을 확인해 주세요.");
+  }
+}
+async function nativeShare(){
+  persistReading();
+
+  const mobileByUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
+  const mobileByData = navigator.userAgentData && typeof navigator.userAgentData.mobile === "boolean"
+    ? navigator.userAgentData.mobile : false;
+  const isMobile = mobileByUA || mobileByData;
+
+  // PC(Chrome/Edge): Windows 공유창으로 "파일"을 넘기면 카카오톡 PC가
+  // 파일을 클립보드 중계 방식으로 처리하면서 붙여넣기가 실패하는 경우가 있습니다.
+  // 대신 실제 PNG 비트맵을 브라우저 클립보드에 복사하여 Ctrl+V로 바로 붙여넣게 합니다.
+  if(!isMobile){
+    if(clipboardBlob && window.isSecureContext && navigator.clipboard && navigator.clipboard.write && window.ClipboardItem){
+      try{
+        await navigator.clipboard.write([
+          new ClipboardItem({"image/png": clipboardBlob})
+        ]);
+        toast("오늘 카드 이미지가 클립보드에 복사됐어요. 카카오톡 채팅창에서 Ctrl+V로 붙여넣어 주세요.");
+        return;
+      }catch(e){
+        console.warn("image clipboard failed", e);
+      }
+    }
+
+    // 이미지 클립보드가 안 되면 텍스트+주소를 복사합니다.
+    const [f,a]=picked;
+    const shareText =
+      `오늘, 보리타로\n`+
+      `흐름 카드: ${f.name}\n조언 카드: ${a.name}\n\n`+
+      `${currentReading.tipFlow.join(" ")}\n${currentReading.tipAdvice.join(" ")}\n\n`+
+      `${location.href}`;
+    try{
+      await navigator.clipboard.writeText(shareText);
+      toast("이 브라우저에서는 이미지 복사가 제한되어 결과와 웹주소를 복사했어요. 카카오톡에서 Ctrl+V 해주세요.");
+      return;
+    }catch(e){
+      toast("공유가 제한됐어요. 브라우저 주소를 복사해 카카오톡으로 보내주세요.");
+      return;
+    }
+  }
+
+  // 휴대폰: JPG 파일을 OS 기본 공유창으로 전달 → 카카오톡 선택.
+  if(!shareFile){
+    toast("공유 이미지를 아직 준비 중이에요. 잠시 후 다시 눌러주세요.");
+    return;
+  }
+
+  const canShareFile = !!(window.isSecureContext && navigator.share &&
+    (!navigator.canShare || navigator.canShare({files:[shareFile]})));
+
+  if(canShareFile){
+    try{
+      await navigator.share({files:[shareFile]});
+      toast("공유창에서 카카오톡을 선택하면 오늘의 카드 이미지가 전송돼요.");
+      return;
+    }catch(e){
+      if(e && e.name==="AbortError") return;
+      console.warn("mobile file share failed", e);
+    }
+  }
+
+  // 모바일 파일 공유 실패 시 결과 요약 + 주소 공유.
+  if(navigator.share){
+    try{
+      const [f,a]=picked;
+      const shareText =
+        `오늘, 보리타로\n`+
+        `흐름 카드: ${f.name}\n조언 카드: ${a.name}\n\n`+
+        `${currentReading.tipFlow.join(" ")}\n${currentReading.tipAdvice.join(" ")}`;
+      await navigator.share({
+        title:"오늘, 보리타로",
+        text:shareText,
+        url:location.href
+      });
+      toast("이미지 대신 오늘의 결과와 웹주소를 공유했어요.");
+      return;
+    }catch(e){
+      if(e && e.name==="AbortError") return;
+      console.warn("mobile link share failed", e);
+    }
+  }
+
+  try{
+    await navigator.clipboard.writeText(location.href);
+    toast("웹주소를 복사했어요. 카카오톡에 붙여넣어 주세요.");
+  }catch(e){
+    toast("직접 공유를 지원하지 않는 기기예요. 브라우저 주소를 복사해 보내주세요.");
+  }
+}
+function openHistory(){
+  const entries=Object.entries(history()).sort((a,b)=>b[0].localeCompare(a[0]));
+  $("#history").innerHTML=entries.length?entries.map(([d,v])=>`<div class="hist"><div class="histdate">${prettyDate(d)}</div><div class="histcards">${v.flowName} → ${v.adviceName}</div><div class="histtip">${[...(v.tipFlow||[]),...(v.tipAdvice||[])].join(" ")}</div></div>`).join(""):`<div class="empty">아직 저장된 기록이 없어요.<br>오늘의 두 카드를 뽑으면 자동으로 기록됩니다.</div>`;
+  $("#historyOverlay").classList.add("show");
+}
+$("#shuffleBtn").addEventListener("click",reshuffleVisible);
+$("#resetBtn").addEventListener("click",start);
+$("#shareBtn").addEventListener("click",nativeShare);
+$("#historyBtn").addEventListener("click",openHistory);
+$("#historyClose").addEventListener("click",()=>$("#historyOverlay").classList.remove("show"));
+$("#historyOverlay").addEventListener("click",e=>{if(e.target.id==="historyOverlay")$("#historyOverlay").classList.remove("show")});
+if("serviceWorker" in navigator && location.protocol!=="file:") window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+start();
+})();
+
+</script>
+
+<script>
+(function(){
+  // Earlier builds used a service worker. Some browsers (especially an already-used Edge profile)
+  // may keep that old cache and serve a stale page. This build intentionally removes it.
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations()
+      .then(function(regs){ regs.forEach(function(r){ r.unregister(); }); })
+      .catch(function(){});
+  }
+  if ('caches' in window) {
+    caches.keys()
+      .then(function(keys){
+        return Promise.all(keys.filter(function(k){ return /^boritarot-/i.test(k); })
+          .map(function(k){ return caches.delete(k); }));
+      })
+      .catch(function(){});
+  }
+})();
+</script>
+
+</body>
+</html>
