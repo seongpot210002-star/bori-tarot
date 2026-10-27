@@ -609,8 +609,77 @@ footer{color:#8b828f}
  .deck .cardback{border-width:3px;border-radius:8px}
 }
 
+
+/* v16 — compact mobile results, viewport-balanced card selection */
+@media (max-width: 620px) {
+  /* The selection area uses the remaining viewport instead of leaving an empty lower third. */
+  body.bori-picking .stage {
+    min-height: clamp(382px, calc(100svh - 198px), 645px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  body.bori-picking .spread-board {
+    width: min(100%, 340px);
+    max-width: 340px;
+    margin-top: 12px;
+    margin-bottom: 7px;
+  }
+  body.bori-picking .slot-card {
+    width: clamp(75px, 25vw, 103px);
+    margin: 7px auto 4px;
+  }
+  body.bori-picking .deck {
+    width: min(100%, 335px);
+    max-width: 335px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: clamp(6px, 2vw, 10px);
+    row-gap: clamp(8px, 1.9vh, 13px);
+    padding: 8px 3px 3px;
+    margin: 0 auto;
+  }
+  body.bori-picking .deck .cardback {
+    width: 100%;
+    aspect-ratio: 7/12;
+    border-width: 3px;
+  }
+  /* When the cards have been revealed, avoid a huge tarot picture in each explanation. */
+  .results .reading .card-img {
+    width: min(144px, 37vw);
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 18px rgba(59,41,68,.13);
+  }
+  .results .reading .card-img.failed {
+    min-height: 0;
+  }
+  .results .reading .card-img-wrap {
+    margin: 11px auto 12px;
+  }
+  .results .reading .role {
+    font-size: clamp(20px, 5.4vw, 24px);
+  }
+  .results .reading {
+    padding: 18px 14px;
+  }
+}
+@media (max-width: 360px) {
+  body.bori-picking .stage {min-height: clamp(355px, calc(100svh - 188px), 575px);}
+  body.bori-picking .spread-board {margin-top: 7px; margin-bottom: 3px;}
+  body.bori-picking .slot-card {width: clamp(73px, 24vw, 88px);}
+  body.bori-picking .deck {width: min(100%, 290px);row-gap: 7px;column-gap: 6px;}
+  .results .reading .card-img {width: min(137px, 38vw);}
+}
+@media (max-width: 620px) and (max-height: 640px) {
+  body.bori-picking .stage {min-height: 0;gap: 3px;}
+  body.bori-picking .spread-board {margin-top: 6px; margin-bottom: 3px;}
+  body.bori-picking .slot-card {width: clamp(70px, 21vw, 88px);}
+  body.bori-picking .deck {row-gap: 6px;padding-top: 4px;}
+}
 </style>
-<title>오늘, 보리타로 · 78장 완성본 v15</title>
+<title>오늘, 보리타로 · 78장 완성본 v16</title>
 </head>
 <body>
 <header class="wrap top">
@@ -2736,6 +2805,7 @@ function reshuffleVisible(){
     : '카드를 다시 섞었어요. 오늘을 도와줄 한 장을 뽑아주세요.';
 }
 function start(){
+  document.body.classList.add("bori-picking");
   picked=[]; currentReading=null; shareBlob=null; shareFile=null; clipboardBlob=null; $("#results").classList.remove("show");
   spread=shuffle(cards).slice(0,10); setStep("flow"); renderChosen(false); renderDeck(); window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -2756,6 +2826,7 @@ function choose(i,btn){
   }
 }
 function reveal(){
+  document.body.classList.remove("bori-picking");
   renderChosen(true); showResult();
 }
 const pill = a => a.map(x=>`<span class="pill">${x}</span>`).join("");
