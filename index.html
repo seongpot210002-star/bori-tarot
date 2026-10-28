@@ -742,8 +742,19 @@ footer{color:#8b828f}
     line-height: 1.75;
   }
 }
+
+/* v19: put the same Baewobori symbol beside '보리' in the hero title only. */
+.hero h1 .hero-bori-symbol{
+  display:inline-block;
+  height:.85em;
+  width:.70em;
+  object-fit:contain;
+  vertical-align:-.11em;
+  margin-left:.12em;
+}
+@media (max-width:350px){.hero h1{font-size:25px}}
 </style>
-<title>오늘, 보리타로 · 78장 완성본 v17.1</title>
+<title>오늘, 보리타로 · 78장 완성본 v19</title>
 </head>
 <body>
 <header class="wrap top">
@@ -755,7 +766,7 @@ footer{color:#8b828f}
 <main class="wrap">
   <section class="hero">
     <div class="hero-title-row">
-      <h1>두 장으로, 오늘 보리</h1>
+      <h1>두 장으로, 오늘 보리<img class="hero-bori-symbol" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAmCAYAAAClI5npAAADAklEQVR4nMXXTYscVRTG8d9Mlz1GKcc4QtTgWwQzCYigIo0YlGxcuPFlY/wWIhr0KwguxIVrQZdZuBA3ulCQUhiNY3wJQTIkojGK2OkQJ5OaiYtzm6m0PV01nZmeA5eurjpV539PPefcW1MLH7xoJ216R6MjG3HtDuzCvzg3SYC9eAmHRIb+wDf4AicmAbAfL6CTANbwHH7EMXyMU9UbiiwHnbK3aYBhGjiPn9Gr+NyOJ/FGGvODwQePrwfgBN7GeziOCyIL09iDwyI7W2IbifAHvIPP8TQewz24jK/xU9+xU/au6xWMqoLf0iiKLD+C17HUKXvvYqHqOE7gJgB9+1vMfi/OFVl+uWHAe9N9+zGHWZwVFfVVY4Aiy2dFP+hbu+aWeaGRZ/EI7hP6WUYX3+EVUVVDAeYwg1XRA27GCq6m660agKfwGu53rchvTPD7cPcwgFk8gyfEjLs42yl7Z4osz1PgJq+sxJUE3U4TucH67D/B6b5z9YGHhdAOWm9AJbqdsnehyPKp5D9TZPko4X2WAA4JHXRF41oU1bOUzv0PYAo3Jdrq+Rw6Ze9SkeVzaNeI8HQa749yGgZwTMz4ZTyK3eJVZH2oTtk7Pk63awoAH+EkHsYBPIDbcBduLbL8QILcNgAJ4GQ6nkW7yPJXcdTAIrRdAFXrppSfF2V4VWilzvbhzsr/S/hHRf1NAQatZXQVPIjn8bjognNpZEL9n+JDFOMArKbfmRFV8BCOCP0Mdsx53IIzVYDaPWEKNiW2ZqtCExu5L4k0rwy5tia2dn9VTzbNQEs0lzpbwFui6RwUOpjG9/g2/f4yDsBK8m1jtaYRfZnGnhT891HOTQG6YjGZ0SwTxEJWa02/C5ZFN2ypXw03ZU0B1irHuzb02kYAYj+4KvWBSQO0cNH62r4jAMtbGbhvTaugFDNfc60eJgZwUWxWrqjvA9sC0BXqn7bFn/S1D0uKL60vw7snWgUp3X+K3exiOt4ya/oKTuFNUQ2/ThwgZWGxZjs+lm1KUFsdHP4Dxc3QENmC0UoAAAAASUVORK5CYII=" alt="" aria-hidden="true"></h1>
     </div>
     <div class="en">TODAY · TWO CARDS</div>
   </section>
@@ -797,7 +808,7 @@ footer{color:#8b828f}
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v17.1</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v19</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="toast" id="toast"></div>
 <script>
