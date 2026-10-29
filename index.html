@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- BORI TAROT V20 : 78-card depth + paired meaning -->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
@@ -753,6 +754,61 @@ footer{color:#8b828f}
   margin-left:.12em;
 }
 @media (max-width:350px){.hero h1{font-size:25px}}
+
+/* v20 : 의미 설명의 깊이를 더하되 선택 화면과 모바일 카드 크기는 그대로 둡니다. */
+.reading-details .meaning-block,
+.reading-details .meaning-insight,
+.reading-details .meaning-daily,
+.reading-details .meaning-examples,
+.reading-details .reflection{max-width:640px;margin:0 0 16px;font-size:14px;line-height:1.82}
+.meaning-kicker,.meaning-insight b,.meaning-daily b,.meaning-examples b,.reflection>span{display:block;font-size:12px;font-weight:900;margin-bottom:6px;letter-spacing:-.015em}
+.meaning-block{background:#f8f4fa;border:1px solid var(--line);border-radius:15px;padding:14px 16px;color:#514558}
+.meaning-block .meaning-kicker{color:var(--gold)}
+.meaning-block p,.meaning-insight p,.meaning-daily p,.reflection p{margin:0}
+.meaning-insight{padding:0 2px;color:#473b4c}
+.meaning-insight b{color:#765889}
+.meaning-daily{padding:1px 2px;color:#342c3c}
+.meaning-daily b{color:#6d5475}
+.meaning-examples{background:#fffdfb;border:1px solid rgba(113,86,122,.13);border-radius:14px;padding:13px 15px}
+.meaning-examples b{color:#634c6b}
+.meaning-examples ul{padding:0 0 0 18px;margin:0;display:grid;gap:4px}
+.meaning-examples li{padding-left:2px}
+.reflection{background:linear-gradient(135deg,#f8f2e7,#f7f2f9);border-left:3px solid #bc9756;border-radius:0 12px 12px 0;padding:11px 14px;color:#4b3f4f}
+.reflection>span{color:#a4813b}
+.reflection p{font-weight:700}
+.detail-extra{margin:0 0 5px;padding:0;border:0}
+.detail-extra>summary{list-style:none;cursor:pointer;border:1px solid #e7ddec;border-radius:12px;padding:11px 13px;font-weight:850;font-size:12px;color:#664a70;background:#f9f5fa;display:flex;justify-content:space-between;align-items:center;gap:7px}
+.detail-extra>summary::-webkit-details-marker{display:none}
+.detail-extra>summary span{color:#a17b42;font-size:10px;white-space:nowrap}
+.detail-extra[open]>summary{border-radius:12px 12px 0 0;border-bottom-color:transparent}
+.detail-extra[open]>summary span{font-size:0}
+.detail-extra[open]>summary span:after{content:"접기";font-size:10px}
+.detail-extra-content{padding:12px 0 0}
+.pair-reading{background:#fffefa;border:1px solid rgba(117,83,123,.18);border-radius:var(--radius);box-shadow:var(--shadow);padding:23px 25px;margin:2px 0 16px;line-height:1.85;color:#413448}
+.pair-header{font-size:22px;font-weight:950;text-align:center;letter-spacing:-.045em}
+.pair-header:after{content:"";display:block;width:30px;height:2px;margin:10px auto 17px;background:#c6a05f}
+.pair-flow{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-bottom:17px}
+.pair-flow span{border:1px solid #e3d5e9;background:#f7f1f9;color:#654c6e;padding:4px 11px;border-radius:100px;font-size:11px;font-weight:850}
+.pair-flow i{font-size:14px;font-style:normal;color:#ad8741;font-weight:900}
+.pair-reading p{margin:0 auto 12px;max-width:640px;font-size:14.5px}
+.pair-reading .pair-lead{font-weight:700}
+.pair-reading .pair-focus{color:#5a4c5d}
+.pair-question{background:#f8f4fa;border-radius:15px;padding:12px 15px}
+.pair-question b{display:block;font-size:11px;color:#a27d3e;margin-bottom:5px}
+.pair-question span{display:block;font-weight:750}
+@media (min-width:680px){
+  /* 상세 해석은 오른쪽 열 안에서 자연스럽게 이어집니다. */
+  .reading-details .meaning-block,.reading-details .meaning-insight,.reading-details .meaning-daily,.reading-details .meaning-examples,.reading-details .reflection{font-size:13px;line-height:1.78}
+}
+@media(max-width:679px){
+  .reading-details .meaning-block,.reading-details .meaning-insight,.reading-details .meaning-daily,.reading-details .meaning-examples,.reading-details .reflection{font-size:13px;line-height:1.7;margin-bottom:13px}
+  .meaning-block{padding:12px 13px}
+  .meaning-examples{padding:12px 14px}
+  .pair-reading{padding:21px 16px;border-radius:21px}
+  .pair-header{font-size:21px}
+  .pair-reading p{font-size:13.5px;line-height:1.73}
+}
+
 </style>
 <title>오늘, 보리타로 · 78장 완성본 v19</title>
 </head>
@@ -796,19 +852,20 @@ footer{color:#8b828f}
   <section class="results" id="results">
     <article class="reading" id="flowCard"></article>
     <article class="reading" id="adviceCard"></article>
+    <section class="pair-reading" id="pairReading" aria-label="두 카드의 연결 해석"></section>
     <section class="tipbox">
       <div class="tiptitle">오늘보리 TIP</div>
       <div class="integrated-tip" id="tipIntegrated"></div>
     </section>
     <div class="actions">
-      <button class="btn primary" id="shareBtn" disabled>공유 준비 중…</button>
+      <button class="btn primary" id="shareBtn">공유하기</button>
       <button class="btn secondary" id="resetBtn">다시 뽑기</button>
     </div>
     <div class="auto-note">결과는 자동으로 오늘 기록에 저장됩니다.</div>
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v19</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v20</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -2904,8 +2961,16 @@ function reveal(){
   document.body.classList.remove("bori-picking");
   renderChosen(true); showResult();
 }
+const CARD_DEPTH = {"major0":{"insight":"새 출발의 핵심은 무작정 뛰어드는 것이 아니라, 모든 답을 알아야만 시작할 수 있다는 생각에서 벗어나는 데 있어요.","question":"시작을 막는 것은 현실의 위험일까요, 완벽해야 한다는 마음일까요?","scenes":["처음 해보는 일이 눈에 들어옴","익숙한 방법 대신 새로운 선택을 고민함","일단 해보고 싶은 마음이 커짐"],"actions":["너무 큰 약속 없이 작은 첫 단계를 해보기","필요한 안전장치 하나 확인하기","완벽한 계획보다 실행 경험을 먼저 만들기"],"state":"새로운 문턱에서 설렘과 불확실성을 함께 느끼는 상태","direction":"위험은 확인하되 작게 시작할 용기"},"major1":{"insight":"이 카드의 도구들은 이미 손에 쥔 자원을 가리켜요. 새 능력을 기다리기보다 지금 가진 것을 연결하는 능력이 핵심이에요.","question":"내가 이미 가진 것 중 오늘 바로 쓸 수 있는 것은 무엇일까요?","scenes":["생각만 하던 아이디어를 설명할 기회","내 기술을 활용해야 할 순간","여러 선택지 중 한 가지가 또렷해짐"],"actions":["지금 가진 도구와 사람부터 확인하기","생각을 작은 결과물로 보여주기","할 수 있는 일과 과장된 기대를 구별하기"],"state":"생각을 현실로 옮길 수 있는 능력과 자원이 보이는 상태","direction":"이미 가진 자원으로 구체적인 첫 결과 만들기"},"major2":{"insight":"두 기둥 사이의 여사제는 한쪽으로 성급히 기울지 않아요. 아직 말로 설명하지 못한 느낌을 점검할 시간이 필요하다는 뜻이에요.","question":"지금 당장 답을 내야 할까요, 더 살펴봐도 될까요?","scenes":["설명이 어려운 찜찜함이 남음","말보다 분위기에서 신호를 느낌","정보가 다 모이지 않은 결정 앞에 섬"],"actions":["확실한 사실과 추측을 따로 적기","조용히 생각할 시간을 확보하기","직감을 무시하지 않되 증거와 대조하기"],"state":"겉으로 드러나지 않은 정보를 살펴야 하는 상태","direction":"조급한 결론보다 조용한 관찰과 확인"},"major3":{"insight":"풍요는 결과를 재촉해서 얻는 것이 아니라 잘 돌보는 과정에서 자라요. 나 자신도 돌봄의 대상이라는 점이 중요해요.","question":"내가 돌보는 일과 나를 돌보는 일이 균형을 이루고 있나요?","scenes":["주변 사람의 요청이 몰림","아이디어를 정성 들여 키우고 싶음","생활에서 여유와 만족을 찾음"],"actions":["도움이 필요한 사람을 살피되 선 긋기","시간을 들여 성장시키는 일에 투자하기","내 식사와 휴식도 일정에 넣기"],"state":"돌봄과 성장에 시간을 써야 하는 상태","direction":"나와 타인을 함께 살리는 균형 있는 돌봄"},"major4":{"insight":"단단한 왕좌는 흔들리지 않는 기준의 장점을 보여줘요. 다만 모든 일을 통제하려 하면 기준이 오히려 답답한 틀이 될 수 있어요.","question":"내가 지켜야 할 원칙과 내려놓아도 되는 통제는 무엇일까요?","scenes":["역할과 책임을 정리해야 함","규칙을 두고 의견이 엇갈림","중요한 결정을 맡게 됨"],"actions":["결정 기준을 먼저 설명하기","실무를 나눌 수 있다면 위임하기","원칙은 지키되 방법에는 선택권 주기"],"state":"체계와 책임이 중요한 국면","direction":"기준을 명확히 세우되 사람과 상황에 유연하기"},"major5":{"insight":"배움과 전통은 검증된 길을 보여주지만, 익숙하다는 사실만으로 언제나 최선인 것은 아니에요.","question":"누구의 경험이나 조언을 빌리면 판단이 더 나아질까요?","scenes":["전문가의 조언이 필요해짐","조직의 절차가 중요해짐","새로운 것을 배우고 싶은 마음"],"actions":["믿을 만한 사람에게 질문하기","왜 그런 규칙이 생겼는지 확인하기","조언을 듣되 최종 선택은 스스로 하기"],"state":"공동체의 기준과 검증된 경험이 필요한 상태","direction":"배움을 활용하면서 자기 판단을 유지하기"},"major6":{"insight":"두 사람이 마주 선 장면은 단순한 로맨스보다 가치에 맞는 선택을 강조해요. 중요한 것은 누구를 고르느냐보다 왜 선택하는가예요.","question":"내 선택은 순간의 끌림과 내가 중요하게 여기는 가치 중 어디에 가까울까요?","scenes":["관계에서 마음이 움직임","함께 결정해야 할 일이 생김","좋아하는 것과 옳다고 여기는 것이 다름"],"actions":["상대와 기대를 솔직히 나누기","선택의 기준을 한 문장으로 정리하기","내가 책임질 수 있는 방향 고르기"],"state":"관계와 가치 판단이 만나는 상태","direction":"서로의 마음을 확인하고 가치에 맞게 선택하기"},"major7":{"insight":"전차 앞의 서로 다른 존재들은 힘이 많아도 방향이 엇갈리면 앞으로 가지 못한다는 사실을 보여줘요.","question":"지금 더 필요한 것은 속도일까요, 방향을 맞추는 일일까요?","scenes":["추진해야 할 일정이 잡힘","여러 의견을 이끌어야 함","빠르게 결과를 내고 싶어짐"],"actions":["우선 목표를 한 줄로 정하기","함께할 사람의 속도를 확인하기","힘을 분산하는 일은 과감히 미루기"],"state":"서로 다른 힘을 한 방향으로 모아야 하는 상태","direction":"목표를 정한 뒤 속도와 주변을 함께 살피기"},"major8":{"insight":"여인이 사자를 억누르지 않는 모습이 중요해요. 강함은 크게 소리치는 것이 아니라 자기 감정을 다루는 힘일 수 있어요.","question":"지금 힘으로 눌러야 할까요, 차분히 설득할 수 있을까요?","scenes":["자꾸 참아야 하는 상황","감정적인 대화를 맞닥뜨림","쉽게 포기하고 싶지 않은 일"],"actions":["상대의 말이 끝날 때까지 듣기","단호함과 공격적인 말투 구분하기","감정이 격하면 잠깐 대화 멈추기"],"state":"감정과 인내를 다뤄야 하는 상태","direction":"부드러운 태도로 단호함 유지하기"},"major9":{"insight":"랜턴은 멀리 있는 모든 답을 밝히지 않고 바로 앞의 길만 비춰요. 혼자 생각할 시간은 회피가 아니라 방향을 찾는 과정이 될 수 있어요.","question":"바쁜 소리 속에서 내가 정말 원하는 것은 무엇일까요?","scenes":["주변의 의견이 너무 많음","혼자 정리하고 싶은 문제","서둘러 답할수록 마음이 복잡함"],"actions":["혼자 점검하는 시간 확보하기","다른 사람과 비교 잠시 멈추기","생각한 것 중 오늘 할 한 단계 적기"],"state":"조용히 본질을 확인해야 하는 상태","direction":"잠시 물러서서 자기 기준을 찾은 뒤 움직이기"},"major10":{"insight":"수레바퀴는 모든 변화가 내 노력의 결과도, 내 탓도 아니라는 점을 보여줘요. 내가 선택할 수 있는 대응은 여전히 남아 있어요.","question":"바꿀 수 없는 조건과 내가 대응할 수 있는 부분은 무엇일까요?","scenes":["갑작스러운 일정 변경","예상 못 한 연락이나 기회","원래 계획을 다시 검토함"],"actions":["변한 조건부터 정확히 확인하기","대안을 한 가지 준비하기","결정할 수 없는 것은 지나치게 붙잡지 않기"],"state":"외부 변수에 따라 흐름이 달라지는 상태","direction":"통제보다 적응에 힘을 쓰고 기회를 분별하기"},"major11":{"insight":"저울과 검은 감정과 사실을 함께 보되 판단의 기준을 세우라고 말해요. 공정하다는 말이 차갑게 대하라는 뜻은 아니에요.","question":"이 결정을 남에게도 같은 기준으로 설명할 수 있을까요?","scenes":["누군가의 주장을 비교함","책임을 나누어야 함","서로 다른 입장이 충돌함"],"actions":["사실과 해석을 분리하기","상대에게 판단 근거 설명하기","말투는 부드럽게 하되 기준은 일관되게 적용하기"],"state":"공정한 판단과 책임이 필요한 상태","direction":"사실과 기준을 확인해 균형 있게 결정하기"},"major12":{"insight":"거꾸로 매달린 사람은 멈춤을 실패로만 보지 않아요. 움직이지 않을 때만 보이는 구조와 관점도 있다는 뜻이에요.","question":"같은 문제를 전혀 다른 위치에서 보면 무엇이 달라질까요?","scenes":["진척이 느려 답답함","기다려야 할 결과가 있음","기존 방법으로 일이 풀리지 않음"],"actions":["결론 시한을 다시 살피기","다른 관점에서 문제 설명해보기","고집하는 방법 하나 내려놓기"],"state":"속도를 늦춰 관점을 바꿔야 하는 상태","direction":"억지 진행을 멈추고 해석과 방법을 바꿔보기"},"major13":{"insight":"죽음 카드는 실제 죽음을 예고하는 카드가 아니에요. 이미 끝난 형태를 인정해야 새 단계로 넘어갈 수 있다는 상징으로 읽는 것이 적절해요.","question":"끝났다는 걸 알면서도 계속 붙잡고 있는 것은 무엇일까요?","scenes":["오래된 일의 종료","역할이나 관계의 변화","익숙한 습관을 정리할 계기"],"actions":["끝난 일과 아직 남은 일 구분하기","정리해야 할 한 가지를 마무리하기","새로운 단계의 조건을 적기"],"state":"기존의 형태가 마무리되는 전환점","direction":"끝난 것은 정리하고 새 선택의 공간 만들기"},"major14":{"insight":"천사가 두 컵 사이로 물을 옮기는 모습은 극단보다 조율의 힘을 보여줘요. 적당함은 소극적 태도가 아니라 꾸준히 이어갈 수 있는 방식이에요.","question":"지금 한쪽으로 너무 기울어진 것은 무엇일까요?","scenes":["일과 휴식 배분이 필요함","다른 사람과 타협해야 함","감정의 진폭이 커짐"],"actions":["한 번에 다 해결하려 하지 않기","서로의 조건을 조금씩 조정하기","일정에서 과한 부분 줄이기"],"state":"속도와 감정과 역할의 균형이 필요한 상태","direction":"극단적인 선택 대신 지속 가능한 조율"},"major15":{"insight":"쇠사슬이 느슨하다는 점이 중요해요. 도저히 벗어날 수 없다는 생각과 실제 선택지가 없는 것은 다를 수 있어요.","question":"나를 묶고 있는 것은 상황인가요, 반복되는 습관인가요?","scenes":["미루기나 집착이 반복됨","그만두기 어려운 관계나 일","눈앞의 보상에 끌림"],"actions":["습관의 계기를 알아차리기","원하지 않는 요구에 선 긋기","작은 단절부터 시도하기"],"state":"습관과 집착이 선택을 좁히는 상태","direction":"붙잡는 이유를 확인하고 선택권 되찾기"},"major16":{"insight":"탑은 무조건 재난이 온다는 뜻이 아니에요. 오래 버티던 생각이나 방식이 흔들릴 때 무엇이 정말 튼튼한지 살피라는 상징이에요.","question":"지금 흔들리는 것은 꼭 지켜야 할 것일까요?","scenes":["기대와 다른 소식","계획의 허점 발견","고집하던 생각이 흔들림"],"actions":["당장 확인할 사실부터 정리하기","핵심과 부차적인 부분 나누기","무너진 계획 대신 새 대안 구성하기"],"state":"기존의 전제가 흔들리는 변화","direction":"손상보다 새로 세울 기반에 집중하기"},"major17":{"insight":"별빛 아래의 회복은 요란하지 않아요. 다시 나아갈 힘은 작은 일상을 회복하는 데서 시작될 수 있어요.","question":"최근 나를 조금이라도 편안하게 한 것은 무엇이었을까요?","scenes":["희망을 다시 느끼기 시작함","마음이 서서히 안정됨","오래 끌던 일이 조금 나아짐"],"actions":["회복의 리듬을 깨지 않기","작은 진전도 인정하기","기대는 품되 결과를 재촉하지 않기"],"state":"지친 마음이 천천히 회복되는 상태","direction":"작은 회복을 지키며 무리 없이 희망 키우기"},"major18":{"insight":"달빛은 길을 완전히 드러내지 않아요. 그래서 직감을 무시할 필요도 없지만 두려움을 사실로 착각하지 않는 태도가 중요해요.","question":"내가 아는 사실과 상상으로 채운 부분은 무엇일까요?","scenes":["상대 의도를 알기 어려움","불안한 예감이 생김","정보가 모호한 일을 판단해야 함"],"actions":["확인되지 않은 소문은 보류하기","걱정을 말로 정리하기","결정이 급하지 않다면 한 번 더 확인하기"],"state":"불확실성과 감정의 그림자가 큰 상태","direction":"추측을 사실로 단정하지 말고 차분히 확인하기"},"major19":{"insight":"태양은 생기와 자신감이 드러나는 장면이에요. 밝은 날에는 더 많은 일을 하려 하기보다 그 기운을 잘 나누는 것이 중요할 수 있어요.","question":"오늘의 좋은 에너지를 어디에 쓰면 가장 의미 있을까요?","scenes":["칭찬이나 격려를 받음","일이 즐겁게 풀림","자신 있게 의견을 말함"],"actions":["기분 좋은 성과를 나누기","작은 확인 절차는 챙기기","스스로를 지나치게 몰아붙이지 않기"],"state":"활력과 자신감이 밖으로 드러나는 상태","direction":"밝은 기운을 나누되 기본을 잊지 않기"},"major20":{"insight":"관에서 일어나는 사람들은 끝이 아니라 다시 응답하는 장면이에요. 미뤄둔 문제를 새롭게 이해할 기회로 볼 수 있어요.","question":"지금 다시 돌아봐야 할 지난 선택은 무엇일까요?","scenes":["오래된 고민이 다시 떠오름","결정의 순간이 다가옴","이전의 경험이 현재에 도움이 됨"],"actions":["과거를 비난보다 배움으로 보기","결론이 필요한 일을 한 가지 결정하기","다시 시작할 계획을 짧게 세우기"],"state":"지나간 일을 새 관점에서 판단하는 순간","direction":"배운 점을 인정하고 필요한 결정을 내리기"},"major21":{"insight":"월계관 안의 인물은 마무리와 연결을 상징해요. 하나를 충분히 끝내는 것이 다음으로 나아갈 토대가 되기도 합니다.","question":"지금 이미 완성된 것을 계속 손보느라 놓치는 것은 없을까요?","scenes":["장기 과제가 마무리됨","성과가 하나로 정리됨","전체적인 맥락이 보이기 시작함"],"actions":["끝낸 일을 분명히 기록하기","잘한 점을 확인하기","다음 일을 벌이기 전에 마무리 축하하기"],"state":"하나의 과정이 완성되는 시점","direction":"더 채우기보다 온전히 마무리하고 다음 단계 준비하기"},"wands1":{"insight":"새싹이 돋은 완드는 아직 작아도 생명력이 있어요. 의욕을 한꺼번에 소진하기보다 첫 불씨를 살려야 해요.","question":"지금 가장 신나게 시작할 수 있는 작은 일은 무엇일까요?","scenes":["새 계획이 떠오름","일을 시작할 의욕이 생김","새로운 제안에 마음이 움직임"],"actions":["시작할 날짜를 정하기","아이디어 하나를 시험하기","열정만으로 큰 약속을 하지는 않기"],"state":"새로운 열정과 추진력이 생기는 상태","direction":"작은 시작을 행동으로 옮기고 열기를 이어가기"},"wands2":{"insight":"지구본을 든 인물은 이미 가진 기반에서 다음 세상을 바라봐요. 더 큰 꿈을 꾸는 것과 지금 준비를 연결해야 해요.","question":"다음 단계로 가기 위해 가장 먼저 확인할 조건은 무엇일까요?","scenes":["장기 계획을 세움","현재와 다른 가능성을 탐색함","새로운 선택지를 비교함"],"actions":["우선순위 두 가지를 정리하기","구체적인 일정 만들기","기대만 키우지 말고 조건 확인하기"],"state":"미래의 방향을 선택해야 하는 상태","direction":"넓게 전망하되 작은 실행 계획 세우기"},"wands3":{"insight":"바다를 바라보는 인물은 이미 행동한 뒤 돌아올 결과를 기다려요. 기다림은 가만히 있는 것과 다르죠.","question":"이미 시작한 일에서 다음으로 확인할 신호는 무엇일까요?","scenes":["연락이나 결과를 기다림","협업이 확장될 기회","시작한 일이 퍼지는 중"],"actions":["진행 상황 한 번 점검하기","상대의 반응을 기다릴 여유 두기","필요한 후속 연락을 정리하기"],"state":"시작한 일이 밖으로 확장되는 중","direction":"조급함을 줄이고 적절한 후속 행동 준비하기"},"wands4":{"insight":"네 완드의 장식은 완벽한 성공보다 잠깐 멈춰 기쁨을 함께 누리는 시간을 강조해요.","question":"최근 함께 축하하거나 고마워할 일이 있었나요?","scenes":["함께한 일의 성과","가까운 사람과 안정감","작은 행사를 준비함"],"actions":["작은 성과라도 인정하기","고마운 사람에게 표현하기","휴식 뒤 다음 일정을 가볍게 준비하기"],"state":"함께 누릴 안정과 작은 성취가 있는 상태","direction":"축하와 휴식을 충분히 나누고 재충전하기"},"wands5":{"insight":"이 장면은 반드시 적대적인 싸움만을 뜻하지 않아요. 여러 사람이 자기 방식대로 움직이면서 생기는 마찰일 수도 있어요.","question":"갈등의 핵심은 의견 차이일까요, 서로 듣지 않는 태도일까요?","scenes":["회의에서 말이 겹침","역할을 두고 경쟁함","작은 의견차가 커짐"],"actions":["이기려 들기보다 쟁점 정리하기","한 사람씩 말할 기회 주기","공통 목표를 먼저 확인하기"],"state":"경쟁과 소란으로 에너지가 흩어지는 상태","direction":"불필요한 대립을 줄이고 공통 목표에 집중하기"},"wands6":{"insight":"화관은 인정받은 순간을 나타내지만, 그다음에도 계속 증명해야 한다는 뜻은 아니에요.","question":"받은 칭찬을 그대로 기쁘게 받아들일 수 있을까요?","scenes":["성과를 인정받음","발표나 평가가 잘 마무리됨","주변의 기대가 커짐"],"actions":["성과를 주변과 나누기","다음 일을 무리하게 약속하지 않기","내 노력을 스스로 인정하기"],"state":"성과가 드러나고 인정받는 상태","direction":"성공을 받아들이되 다음 부담까지 끌어안지 않기"},"wands7":{"insight":"높은 자리에 선 인물은 자신의 입장을 지키려고 애쓰고 있어요. 모든 반론에 다 대응하는 것은 오래 버티는 방법이 아닐 수 있어요.","question":"꼭 지켜야 할 가치와 그냥 넘겨도 되는 공격은 무엇일까요?","scenes":["내 결정에 질문이 쏟아짐","역할을 방어해야 함","피곤해도 기준을 지켜야 함"],"actions":["중요한 이유만 간결히 설명하기","논쟁을 선택하기","필요한 지원을 요청하기"],"state":"자신의 입장을 지키려는 압박이 있는 상태","direction":"핵심 기준은 지키되 모든 자극에 반응하지 않기"},"wands8":{"insight":"완드들이 같은 방향으로 날아가는 모습은 속도와 흐름을 보여줘요. 빠름 자체가 목적이 되어서는 안 됩니다.","question":"갑자기 빨라진 일 속에서 반드시 챙겨야 할 것은 무엇일까요?","scenes":["연락과 요청이 한꺼번에 옴","일정이 예상보다 빨라짐","빠른 답을 요구받음"],"actions":["시급한 것과 중요한 것 구분하기","짧은 확인 후 회신하기","속도를 늦춰야 할 지점 표시하기"],"state":"연락과 일의 속도가 빨라지는 상태","direction":"속도는 살리되 중요한 확인과 순서 유지하기"},"wands9":{"insight":"머리에 붕대를 감은 인물은 이미 힘든 시간을 지나왔어요. 더 버티라는 말이 아니라 무엇을 지키고 무엇을 쉬어야 하는지 살피라는 뜻이 될 수 있어요.","question":"지금 나의 경계는 건강하게 지켜지고 있나요?","scenes":["그동안 지친 일이 다시 돌아옴","믿음을 회복하기 어려움","마지막 고비 앞에서 망설임"],"actions":["더 버틸 이유를 점검하기","휴식과 도움을 준비하기","꼭 지켜야 할 선만 지키기"],"state":"지친 채 마지막 고비를 버티는 상태","direction":"버틸 일과 쉴 일을 구분해 에너지 보존하기"},"wands10":{"insight":"완드 열 개가 시야를 가릴 정도로 많아요. 책임감은 장점이지만 혼자 다 옮겨야만 성실한 것은 아닙니다.","question":"내가 내려놓거나 나눌 수 있는 책임은 무엇일까요?","scenes":["한꺼번에 업무가 몰림","맡은 일이 많아 주변이 안 보임","마무리까지 혼자 해내려 함"],"actions":["한 가지는 다른 사람에게 부탁하기","덜 중요한 일 미루기","오늘 가능한 분량을 정하기"],"state":"책임과 업무의 무게가 크게 느껴지는 상태","direction":"모든 짐을 혼자 지지 않고 나누거나 덜어내기"},"wandspage":{"insight":"완드를 바라보는 청년에게는 시도 자체가 배움이에요. 처음부터 잘하려는 마음이 호기심을 꺾지 않게 하는 게 중요해요.","question":"새로운 것에 대한 호기심을 언제 마지막으로 따라가 봤나요?","scenes":["재미있는 정보가 눈에 들어옴","새로운 활동을 배우고 싶음","처음 해보는 제안을 받음"],"actions":["모르는 것을 질문하기","작게 체험해 보기","열정이 식기 전에 메모하기"],"state":"탐색과 호기심이 자라나는 상태","direction":"작게 시도하며 배울 기회를 살리기"},"wandsknight":{"insight":"기사는 재빠르게 움직이지만 멀리 볼 틈은 적어 보이기도 해요. 추진력은 방향과 순서를 만날 때 오래갑니다.","question":"급하게 움직이고 싶은 이유가 분명한가요?","scenes":["갑자기 일을 시작하고 싶음","흥분된 상태에서 결심함","일정이 빠르게 흘러감"],"actions":["시작 전 목적 확인하기","위험과 자원 점검하기","사람들이 따라올 여유 주기"],"state":"추진력이 앞서기 쉬운 상태","direction":"속도를 조절해 추진력을 결과로 연결하기"},"wandsqueen":{"insight":"해바라기와 검은 고양이는 따뜻함과 독립성이 함께 있는 장면이에요. 영향력을 보여주는 것이 반드시 모두를 이끄는 일은 아니에요.","question":"내가 가진 장점을 자연스럽게 드러낼 곳은 어디일까요?","scenes":["주변의 시선이 모임","아이디어를 자신 있게 발표함","다른 사람을 격려함"],"actions":["자신감을 지나치게 숨기지 않기","다른 사람의 공로도 인정하기","여유 있게 리드하기"],"state":"자신감과 존재감이 드러나는 상태","direction":"따뜻한 자신감으로 사람과 일 이끌기"},"wandsking":{"insight":"왕은 눈앞의 작은 불만보다 더 큰 그림을 바라봐요. 리더십은 모든 것을 직접 처리하는 것과 다릅니다.","question":"지금 팀이나 일에 정말 필요한 방향은 무엇일까요?","scenes":["중요한 결정을 맡음","여러 사람의 의견을 조율함","미래 계획을 설명해야 함"],"actions":["목표를 한 문장으로 공유하기","맡길 일은 맡기기","세부를 지나치게 통제하지 않기"],"state":"큰 그림을 정하고 방향을 제시해야 하는 상태","direction":"명확히 방향을 제시하면서 역할 위임하기"},"cups1":{"insight":"넘치는 물은 감정이 새롭게 흐르는 모습이에요. 마음이 풍부해지는 때에는 무엇을 느끼는지 알아차리는 것이 먼저예요.","question":"내가 새롭게 느끼는 감정은 무엇을 말해주나요?","scenes":["반가운 만남이 생김","마음이 부드러워짐","감정이 갑자기 올라옴"],"actions":["감정을 말로 표현하기","좋은 느낌을 나누기","감정만으로 성급히 약속하지 않기"],"state":"새로운 감정과 관계가 시작되는 상태","direction":"마음을 열되 천천히 표현하며 관계 살피기"},"cups2":{"insight":"두 사람이 컵을 주고받는 모습은 일방적인 설득이 아니라 상호성을 보여줘요. 좋은 관계는 의견이 항상 같은 관계가 아니에요.","question":"나는 상대의 생각을 확인할 만큼 충분히 듣고 있나요?","scenes":["중요한 대화가 있음","협력 관계를 만들 기회","상대와 마음을 맞추려 함"],"actions":["상대의 의견 묻기","기대와 역할 확인하기","내 입장도 솔직하고 부드럽게 말하기"],"state":"상호 이해와 관계의 균형이 중요한 상태","direction":"내 생각만 밀지 않고 상대와 조율하기"},"cups3":{"insight":"함께 들어 올린 컵은 기쁨을 나누는 힘을 상징해요. 혼자보다 함께할 때 더 큰 위로와 에너지를 얻을 수 있어요.","question":"오늘 누구와 작은 기쁨을 나누고 싶나요?","scenes":["친구나 동료와의 모임","함께 일하며 기분 좋아짐","축하할 일이 생김"],"actions":["수고한 사람에게 고마움 표현하기","좋은 일을 함께 나누기","약속이 부담되지 않게 조절하기"],"state":"사람들과 기쁨과 연대를 느끼는 상태","direction":"함께한 사람들과 성취와 감정 나누기"},"cups4":{"insight":"구름 속 손이 새로운 컵을 내밀어도 인물은 보지 않아요. 기회가 없는 것과 기회를 받아들일 마음이 없는 것은 달라요.","question":"지금 무심코 지나치는 제안이나 관심은 없나요?","scenes":["일상이 지루하게 느껴짐","좋은 제안에도 마음이 움직이지 않음","혼자 있고 싶어짐"],"actions":["지친 이유부터 살피기","제안을 바로 거절하지 않기","새로운 관점 하나 시도하기"],"state":"권태와 무관심이 생긴 상태","direction":"마음의 여유를 되찾고 놓친 기회 살피기"},"cups5":{"insight":"넘어진 컵만 바라보면 뒤에 서 있는 컵이 보이지 않아요. 아쉬움을 인정하는 것과 가능성을 모두 잃었다고 믿는 것은 달라요.","question":"속상한 일 외에 아직 내게 남아 있는 것은 무엇일까요?","scenes":["실수나 실패가 계속 마음에 남음","기대에 못 미친 결과","그리운 관계를 떠올림"],"actions":["실망을 억지로 부정하지 않기","남은 자원 확인하기","회복할 수 있는 관계부터 살피기"],"state":"아쉬움과 상실이 눈에 크게 들어오는 상태","direction":"실망은 인정하되 남은 선택지를 찾기"},"cups6":{"insight":"아이들이 꽃을 주고받는 모습에는 순수한 정과 기억이 있어요. 과거가 따뜻한 자원이 될 수도 있지만 지금을 대신 살 수는 없어요.","question":"어떤 좋은 기억을 현재의 관계에 살릴 수 있을까요?","scenes":["오래된 친구 생각","익숙한 장소가 편안함","누군가에게 작은 선물을 하고 싶음"],"actions":["감사 인사를 전하기","좋은 기억을 지금의 행동으로 옮기기","과거와 현재를 비교만 하지는 않기"],"state":"익숙한 기억과 정서적 안정이 필요한 상태","direction":"따뜻한 기억을 현재의 관계에 연결하기"},"cups7":{"insight":"컵마다 다른 장면이 떠 있어요. 매력적인 선택지가 모두 현실적인 선택지는 아니라는 점을 생각하게 해요.","question":"선택을 좁힐 때 가장 중요한 기준 하나는 무엇일까요?","scenes":["선택지가 너무 많음","상상 속 미래가 매력적으로 보임","결정이 늦어짐"],"actions":["선택 기준 세 가지 적기","현실 조건 확인하기","당장 하지 않을 선택 제외하기"],"state":"가능성이 많아 판단이 흐려지는 상태","direction":"상상과 현실을 구분해 중요한 선택 좁히기"},"cups8":{"insight":"컵은 여전히 서 있는데 인물은 떠나요. 이것이 핵심이에요. 실패나 파괴가 아니라, 가지고 있는 것만으로는 만족할 수 없어 새로운 의미를 찾는 선택이기도 해요.","question":"내가 중요해서 붙들던 것이 지금도 나에게 가치가 있나요?","scenes":["해야 한다는 이유로 일을 계속함","익숙하지만 소모적인 관계","이제는 다른 방향이 끌림"],"actions":["모든 책임을 끝까지 붙잡지 않기","의미 없는 소모에서 잠시 물러나기","남길 일과 떠날 일을 구분하기"],"state":"익숙한 것을 유지할지 다시 판단해야 하는 상태","direction":"소모적 부담을 내려놓고 더 중요한 방향 선택하기"},"cups9":{"insight":"쌓인 컵 앞의 만족은 누군가의 박수보다 자신의 충족감에 가까워요. 만족을 느끼는 것도 배워야 할 일이에요.","question":"내가 이미 충분히 잘한 것은 무엇일까요?","scenes":["원하던 작은 결과를 얻음","기분 좋은 휴식","스스로 뿌듯한 순간"],"actions":["좋은 순간을 충분히 누리기","지나친 기대를 새로 만들지 않기","가까운 사람과 기쁨을 나누기"],"state":"원하던 결과와 정서적 충족감을 느끼는 상태","direction":"충분함을 인정하고 무리하게 더 요구하지 않기"},"cups10":{"insight":"무지개 아래의 컵들은 혼자만의 성공이 아니라 함께 느끼는 안정감을 보여줘요. 각자의 행복을 똑같이 맞출 필요는 없어요.","question":"가까운 사람들과 무엇을 나누면 더 편안해질까요?","scenes":["가족이나 동료와 기분 좋은 시간","관계가 안정적임","함께 계획을 세움"],"actions":["고마운 마음 표현하기","함께 시간을 보내기","다른 사람의 방식도 존중하기"],"state":"가까운 관계에서 만족과 안정이 있는 상태","direction":"정서적 연결을 유지하며 기쁨 공유하기"},"cupspage":{"insight":"컵에서 튀어나온 물고기는 예상치 못한 감정의 신호예요. 작은 설렘을 가볍게 여기지 말되 과장해서 해석하지 않는 게 좋아요.","question":"오늘 나를 조금 설레게 한 일은 무엇일까요?","scenes":["갑작스러운 연락","평소보다 감수성이 풍부함","아이디어가 떠오름"],"actions":["느낀 점 기록하기","부드럽게 마음 전하기","말 한마디에 과한 의미를 두지 않기"],"state":"작고 새로운 감정의 신호를 느끼는 상태","direction":"감성을 열린 마음으로 받아들이되 현실 확인하기"},"cupsknight":{"insight":"컵을 든 기사는 급하게 달려들지 않아요. 누군가에게 다가갈 때 속도만큼 진정성이 중요하다는 뜻이에요.","question":"내가 전하고 싶은 마음을 상대가 받아들일 속도는 어떨까요?","scenes":["부드러운 제안이나 초대","감정적인 대화","관계를 회복할 기회"],"actions":["진심을 구체적으로 표현하기","상대의 반응을 기다리기","약속은 실현 가능한 만큼 하기"],"state":"감정을 나누거나 제안받는 상황","direction":"진심을 전달하되 상대의 속도 존중하기"},"cupsqueen":{"insight":"여왕이 정교한 컵을 바라보는 장면은 마음을 깊이 들여다보는 태도를 나타내요. 공감은 좋은 능력이지만 남의 감정을 대신 짊어질 필요는 없어요.","question":"내 감정과 상대의 감정을 구별하고 있나요?","scenes":["누군가의 고민을 듣게 됨","분위기에 쉽게 영향받음","배려가 필요한 관계"],"actions":["충분히 들어주되 해결까지 맡지 않기","내 감정도 살피기","필요하면 대화의 한계를 말하기"],"state":"공감과 감정적 돌봄이 필요한 상태","direction":"따뜻하게 공감하면서 자기 경계 지키기"},"cupsking":{"insight":"파도 속 왕좌는 주변 감정이 흔들려도 자신을 잃지 않는 태도를 보여줘요. 무감각함이 아니라 감정을 다룰 줄 아는 성숙함이에요.","question":"차분함을 유지하면서 솔직하게 말할 수 있을까요?","scenes":["갈등 중재가 필요함","감정적인 이야기를 들음","침착한 판단을 해야 함"],"actions":["바로 반응하지 않기","감정을 인정한 뒤 기준 설명하기","상대의 감정을 내 책임으로 떠안지 않기"],"state":"감정의 중심을 잡아야 하는 상태","direction":"감정은 인정하되 안정된 태도로 판단하기"},"swords1":{"insight":"검 끝의 왕관은 명확한 생각과 결단의 힘을 보여줘요. 다만 진실이 보이는 순간 말투까지 날카로워질 필요는 없어요.","question":"내 결론을 상대가 받아들일 수 있게 설명하고 있나요?","scenes":["복잡한 문제가 정리됨","결정을 내려야 함","핵심을 발견함"],"actions":["가장 중요한 사실부터 말하기","결론과 근거를 구분하기","상대 생각도 확인하기"],"state":"사고가 명료해지고 결론이 보이는 상태","direction":"명확히 결정하되 말의 온도 조절하기"},"swords2":{"insight":"눈을 가린 인물은 선택하지 않음으로 잠깐 평화를 지키는 모습일 수 있어요. 계속 미루는 것도 하나의 선택이라는 점을 잊지 않아야 해요.","question":"결정을 어렵게 만드는 정보 부족과 두려움은 각각 무엇일까요?","scenes":["두 선택 사이에서 멈춤","서로 다른 사람의 의견이 부담됨","결정하기 싫어짐"],"actions":["핵심 기준 정하기","결정 기한 정하기","선택하지 않을 때의 비용도 살피기"],"state":"결정을 미루며 균형을 지키려는 상태","direction":"필요한 정보를 확인하고 책임질 선택하기"},"swords3":{"insight":"심장을 찌른 세 검은 고통을 피하기 어렵다는 상징이에요. 하지만 아픈 마음을 인정하는 것과 그 아픔으로 모든 상황을 해석하는 것은 달라요.","question":"오늘 마음에 남은 말은 사실일까요, 상처의 감정일까요?","scenes":["서운한 말을 듣거나 떠올림","기대가 어긋남","불편한 사실을 알게 됨"],"actions":["상처를 부정하지 않기","감정이 가라앉은 뒤 대화하기","사실과 해석을 나누기"],"state":"상처와 불편한 진실을 마주하는 상태","direction":"아픔을 인정하면서 사실을 차분히 확인하기"},"swords4":{"insight":"누운 기사는 전투를 포기한 것이 아니라 다음을 위한 회복을 하고 있어요. 잠깐 멈추는 선택도 책임감 있는 행동일 수 있어요.","question":"일을 잘하려면 지금 무엇을 먼저 쉬어야 할까요?","scenes":["계속된 일정으로 피로함","집중이 떨어짐","잠시 혼자 있고 싶음"],"actions":["일정에서 쉴 시간 확보하기","급하지 않은 일을 미루기","쉬는 동안 해야 할 일까지 떠올리지 않기"],"state":"쉬어야 제대로 판단할 수 있는 상태","direction":"무리한 추진보다 회복과 재정비 선택하기"},"swords5":{"insight":"검을 쥔 사람이 승리해도 떠나는 사람이 남아요. 이 카드가 묻는 것은 이겼느냐가 아니라 무엇을 잃었느냐예요.","question":"지금 이 논쟁에서 꼭 얻어야 할 것은 무엇일까요?","scenes":["말싸움에서 이기고 싶음","작은 경쟁이 감정싸움이 됨","뒤끝이 남는 대화"],"actions":["중요하지 않은 논쟁 접기","관계를 해치지 않는 말 선택하기","잘못한 부분은 인정하기"],"state":"경쟁과 갈등이 소모로 이어지는 상태","direction":"이길 문제와 관계를 지킬 문제 구분하기"},"swords6":{"insight":"배는 아직 건너는 중이에요. 평온한 곳에 도착하기 전에도 방향이 조금 나아졌다는 사실을 볼 수 있어요.","question":"지금 내가 벗어나고 싶은 불편함은 무엇일까요?","scenes":["불편한 상황에서 조금 벗어남","변화를 준비함","갈등을 천천히 정리함"],"actions":["상황을 단번에 해결하려 하지 않기","작은 개선을 확인하기","도움받으며 안전하게 이동하기"],"state":"불편한 곳에서 조금씩 벗어나는 과정","direction":"급하게 끝내려 하지 않고 안정된 방향으로 이동하기"},"swords7":{"insight":"검을 들고 몰래 움직이는 인물은 전략과 회피의 양면성을 보여줘요. 영리하게 행동하는 것과 중요한 사실을 숨기는 것은 구분해야 해요.","question":"지금 내가 피하고 있는 대화나 책임은 무엇일까요?","scenes":["속마음을 다 말하기 어려움","우회적으로 문제를 해결함","계획을 남에게 알리지 않음"],"actions":["말해야 할 사실은 분명히 하기","정면 대응이 필요한지 검토하기","편법보다 정당한 방법 찾기"],"state":"정면돌파와 우회 사이에서 고민하는 상태","direction":"전략적으로 움직이되 신뢰는 해치지 않기"},"swords8":{"insight":"검들 사이 인물의 묶임은 완전히 단단하지 않아요. 스스로 불가능하다고 믿는 부분을 점검하면 작은 길이 보일 수 있어요.","question":"정말 할 수 없는 것과 아직 시도하지 않은 것은 무엇일까요?","scenes":["해야 할 일을 미루고 두려워함","선택권이 없다고 느낌","눈치 때문에 행동하지 못함"],"actions":["지금 가능한 행동 하나 찾기","믿는 사람에게 상황을 설명하기","스스로 만든 제한을 시험해보기"],"state":"두려움 때문에 선택지가 작아진 상태","direction":"불가능하다는 생각을 점검하고 작은 행동 시작하기"},"swords9":{"insight":"침대에서 걱정하는 인물은 실제 사건보다 머릿속에서 커지는 고통을 보여줘요. 걱정을 없애려 애쓰기보다 다룰 수 있는 크기로 만드는 게 필요해요.","question":"걱정 중 실제로 확인된 사실은 얼마나 될까요?","scenes":["밤까지 생각이 이어짐","실수를 반복해 떠올림","미래를 부정적으로 상상함"],"actions":["걱정과 사실 나눠 적기","문제를 해결할 시간 정하기","필요한 휴식과 도움 구하기"],"state":"걱정이 커져 에너지를 빼앗는 상태","direction":"생각을 분리해 현실적으로 대응하고 쉬기"},"swords10":{"insight":"등에 꽂힌 열 개의 검은 극단적인 장면이지만 멀리 새벽이 보이기도 해요. 더 버티는 것보다 끝났음을 인정해야 할 때가 있어요.","question":"이미 끝났는데도 다시 붙잡는 일은 무엇일까요?","scenes":["오래 끌던 문제가 마무리됨","실패로 생각이 굳어짐","더는 계속하기 어려움"],"actions":["끝난 사실을 분명히 인정하기","남은 일을 정리하기","회복의 시간을 확보하기"],"state":"더는 같은 방식으로 계속하기 어려운 상태","direction":"끝을 인정하고 회복하며 다음 단계 준비하기"},"swordspage":{"insight":"바람 속 청년은 모든 것에 민감하게 반응해요. 관찰력은 도움이 되지만 경계심이 지나치면 사소한 말에도 흔들릴 수 있어요.","question":"꼭 확인할 정보와 흘려보내도 될 말은 무엇일까요?","scenes":["새 정보가 들어옴","사람들의 반응을 살핌","작은 변화에 예민함"],"actions":["필요한 정보만 확인하기","확인되지 않은 이야기는 전달하지 않기","질문을 통해 오해 줄이기"],"state":"새 정보와 주변 분위기에 예민한 상태","direction":"민첩하게 배우되 모든 신호에 과잉 반응하지 않기"},"swordsknight":{"insight":"질주하는 기사는 용감해 보이지만 앞을 잘못 보면 충돌하기 쉬워요. 빠른 판단 뒤에 한 번의 확인이 꼭 필요할 수 있어요.","question":"지금 빨리 말하고 싶은 이유가 무엇일까요?","scenes":["논쟁에서 즉각 반박하고 싶음","빠르게 결론 내림","한 가지 목표에 몰두함"],"actions":["핵심 사실 확인하기","말하기 전에 한 박자 쉬기","진행 속도를 주변과 맞추기"],"state":"생각과 말이 빠르게 움직이는 상태","direction":"결단력을 살리되 속도와 말투 조절하기"},"swordsqueen":{"insight":"여왕의 검은 자신과 타인에게 정직하라는 상징이에요. 분명하게 말하는 것과 냉정하게 밀어내는 것은 다르죠.","question":"지금 해야 할 말은 무엇이고, 어떻게 전하면 좋을까요?","scenes":["불필요한 것을 정리함","말을 분명히 해야 함","경계를 세울 필요가 생김"],"actions":["핵심을 짧게 설명하기","상대 존중을 잊지 않기","내가 책임질 수 없는 일은 선 긋기"],"state":"판단과 경계가 또렷해지는 상태","direction":"명확한 기준으로 말하되 존중 유지하기"},"swordsking":{"insight":"왕의 검은 판단의 권위를 보여줘요. 하지만 정당한 판단은 직위보다 납득할 수 있는 근거에서 나와요.","question":"내 판단 기준을 다른 사람에게 설명할 수 있을까요?","scenes":["결재나 판단을 맡음","규칙과 감정 사이에서 고민함","공정한 결론이 필요함"],"actions":["기준을 문서화하기","사실을 확인한 후 결정하기","결정 뒤에도 설명과 경청하기"],"state":"책임 있는 판단과 원칙이 요구되는 상태","direction":"합리적으로 결정하고 공정하게 설명하기"},"pentacles1":{"insight":"구름 속 손이 내민 펜타클은 막연한 행운보다 현실적으로 잡을 수 있는 기회예요. 작은 시작을 실제 자원으로 연결해야 해요.","question":"오늘 손에 잡히는 기회 하나는 무엇일까요?","scenes":["새로운 일거리나 제안","배움이나 재정 계획을 시작함","작지만 유용한 자원을 발견함"],"actions":["조건과 비용 확인하기","시작에 필요한 첫 준비하기","실현 가능한 것부터 실행하기"],"state":"현실적인 기회나 기반이 보이는 상태","direction":"작은 기회를 구체적인 계획과 준비로 연결하기"},"pentacles2":{"insight":"리본으로 연결된 두 펜타클은 균형이 고정된 상태가 아니라 계속 조절하는 과정임을 보여줘요.","question":"동시에 하는 일 중 무엇의 속도를 조정해야 할까요?","scenes":["일정이 겹침","두 가지 역할을 병행함","상황에 맞춰 순서를 바꿈"],"actions":["중요도대로 순서 정하기","일정 사이 여유 두기","상대의 속도도 살피기"],"state":"여러 가지 역할과 일정을 조율하는 상태","direction":"유연하게 우선순위 조정하고 속도 맞추기"},"pentacles3":{"insight":"장인과 두 사람은 서로 다른 역할을 존중하고 있어요. 실력을 보여주는 것뿐 아니라 함께 완성하는 방법도 중요해요.","question":"이 일을 잘 끝내기 위해 누구와 협력하면 좋을까요?","scenes":["전문성을 인정받을 기회","협업이나 회의","피드백이 필요한 작업"],"actions":["각자의 역할 분명히 정하기","모르는 부분 조언 구하기","서로의 기여 인정하기"],"state":"협업을 통해 결과를 만들어야 하는 상태","direction":"전문성을 나누고 역할을 정리해 협력하기"},"pentacles4":{"insight":"펜타클을 꽉 붙든 자세는 안정감을 찾으려는 마음과 잃을까 두려운 마음을 함께 보여줘요.","question":"지키려는 것이 정말 중요한가요, 놓기가 두려운 걸까요?","scenes":["예산이나 자원을 아끼려 함","변화에 거부감","나누는 일이 망설여짐"],"actions":["필요한 자원은 지키기","지출이나 시간을 점검하기","지나친 통제는 조금 풀어보기"],"state":"가진 것을 지키고 싶은 마음이 강한 상태","direction":"안정은 지키되 지나친 집착은 놓아보기"},"pentacles5":{"insight":"눈길의 두 사람과 밝은 창문 사이의 거리가 중요해요. 도움과 자원이 아주 멀리 있지 않을 수도 있는데, 힘들수록 그것을 알아채기 어렵다는 카드예요.","question":"지금 내가 부족하다고 느끼는 것은 무엇이며, 필요한 도움을 놓치고 있지는 않을까요?","scenes":["몸과 마음이 쉽게 피로함","혼자 업무나 관계를 감당한다고 느낌","노력에 비해 보상이 부족하다고 느낌"],"actions":["필요한 지원을 구체적으로 말하기","혼자 견디는 일을 줄이기","주변의 도움받을 곳을 찾아보기"],"state":"에너지와 자원이 부족하다고 느끼는 상태","direction":"혼자 버티지 않고 필요한 도움을 찾기"},"pentacles6":{"insight":"저울과 나누는 동전은 주는 사람과 받는 사람 모두의 입장을 생각하게 해요. 도움을 받는 일도 관계의 자연스러운 일부예요.","question":"지금 나눔의 균형이 너무 한쪽으로 기울지 않았나요?","scenes":["내가 계속 베풀기만 함","도움을 요청받음","공정한 분배가 고민됨"],"actions":["가능한 범위에서 돕기","받을 도움은 받아들이기","기준을 공개하고 공정하게 나누기"],"state":"도움과 자원의 균형을 점검하는 상태","direction":"주고받는 역할을 조절해 공정한 관계 만들기"},"pentacles7":{"insight":"농부는 작물이 자라기 전까지 과정을 점검해요. 아직 결과가 없다는 이유로 실패라고 단정하지 않는 태도가 필요해요.","question":"지금 성과를 재촉하기보다 확인할 중간 과정은 무엇일까요?","scenes":["결과가 늦게 보임","오랫동안 준비한 일을 점검함","인내가 필요함"],"actions":["중간 성과를 살피기","필요한 방법만 조금 수정하기","기다리는 동안 할 다른 일을 정하기"],"state":"노력의 결실을 기다리며 점검하는 상태","direction":"조급함을 줄이고 꾸준한 과정 점검하기"},"pentacles8":{"insight":"장인이 하나씩 새기는 모습은 반복이 쌓여 기술이 되는 과정을 보여줘요. 완벽한 한 번보다 지속적인 연습이 중요해요.","question":"지금 내가 조금씩 더 나아지는 부분은 무엇일까요?","scenes":["반복 업무가 많음","실력을 키울 기회","세부에 집중해야 할 일"],"actions":["오늘의 연습량 정하기","완료한 작업 기록하기","완벽주의로 마무리 늦추지 않기"],"state":"꾸준한 연습과 실무가 중요한 상태","direction":"반복을 통해 실력을 쌓되 마무리 기준 정하기"},"pentacles9":{"insight":"정원 속 여인은 이미 쌓아온 자원을 누리는 모습이에요. 좋은 결과를 얻은 사람일수록 모든 것을 직접 더 해내야 하는 건 아니에요.","question":"지금 이룬 것을 충분히 인정하고 누리고 있나요?","scenes":["스스로 성취를 느낌","내 판단에 자신감","생활이 비교적 안정됨"],"actions":["잘한 일 인정하기","나만의 여유 확보하기","필요한 일은 다른 사람과 나누기"],"state":"성과와 자립의 안정감을 느끼는 상태","direction":"성과는 누리되 부담을 더 얹지 않기"},"pentacles10":{"insight":"가족과 도시의 풍경은 개인의 순간적인 만족을 넘어 오래 이어지는 기반을 보여줘요. 안정은 함께 관리할 때 오래갑니다.","question":"지금 세우는 선택이 앞으로도 좋은 기반이 될까요?","scenes":["가족이나 조직의 장기 계획","금전이나 자원의 관리","오래된 관계에 대한 감사"],"actions":["장기적인 영향 살피기","다음 사람에게 이어질 자원 정리하기","함께 지킬 약속 정하기"],"state":"오래가는 기반과 연결을 생각해야 하는 상태","direction":"단기 성과보다 지속 가능한 기반 관리하기"},"pentaclespage":{"insight":"펜타클을 바라보는 청년은 현실적인 배움 앞에서 집중하고 있어요. 작지만 구체적인 지식이 다음 기회로 연결될 수 있어요.","question":"지금 배우면 앞으로 도움이 될 기술 하나는 무엇일까요?","scenes":["새 기술이나 교육을 접함","실무적인 제안","계획을 현실화할 기회"],"actions":["먼저 필요한 정보를 배우기","작은 예산과 시간 정하기","기록을 남겨 다음에 활용하기"],"state":"배움과 현실적 기회가 시작되는 상태","direction":"구체적인 준비와 배움을 행동으로 연결하기"},"pentaclesknight":{"insight":"말을 천천히 움직이는 기사는 성급히 결과를 만들지 않아요. 느리다는 것과 제자리라는 것은 다릅니다.","question":"지금 내 속도를 인정하면서 지킬 약속은 무엇일까요?","scenes":["꾸준한 일상이 계속됨","성실함을 요구받음","결과가 서서히 쌓임"],"actions":["오늘 할 분량 정하기","오래 할 수 있는 속도 고르기","중간에 점검하며 계속하기"],"state":"꾸준한 책임감이 필요한 상태","direction":"조급하지 않게 현실적인 계획을 실천하기"},"pentaclesqueen":{"insight":"여왕이 품에 든 펜타클과 주변 자연은 실질적인 돌봄을 보여줘요. 따뜻함은 말뿐 아니라 생활을 챙기는 행동에서도 드러나요.","question":"지금 나와 주변 사람에게 실질적으로 필요한 것은 무엇일까요?","scenes":["누군가의 일상을 챙김","시간과 자원을 관리함","안정된 환경을 만들고 싶음"],"actions":["구체적인 도움 제공하기","내 생활도 돌보기","지출과 체력을 무리 없이 관리하기"],"state":"일상과 자원을 따뜻하게 돌봐야 하는 상태","direction":"사람을 챙기되 내 자원도 균형 있게 관리하기"},"pentaclesking":{"insight":"왕의 풍요는 하루아침의 행운이 아니라 오래 축적한 자원을 잘 관리하는 모습이에요. 책임감과 위임은 함께 가야 해요.","question":"지금 내가 직접 해야 할 일과 맡겨도 될 일은 무엇일까요?","scenes":["자원과 예산을 결정함","성과를 안정적으로 관리함","책임 있는 역할을 수행함"],"actions":["장기적 기준 세우기","위임할 일 정하기","성과에만 머물지 않고 사람 살피기"],"state":"경험과 자원을 안정적으로 관리하는 상태","direction":"현실적인 기준으로 성과를 지키고 책임 나누기"}};
+const PAIR_SPECIAL = {"펜타클 5|컵 8":{"lead":"펜타클 5는 에너지와 자원이 부족하다고 느끼는 상태를 보여주고, 컵 8은 지금의 소모적인 상황에서 한 발 물러나는 선택을 제안해요.","focus":"여기서 중요한 것은 부족한 것을 무조건 더 채우려 애쓰는 대신, 무엇이 나를 지치게 하는지 구별하는 일이에요. 컵 8은 단순히 쉬거나 포기하라는 카드가 아니라 계속할 일과 떠날 일을 판단하라는 조언에 더 가깝습니다.","question":"내가 지금까지 중요하다고 여겨 붙잡던 것이 여전히 나에게 가치가 있을까요?"},"펜타클 9|완드 10":{"lead":"펜타클 9는 그동안 쌓아온 성과와 안정감을 보여줘요. 반면 완드 10은 그 성과를 지키려다 너무 많은 짐을 혼자 들고 있지는 않은지 돌아보게 합니다.","focus":"안정적으로 잘 돌아가는 일에도 보이지 않는 부담은 있을 수 있어요. 책임을 다하는 것과 세부 업무까지 혼자 떠맡는 것은 구분해야 합니다.","question":"지금 내가 나누거나 내려놓아도 되는 책임은 무엇일까요?"},"펜타클 2|7 전차":{"lead":"펜타클 2는 여러 일을 동시에 맞추는 유연함을, 전차는 목표를 향해 나아가는 추진력을 보여줘요.","focus":"두 카드가 함께 나왔을 때는 단순히 더 빨리 가라는 뜻이 아니에요. 균형을 잃지 않도록 속도를 조절하면서 필요한 일에 힘을 모으라는 이야기입니다.","question":"오늘 가장 중요한 목표 하나를 지키면서 무엇의 속도를 조절해야 할까요?"},"4 황제|검 4":{"lead":"황제는 흔들리지 않는 기준과 책임을 보여주고, 검 4는 그 기준을 지키는 사람에게도 멈춤과 회복이 필요하다고 조언해요.","focus":"모든 일을 끝까지 직접 챙겨야 원칙이 지켜지는 것은 아닙니다. 급한 일의 기준을 분명히 하고 나머지는 쉬어갈 때 오히려 판단을 안정적으로 유지할 수 있어요.","question":"오늘 꼭 결정할 것과 내일로 미뤄도 될 것은 무엇일까요?"},"17 별|검 2":{"lead":"별은 회복과 희망이 다시 자라나는 흐름을, 검 2는 그 과정에서 결정을 지나치게 미루고 있지는 않은지 살펴보라고 말해요.","focus":"마음이 좋아지고 있다고 해서 모든 사람을 만족시킬 정답까지 찾을 필요는 없습니다. 지금 내가 감당할 수 있는 선택을 차분히 좁혀가는 것이 더 현실적인 조언이에요.","question":"모두가 만족하는 답 대신 내가 책임질 수 있는 선택은 무엇일까요?"},"검 에이스|컵 2":{"lead":"검 에이스는 생각이 또렷해지는 상황이고, 컵 2는 그 결론을 상대와 조율하는 태도를 강조해요.","focus":"내가 정확히 알고 있다고 느끼는 순간일수록 말이 날카로워질 수 있어요. 분명한 판단과 따뜻한 대화는 반대가 아니라 함께 필요한 능력입니다.","question":"내 결론을 말한 뒤 상대의 생각을 충분히 들을 수 있을까요?"}};
 const pill = a => a.map(x=>`<span class="pill">${x}</span>`).join("");
 function readingHTML(c,role,body){
+  const d=CARD_DEPTH[c.id];
+  const isAdvice=role.includes("조언");
+  const entries=isAdvice?d.actions:d.scenes;
+  const label=isAdvice?"조언을 생활에 적용하면":"오늘 이런 모습으로 나타날 수 있어요";
+  const items=entries.map(item=>`<li>${escapeHTML(item)}</li>`).join("");
+  const intro=isAdvice?"이 카드가 조언일 때는":"오늘의 흐름으로 읽으면";
   return `<div class="role">${role}</div>
   <div class="reading-layout">
     <div class="reading-visual">
@@ -2914,8 +2979,16 @@ function readingHTML(c,role,body){
     <div class="reading-details">
       <h3 class="name">${c.name}</h3><div class="meta">${c.english} · ${c.group}</div>
       <div class="pills">${pill(c.keywords)}</div>
-      <div class="symbol"><b>그림이 말하는 것</b><p>${c.symbol}</p></div>
-      <div class="interp">${body}</div>
+      <div class="meaning-block"><div class="meaning-kicker">그림에서 읽어보세요</div><p>${c.symbol}</p></div>
+      <div class="meaning-insight"><b>이 그림이 전하는 핵심</b><p>${escapeHTML(d.insight)}</p></div>
+      <div class="meaning-daily"><b>${intro}</b><p>${body}</p></div>
+      <details class="detail-extra">
+        <summary>일상 사례와 생각해 볼 질문 <span>더 읽기</span></summary>
+        <div class="detail-extra-content">
+          <div class="meaning-examples"><b>${label}</b><ul>${items}</ul></div>
+          <div class="reflection"><span>나에게 던지는 질문</span><p>“${escapeHTML(d.question)}”</p></div>
+        </div>
+      </details>
     </div>
   </div>`;
 }
@@ -2965,11 +3038,46 @@ function buildIntegratedTip(f,a){
   return [`오늘은 ${flow}, ${caution}.`,action];
 }
 
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
+}
+function twoCardMeaning(f,a){
+  const key=`${f.name}|${a.name}`;
+  const exact=PAIR_SPECIAL[key];
+  if(exact) return exact;
+  const fd=CARD_DEPTH[f.id], ad=CARD_DEPTH[a.id];
+  const lead=`첫 카드 ${f.name}의 핵심은 ‘${fd.state}’입니다. 두 번째 카드 ${a.name}의 조언은 ‘${ad.direction}’입니다.`;
+  const adviceCategory=TIP_CATEGORY[a.name]||"practical";
+  const mode=TIP_ADVICE_MODE[adviceCategory]||"prioritize";
+  const pairFocus={
+    pace:"여기서 눈여겨볼 부분은 속도보다 방향이에요. 에너지를 살리되 급한 마음이 놓치게 만드는 조건이 없는지 살펴보세요.",
+    prioritize:"조언 카드는 무조건 더 노력하기보다 무엇을 먼저 챙길지 정하라고 말해요. 가장 중요한 것 하나가 무엇인지 구분하는 것이 핵심입니다.",
+    connect:"혼자 해석하고 결정하는 것만으로는 부족할 수 있어요. 관계 속 상대의 마음과 실제 상황을 확인할 때 첫 카드의 의미도 달리 보일 수 있습니다.",
+    decide:"조언 카드가 강조하는 것은 완벽한 정답이 아니라 판단의 기준이에요. 지금 확인할 수 있는 사실을 토대로 책임질 수 있는 선택을 좁혀 보세요.",
+    adapt:"현재 흐름을 억지로 고정하려 하기보다 달라진 상황에 맞춰 대응하는 태도가 중요해요. 고집할 것과 바꿀 것을 구분해 보세요.",
+    rest:"지금은 더 오래 버티는 것이 능사가 아닐 수 있어요. 계속할 일과 잠시 멈출 일을 나누는 것이 두 카드를 실생활에 적용하는 방법입니다.",
+    protect:"중요한 점은 문제를 전부 피하라는 것이 아니에요. 마음과 시간을 지키기 위해 필요한 선을 긋고 해결할 수 있는 부분부터 보는 것이 좋습니다.",
+    advance:"생각만 하다 놓치는 기회도 있을 수 있어요. 현재 상황을 인정한 다음 부담이 적은 행동 하나로 연결하는 데 초점을 맞춰 보세요.",
+    celebrate:"결과를 더 끌어올리려다 이미 얻은 것을 놓치지 않는 것도 중요해요. 지금까지 해낸 일을 인정한 뒤 다음 단계를 정해도 늦지 않습니다."
+  };
+  const focus=pairFocus[mode];
+  const question=`${fd.question} 그리고 조언 카드에서 말하는 ‘${ad.direction}’을 오늘의 작은 선택 하나에 어떻게 연결할 수 있을까요?`;
+  return {lead,focus,question};
+}
+function renderTwoCardMeaning(f,a){
+  const m=twoCardMeaning(f,a);
+  return `<div class="pair-header">두 카드를 연결해서 보면</div>
+    <div class="pair-flow"><span>${escapeHTML(f.name)}</span><i aria-hidden="true">+</i><span>${escapeHTML(a.name)}</span></div>
+    <p class="pair-lead">${escapeHTML(m.lead)}</p>
+    <p class="pair-focus">${escapeHTML(m.focus)}</p>
+    <p class="pair-question"><b>오늘 특히 생각해 볼 질문</b><span>“${escapeHTML(m.question)}”</span></p>`;
+}
 function showResult(){
   const [f,a]=picked;
   $("#flowCard").innerHTML=readingHTML(f,"오늘의 흐름 카드",f.flow);
   $("#adviceCard").innerHTML=readingHTML(a,"오늘의 조언 카드",a.advice);
 
+  $("#pairReading").innerHTML=renderTwoCardMeaning(f,a);
   const integratedTip=buildIntegratedTip(f,a);
   $("#tipIntegrated").innerHTML=integratedTip.map(t=>`<p class="tipline">${t}</p>`).join("");
 
@@ -3027,8 +3135,8 @@ async function makeCanvas(){
   return c;
 }
 async function prepareShareImage(){
-  $("#shareBtn").disabled=true;
-  $("#shareBtn").textContent="공유 준비 중…";
+  $("#shareBtn").disabled=false;
+  $("#shareBtn").textContent="공유하기";
   try{
     const canvas=await makeCanvas();
     shareBlob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",.94));
@@ -3040,7 +3148,7 @@ async function prepareShareImage(){
   }catch(e){
     console.warn(e);
     $("#shareBtn").textContent="공유하기";
-    toast("공유 이미지를 준비하지 못했어요. 인터넷 연결을 확인해 주세요.");
+    $("#shareBtn").disabled=false; // 이미지 없이도 텍스트와 주소를 공유할 수 있습니다.
   }
 }
 async function nativeShare(){
@@ -3085,12 +3193,9 @@ async function nativeShare(){
   }
 
   // 휴대폰: JPG 파일을 OS 기본 공유창으로 전달 → 카카오톡 선택.
-  if(!shareFile){
-    toast("공유 이미지를 아직 준비 중이에요. 잠시 후 다시 눌러주세요.");
-    return;
-  }
+  // 이미지가 아직 준비되지 않았다면 아래의 텍스트·주소 공유로 넘어갑니다.
 
-  const canShareFile = !!(window.isSecureContext && navigator.share &&
+  const canShareFile = !!(shareFile && window.isSecureContext && navigator.share &&
     (!navigator.canShare || navigator.canShare({files:[shareFile]})));
 
   if(canShareFile){
