@@ -832,8 +832,23 @@ footer{color:#8b828f}
   .reading-details .meaning-caution{font-size:12px;padding:8px 0 9px 10px;margin-bottom:13px}
 }
 
+
+/* v22: 역할 구분이 있는 연결 해석과 한 줄짜리 실천 TIP */
+.pair-reading .pair-lead{font-weight:650;color:#403547}
+.pair-reading .pair-focus{font-weight:430;color:#4a4050}
+.pair-reading .pair-flow span:first-child{border-color:#d1c2d8;background:#f5f0f8}
+.pair-reading .pair-flow span:last-child{border-color:#e5d6bf;background:#fffbf3}
+.tipbox{padding:18px 18px 20px}
+.tipbox .tiptitle{margin-bottom:10px}
+.integrated-tip .tipline,.integrated-tip .tipline:last-child{color:#d97706;font-weight:900;font-size:16px;line-height:1.62;letter-spacing:-.01em}
+@media(max-width:679px){
+  .pair-reading .pair-flow{gap:5px;margin-bottom:12px}
+  .pair-reading .pair-flow span{padding:4px 8px;font-size:10px}
+  .tipbox{padding:15px 14px 16px}
+  .integrated-tip .tipline,.integrated-tip .tipline:last-child{font-size:14px;line-height:1.62}
+}
 </style>
-<title>오늘, 보리타로 · v21 해석 개선</title>
+<title>오늘, 보리타로 · v22 흐름과 조언</title>
 </head>
 <body>
 <header class="wrap top">
@@ -888,7 +903,7 @@ footer{color:#8b828f}
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v21</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v22</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -3064,36 +3079,39 @@ function buildIntegratedTip(f,a){
 function escapeHTML(s){
   return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
 }
-function twoCardMeaning(f,a){
-  const key=`${f.name}|${a.name}`;
-  const exact=PAIR_SPECIAL[key];
-  if(exact) return exact;
-  const fd=CARD_DEPTH[f.id], ad=CARD_DEPTH[a.id];
-  const lead=`첫 카드 ${f.name}의 핵심은 ‘${fd.state}’입니다. 두 번째 카드 ${a.name}의 조언은 ‘${ad.direction}’입니다.`;
-  const adviceCategory=TIP_CATEGORY[a.name]||"practical";
-  const mode=TIP_ADVICE_MODE[adviceCategory]||"prioritize";
-  const pairFocus={
-    pace:"여기서 눈여겨볼 부분은 속도보다 방향이에요. 에너지를 살리되 급한 마음이 놓치게 만드는 조건이 없는지 살펴보세요.",
-    prioritize:"조언 카드는 무조건 더 노력하기보다 무엇을 먼저 챙길지 정하라고 말해요. 가장 중요한 것 하나가 무엇인지 구분하는 것이 핵심입니다.",
-    connect:"혼자 해석하고 결정하는 것만으로는 부족할 수 있어요. 관계 속 상대의 마음과 실제 상황을 확인할 때 첫 카드의 의미도 달리 보일 수 있습니다.",
-    decide:"조언 카드가 강조하는 것은 완벽한 정답이 아니라 판단의 기준이에요. 지금 확인할 수 있는 사실을 토대로 책임질 수 있는 선택을 좁혀 보세요.",
-    adapt:"현재 흐름을 억지로 고정하려 하기보다 달라진 상황에 맞춰 대응하는 태도가 중요해요. 고집할 것과 바꿀 것을 구분해 보세요.",
-    rest:"지금은 더 오래 버티는 것이 능사가 아닐 수 있어요. 계속할 일과 잠시 멈출 일을 나누는 것이 두 카드를 실생활에 적용하는 방법입니다.",
-    protect:"중요한 점은 문제를 전부 피하라는 것이 아니에요. 마음과 시간을 지키기 위해 필요한 선을 긋고 해결할 수 있는 부분부터 보는 것이 좋습니다.",
-    advance:"생각만 하다 놓치는 기회도 있을 수 있어요. 현재 상황을 인정한 다음 부담이 적은 행동 하나로 연결하는 데 초점을 맞춰 보세요.",
-    celebrate:"결과를 더 끌어올리려다 이미 얻은 것을 놓치지 않는 것도 중요해요. 지금까지 해낸 일을 인정한 뒤 다음 단계를 정해도 늦지 않습니다."
+// v22: 첫 번째 카드는 오늘의 흐름, 두 번째 카드는 그 상황에서 필요한 조언입니다.
+// 순서를 바꾸면 서로 다른 해석이 나옵니다. 타로는 예측이 아니라 성찰 도구로 읽습니다.
+const PAIR_BRIDGES_V22={"balance":{"pace":"여러 일을 맞추는 날에는 속도만 높이면 한쪽이 쉽게 무너져요. 추진력을 쓰더라도 일과 사람의 균형을 함께 살펴야 합니다.","prioritize":"균형을 지킨다는 것이 모든 일에 같은 시간을 쓰라는 뜻은 아니에요. 지금 중요한 일에 먼저 힘을 써야 나머지도 안정됩니다.","connect":"혼자 역할을 조정하면 상대가 원하는 것을 놓치기 쉬워요. 서로의 몫과 사정을 확인해야 균형을 실제로 맞출 수 있습니다.","decide":"여러 요구를 동시에 만족시킬 수 없을 때는 무엇을 우선할지 기준이 필요해요. 무작정 버티는 것보다 결정의 근거를 분명히 하는 편이 낫습니다.","adapt":"상황이 움직일 때마다 같은 비율로 모든 일을 유지할 수는 없어요. 유연하게 조정하는 태도가 오히려 균형을 지키는 방법입니다.","rest":"여러 일을 잘 해내려는 마음이 휴식을 맨 뒤로 밀어낼 수 있어요. 쉬는 시간을 확보해야 조율할 힘도 남습니다.","protect":"모두에게 맞춰주는 것이 곧 균형은 아니에요. 감당할 수 있는 범위를 정해야 오래 유지할 수 있습니다.","advance":"여러 일을 한꺼번에 정리하려다 시작도 늦어질 수 있어요. 작은 한 부분부터 움직여야 전체의 균형도 보입니다.","celebrate":"이미 해낸 것까지 계속 책임지려 하면 일은 끝나지 않아요. 성과를 인정해야 다음 일의 무게도 가볍게 조절할 수 있습니다."},"people":{"pace":"상대의 마음이 중요한 날에는 내 결론이 빨라도 상대의 준비는 다를 수 있어요. 관계를 지키는 속도로 움직이는 편이 유리합니다.","prioritize":"모든 사람의 기분과 요구를 똑같이 챙기려 하면 마음이 소진되기 쉬워요. 지금 가장 중요한 관계부터 살피는 게 현실적입니다.","connect":"관계의 흐름을 혼자 짐작하는 것만으로는 부족해요. 실제 말을 주고받을 때 서로의 입장도 더 분명해집니다.","decide":"누군가를 배려하는 것과 내 기준 없이 끌려가는 것은 달라요. 관계 속에서도 스스로 책임질 선택이 필요합니다.","adapt":"사람 사이의 분위기는 하루에도 달라질 수 있어요. 예전 반응을 기준으로 단정하지 않으면 조정할 여지가 생깁니다.","rest":"공감이 깊은 날일수록 다른 사람의 감정까지 내가 해결해야 한다고 느낄 수 있어요. 마음을 돌볼 거리도 필요합니다.","protect":"부드러운 태도와 분명한 경계는 함께 갈 수 있어요. 관계를 지키기 위해서도 감당하기 어려운 요구는 구분해야 합니다.","advance":"관계에 관한 생각만 오래 하면 오해가 남기 쉬워요. 부담 없는 작은 접촉이 지금 상황을 이해하는 데 도움을 줄 수 있습니다.","celebrate":"사람들과 느끼는 긍정적인 순간을 지나치지 않는 게 중요해요. 좋은 마음을 표현하는 것이 관계의 기반이 됩니다."},"growth":{"pace":"시작하는 일에는 열정이 필요하지만, 준비되지 않은 속도는 좋은 기회를 소진시킬 수 있어요. 추진력과 확인을 함께 가져가야 합니다.","prioritize":"새로운 기회가 여럿 보여도 모두 붙잡을 필요는 없어요. 지금 실현 가능한 것부터 선택해야 가능성이 성과로 이어집니다.","connect":"아이디어는 혼자 품을 때와 다른 사람의 눈으로 볼 때 모양이 달라져요. 적절한 피드백이 시작의 방향을 다듬어 줍니다.","decide":"가능성이 열린 순간에는 무엇이든 할 수 있을 듯 느껴질 수 있어요. 기준을 정하면 기대를 현실적인 선택으로 바꾸기 쉬워집니다.","adapt":"처음 세운 계획은 작은 실험을 통해 바뀔 수 있어요. 수정할 여지를 남겨둬야 새로운 가능성을 더 잘 살릴 수 있습니다.","rest":"새로운 일의 설렘이 커도 에너지는 한정돼 있어요. 시작부터 지속 가능한 분량을 정하는 것이 오래 가는 방법입니다.","protect":"시작 단계에는 기대뿐 아니라 예상하지 못한 조건도 있어요. 필요 없는 약속을 늘리지 않는 것이 기회를 지키는 길입니다.","advance":"준비가 충분해질 때까지 기다리면 배울 기회가 멀어질 수 있어요. 작게 시험해 보는 경험이 다음 판단의 근거가 됩니다.","celebrate":"새로운 시도에만 집중하면 이미 쌓은 능력을 과소평가할 수 있어요. 잘해 온 것을 기반으로 삼아야 다음 단계도 단단해집니다."},"work":{"pace":"일이 잘 진행된다고 해서 계속 속도를 높일 이유는 없어요. 성과의 질과 주변 사람의 흐름까지 살펴야 결과가 오래갑니다.","prioritize":"이미 안정적으로 굴러가는 부분까지 직접 챙기면 중요한 판단에 쓸 힘이 줄어요. 잘되는 일은 믿고 맡길 때도 필요합니다.","connect":"성과가 눈에 보일수록 함께 만든 사람의 역할을 놓치기 쉬워요. 협력이 더해져야 그 결과를 지속하기 좋습니다.","decide":"잘해 온 방식이라도 지금 상황에 모두 맞는 것은 아니에요. 성과를 바탕으로 유지할 것과 바꿀 것을 판단해야 합니다.","adapt":"안정은 같은 방식을 고집해서만 지켜지지 않아요. 조건이 달라지면 운영 방식도 조금씩 조정할 필요가 있습니다.","rest":"기반이 단단한 날일수록 추가 책임을 더 떠안을 유혹이 생길 수 있어요. 회복할 여유를 남기는 것이 성과를 지키는 방법입니다.","protect":"지금까지의 성과가 앞으로의 모든 요구를 감당해야 한다는 뜻은 아니에요. 일의 범위를 분명히 해야 안정도 유지됩니다.","advance":"이미 해낸 일이 있어도 멈춰 있을 필요는 없어요. 다만 기존 성과를 무너뜨리지 않을 만큼 작은 다음 단계를 택하는 게 좋습니다.","celebrate":"마무리한 결과를 인정하지 않으면 만족할 틈 없이 다음 부담만 생겨요. 성과를 누리는 시간도 과정의 일부입니다."},"decision":{"pace":"판단이 필요한 때에는 결론의 속도보다 근거가 중요해요. 빨리 움직이더라도 핵심 사실을 빠뜨리지 않도록 살펴야 합니다.","prioritize":"선택지는 많아도 모두 같은 무게를 갖지는 않아요. 중요한 기준을 정하면 고민에 드는 힘도 줄일 수 있습니다.","connect":"내 판단이 분명할수록 상대에게는 단정적으로 들릴 수 있어요. 대화를 통해 생각을 조율하는 것이 결론을 약하게 만들지는 않습니다.","decide":"정답을 찾겠다고 계속 비교하다 보면 선택 자체가 늦어질 수 있어요. 충분한 근거가 있다면 감당 가능한 결론을 세워야 합니다.","adapt":"처음의 결론이 언제나 최종 답일 필요는 없어요. 달라진 조건을 반영하는 것도 책임 있는 판단입니다.","rest":"판단이 흐려질 만큼 지친 상태에서는 좋은 기준도 쓰기 어려워요. 지금 꼭 결정할 부분과 쉬었다 볼 부분을 나누는 편이 낫습니다.","protect":"중요한 결정을 앞두면 외부 요구에 끌려가기 쉬워요. 어떤 기준만큼은 지켜야 하는지 스스로 알고 있어야 합니다.","advance":"계속 생각만 해서는 선택의 결과를 알기 어려워요. 작은 확인이나 시험이 결정의 확신을 도와줄 수 있습니다.","celebrate":"잘 판단해 온 경험도 현재 선택의 자원이 돼요. 지난 성취를 근거로 삼되 새 상황은 따로 확인할 필요가 있습니다."},"change":{"pace":"익숙한 방식에 머물고 싶거나 방향을 바꿔야 할 때, 서두른 대응은 오히려 혼란을 키울 수 있어요. 먼저 무엇을 유지할지 정해야 움직임도 분명해집니다.","prioritize":"모든 것을 계속 쥐고 갈 수는 없어요. 지금의 나에게 필요한 부분부터 남겨야 부담을 줄일 수 있습니다.","connect":"무언가 지키거나 내려놓는 선택은 주변 사람에게도 영향을 줘요. 실제 상황을 나누면 혼자 짐작하던 부담도 줄일 수 있습니다.","decide":"예전에는 맞았던 기준이 지금도 최선인지는 따로 살펴야 해요. 확인할 수 있는 사실과 현재의 필요를 함께 놓고 판단하면 좋겠습니다.","adapt":"이미 익숙한 방법만 고집하면 새로운 선택지가 좁아질 수 있어요. 지킬 것과 조정할 것을 구분하는 태도가 필요합니다.","rest":"무언가를 지키거나 정리하는 일에도 에너지가 들어요. 모든 문제를 한 번에 처리하기보다 시간을 나누어 살펴볼 필요가 있습니다.","protect":"익숙하다는 이유로 불편한 요구까지 떠안을 필요는 없어요. 지금도 내 책임이어야 하는 부분이 무엇인지 구분해야 합니다.","advance":"기존 생각을 놓기 어렵더라도 완벽히 확신할 때까지 멈춰 있어야 하는 건 아니에요. 부담 없는 작은 행동으로 현재 방향을 확인할 수 있습니다.","celebrate":"지키려 했던 것, 혹은 아쉬웠던 것만 바라보면 이미 남아 있는 자원을 놓치기 쉬워요. 지금 충분한 부분을 알아차리는 태도도 중요합니다."},"pace":{"pace":"움직이는 힘이 있는 날에는 작은 차이가 큰 결과로 이어질 수 있어요. 기세를 살리되 주변의 속도와 목적을 함께 확인해야 합니다.","prioritize":"움직이고 싶은 일이 많아질수록 힘이 분산되기 쉬워요. 중심 목표를 정하면 추진력도 더 효과적으로 쓸 수 있습니다.","connect":"혼자 빨리 가는 것과 함께 같은 방향으로 가는 것은 달라요. 필요한 사람과 속도를 맞추면 시행착오를 줄일 수 있습니다.","decide":"추진력이 높다고 판단까지 서둘러야 하는 것은 아니에요. 중요한 기준을 한 번 점검해야 속도가 방향을 잃지 않습니다.","adapt":"움직이는 도중 조건이 달라지면 방향을 조정해야 해요. 빠르게 가려는 마음만큼 현재 상황을 다시 보는 힘도 필요합니다.","rest":"계속 전진하는 것만이 추진력의 증거는 아니에요. 힘을 쓰는 구간과 회복하는 구간을 나눠야 오래갑니다.","protect":"기세가 좋을수록 다른 사람의 요구까지 쉽게 떠안을 수 있어요. 내가 책임질 수 있는 범위를 지키는 것이 더 현명합니다.","advance":"지금 행동할 힘이 있다면 막연히 기다리기보다 작은 결과를 만드는 데 쓰는 편이 좋아요. 첫 단계가 다음 단계를 보여줍니다.","celebrate":"잘 나아가고 있는 부분을 알아차리면 불필요하게 속도를 더 낼 이유가 줄어요. 잠시 성과를 확인하는 것도 필요한 선택입니다."},"care":{"pace":"마음을 살펴야 할 때 무작정 빨리 움직이면 중요한 감정이나 신호를 놓칠 수 있어요. 속도를 조절해야 무엇이 필요한지도 보입니다.","prioritize":"쉬고 돌봐야 할 일이 겹쳐도 모두 같은 순간에 해결할 수는 없어요. 지금의 회복에 가장 필요한 부분부터 챙겨야 합니다.","connect":"혼자 마음을 정리하려다 걱정을 키울 수 있어요. 믿을 만한 사람과의 대화가 상황을 다른 각도에서 보게 해줍니다.","decide":"마음이 복잡하다고 결론을 영원히 미룰 필요는 없어요. 확인할 사실과 감정을 구분하면 선택이 조금 선명해집니다.","adapt":"감정이 달라지는 것은 잘못된 일이 아니에요. 오늘의 상태에 맞춰 계획과 기대를 조정하는 것이 회복에 도움이 됩니다.","rest":"마음에 여유가 부족한 때에는 더 버티는 것이 답이 아닐 수 있어요. 회복을 위한 시간을 실제로 확보할 필요가 있습니다.","protect":"내 마음을 돌본다는 것은 모든 요청에 응해야 한다는 뜻이 아니에요. 불편함을 느끼는 지점을 알아차리는 것이 경계의 시작입니다.","advance":"정리할 시간이 필요해도 계속 멈춰만 있을 필요는 없어요. 무리 없는 작은 행동이 다시 흐름을 만들 수 있습니다.","celebrate":"힘든 순간에도 조금 나아진 부분이 있을 수 있어요. 작은 회복을 알아차리면 지나친 조급함도 줄어듭니다."},"challenge":{"pace":"불편한 문제 앞에서 바로 반응하면 상황이 더 커질 수 있어요. 대응의 속도를 조절해야 해결할 문제를 정확히 볼 수 있습니다.","prioritize":"어려운 일이 겹쳐 보여도 전부 동시에 해결해야 하는 것은 아니에요. 지금 손댈 수 있는 부분부터 구분해야 부담이 줄어듭니다.","connect":"마음이 힘들수록 혼자 해결해야 한다고 느끼기 쉬워요. 도움과 대화를 통해 보이지 않던 선택지를 발견할 수 있습니다.","decide":"걱정이 클 때는 생각만으로 결론을 내리기 쉬워요. 실제 확인한 것과 예상한 것을 나눠야 판단이 선명해집니다.","adapt":"불편한 상황을 이전과 똑같이 되돌리려 하면 더 힘들어질 수 있어요. 지금 조건에서 가능한 방향을 찾아야 합니다.","rest":"힘든 상황에서도 버티기만 하면 판단에 쓸 여유가 줄어요. 회복할 시간을 남겨두는 것이 문제를 회피하는 일은 아닙니다.","protect":"불편한 일에 자꾸 끌려 들어간다면 무엇이 내 시간과 마음을 붙잡는지 살펴야 해요. 대응할 문제와 거리를 둘 문제를 구분하는 게 중요합니다.","advance":"어려움의 크기만 생각하면 할 수 있는 일까지 작게 느껴져요. 손댈 수 있는 작은 부분부터 움직이면 상황을 더 정확하게 볼 수 있습니다.","celebrate":"지금 문제가 있다고 그동안의 노력이 모두 사라진 것은 아니에요. 어려움 속에서 지켜낸 것까지 함께 봐야 균형이 생깁니다."}};
+const PAIR_SPECIAL_V22={"18 달|15 악마":{"lead":"오늘의 흐름을 보여주는 달 카드는 상황이 분명하지 않아 작은 걱정이나 의심이 커질 수 있는 하루를 상징해요.","focus":"이때 악마가 조언으로 나온 것은 불안한 마음에 지나치게 매달리지 말라는 뜻입니다. 걱정을 반복하거나 모든 상황을 통제하려는 마음이 오히려 나를 묶고 있지는 않은지 살펴보세요. 확인된 사실과 두려움에서 나온 생각을 나누면 선택할 여지가 더 분명해질 수 있어요.","action":"걱정되는 일 하나에서 확인된 사실과 추측을 나누어 적어보세요."},"펜타클 5|컵 8":{"lead":"오늘의 흐름인 펜타클 5는 에너지가 부족하거나 혼자 많은 일을 감당한다고 느낄 수 있는 상황을 보여줘요.","focus":"이런 때 컵 8이 조언으로 나왔다는 건 부족함을 억지로 채우려고 더 버티기보다, 무엇이 나를 소모시키는지 먼저 살펴보라는 뜻이에요. 컵 8은 실패해서 떠나는 카드가 아니라 지금까지 붙잡던 것이 여전히 나에게 필요한지 판단하는 카드이기도 해요. 따라서 모든 책임을 유지하는 대신 계속할 일과 내려놓을 일을 구분하는 것이 중요합니다.","action":"가장 지치게 하는 일 하나를 정해 오늘 줄이거나 도움을 요청해 보세요."},"펜타클 9|완드 10":{"lead":"오늘의 흐름인 펜타클 9는 그동안 쌓은 성과와 안정감을 누릴 수 있는 상황을 보여줘요.","focus":"그런데 조언으로 나온 완드 10은 일이 잘 돌아간다는 이유로 더 많은 책임을 혼자 짊어지지 말라고 알려줍니다. 안정은 모든 세부 업무를 직접 챙길 때만 유지되는 게 아니에요. 지금까지 해온 일을 믿고 필요한 부담을 나눠야 성과를 오래 지킬 수 있습니다.","action":"이미 잘 진행되는 일은 맡기고, 오늘 직접 챙길 중요한 일 하나만 남겨보세요."},"펜타클 2|7 전차":{"lead":"오늘의 흐름인 펜타클 2는 여러 일과 역할을 동시에 맞추어야 하는 상황을 보여줘요.","focus":"여기서 전차가 조언으로 나왔다면 더 빨리 움직이라는 뜻만은 아니에요. 어떤 일을 중심에 둘지 방향을 먼저 정하고, 함께하는 사람의 속도도 살피며 추진력을 써야 한다는 의미입니다. 유연함을 잃지 않으면서도 방향을 분명히 할 때 여러 일을 더 안정적으로 진행할 수 있어요.","action":"할 일을 중요도대로 나누고 함께하는 사람과 진행 속도를 맞춰보세요."},"4 황제|검 4":{"lead":"오늘의 흐름인 황제는 기준과 책임을 분명히 해야 일이 안정되는 상황을 보여줘요.","focus":"이때 조언인 검 4는 책임을 다하려고 쉬는 시간까지 없애지 말라고 일깨워 줍니다. 원칙을 지킨다는 것과 모든 일을 끝까지 직접 처리한다는 것은 달라요. 중요한 판단에 쓸 힘을 남겨야 기준도 흔들리지 않습니다.","action":"반드시 결정할 일 하나만 처리하고, 급하지 않은 일은 미뤄 쉴 시간을 확보하세요."},"17 별|검 2":{"lead":"별 카드가 보여주는 오늘의 흐름은 조금씩 회복되며 다시 기대를 가져볼 수 있는 상태예요.","focus":"하지만 검 2가 조언으로 나왔다면 그 희망을 완벽한 결론으로 바로 바꾸려고 애쓸 필요는 없다는 뜻이에요. 모든 사람을 만족시키려 결정을 미루기보다, 지금 내가 감당할 수 있는 기준을 세워 선택지를 좁혀보세요. 회복 중이라는 사실과 판단을 피하는 것은 구분하는 편이 좋아요.","action":"기준 하나를 정해 지금 책임질 수 있는 선택지 하나로 좁혀보세요."},"검 에이스|컵 2":{"lead":"오늘의 흐름 카드인 검 에이스는 판단이 또렷해지고 결론이 분명해지는 상황을 보여줘요.","focus":"이런 때 컵 2가 조언으로 나온 것은 옳은 답을 아는 것만큼 그 답을 어떻게 나누는지도 중요하다는 뜻이에요. 내 결론만 밀어붙이지 않고 상대의 생각을 들으면 분명한 판단을 유지하면서 관계도 함께 돌볼 수 있습니다.","action":"중요한 대화에서 내 의견을 말한 뒤 상대에게 어떻게 생각하는지 물어보세요."},"19 태양|15 악마":{"lead":"오늘의 흐름인 태양은 자신감과 활력이 자연스럽게 드러날 수 있는 하루를 보여줘요.","focus":"그런데 악마가 조언으로 나왔다면 기분이 좋다는 이유로 욕심이나 익숙한 유혹까지 정당화하지 말라는 뜻이에요. 즐거움을 누리되 정말 원하는 선택인지, 순간의 만족을 위해 무리하고 있지는 않은지 살피는 태도가 도움이 됩니다.","action":"오늘 하고 싶은 일 하나는 즐기되, 추가 약속이나 지출은 한 번 더 확인해 보세요."},"완드 10|펜타클 킹":{"lead":"오늘의 흐름인 완드 10은 많은 책임이 한꺼번에 무겁게 느껴질 수 있는 상황을 보여줘요.","focus":"이때 펜타클 킹이 조언으로 나온 것은 무조건 버티라는 뜻이 아니라 경험과 자원을 활용해 부담을 관리하라는 메시지예요. 나만 할 수 있는 판단은 내가 하되, 나누어도 되는 실무까지 모두 떠맡지 않아도 됩니다.","action":"오늘 맡은 일 가운데 직접 결정할 것과 다른 사람에게 맡길 것을 나눠보세요."},"15 악마|18 달":{"lead":"오늘의 흐름인 악마는 익숙한 습관이나 놓기 어려운 생각에 스스로 묶여 있다고 느끼기 쉬운 상태를 보여줘요.","focus":"이때 달이 조언으로 나온 것은 그 생각이 사실인지 두려움과 추측이 섞인 것인지 확인하라는 뜻입니다. 억지로 모두 끊어내려 하기보다 왜 붙잡고 있는지 차분히 살펴보면 실제로 선택할 수 있는 부분이 드러날 수 있어요.","action":"놓기 어려운 습관 하나의 이유를 적고, 확인된 사실인지 추측인지 구분해 보세요."},"검 3|컵 8":{"lead":"오늘의 흐름인 검 3은 불편한 말이나 감정을 피하지 않고 마주해야 하는 순간을 상징해요.","focus":"그 상황에서 컵 8이 조언으로 나왔다면 아픈 마음을 부정하라는 뜻이 아닙니다. 상처를 충분히 인정하되 같은 장면을 계속 되새겨 자신을 소모시키지는 말라는 의미에 가까워요. 필요한 거리를 두는 선택도 회복의 일부입니다.","action":"자꾸 떠오르는 불편한 일에는 잠시 거리를 두고, 회복에 도움이 되는 시간 하나를 마련하세요."},"18 달|검 2":{"lead":"오늘의 흐름인 달은 아직 상황이 분명하지 않아 걱정과 추측이 커질 수 있다는 흐름을 보여줘요.","focus":"조언으로 나온 검 2는 결정을 미루면서 마음을 잠시 안정시킬 수는 있지만, 계속 피한다고 답이 생기는 것은 아니라고 말합니다. 지금 확인할 수 있는 정보를 모으고, 그 뒤에 내가 책임질 수 있는 선택을 하는 편이 좋아요.","action":"결정할 문제에서 아직 확인하지 않은 사실 한 가지를 먼저 알아보세요."}};
+function pairFamilyAndMode(f,a){
+  const fc=TIP_CATEGORY[f.name]||"practical";
+  const ac=TIP_CATEGORY[a.name]||"balance";
+  return {
+    family:TIP_FLOW_FAMILY[fc]||"growth",
+    mode:TIP_ADVICE_MODE[ac]||"prioritize"
   };
-  const focus=pairFocus[mode];
-  const question=`${fd.question} 그리고 조언 카드에서 말하는 ‘${ad.direction}’을 오늘의 작은 선택 하나에 어떻게 연결할 수 있을까요?`;
-  return {lead,focus,question};
+}
+function v22PairInterpretation(f,a){
+  const specific=PAIR_SPECIAL_V22[`${f.name}|${a.name}`];
+  if(specific) return specific;
+  const fd=CARD_DEPTH[f.id], ad=CARD_DEPTH[a.id];
+  const {family,mode}=pairFamilyAndMode(f,a);
+  const lead=`오늘의 흐름을 나타내는 ${f.name} 카드에는 ‘${fd.state}’라는 의미가 담겨 있어요.`;
+  const explanation=`이런 상황에서 조언으로 나온 ${a.name} 카드는 ‘${ad.direction}’에 초점을 맞추라고 말해요. ${PAIR_BRIDGES_V22[family][mode]}`;
+  return {lead,focus:explanation,action:null};
+}
+function v22OneLineTip(f,a){
+  const specific=PAIR_SPECIAL_V22[`${f.name}|${a.name}`];
+  if(specific) return specific.action;
+  const {family,mode}=pairFamilyAndMode(f,a);
+  return TIP_PAIR_ACTIONS[family][mode];
 }
 function renderTwoCardMeaning(f,a){
-  const m=twoCardMeaning(f,a);
-  return `<div class="pair-header">두 카드를 연결해서 보면</div>
-    <div class="pair-flow"><span>${escapeHTML(f.name)}</span><i aria-hidden="true">+</i><span>${escapeHTML(a.name)}</span></div>
+  const m=v22PairInterpretation(f,a);
+  return `<div class="pair-header">오늘의 흐름에 필요한 조언</div>
+    <div class="pair-flow"><span>오늘의 흐름 · ${escapeHTML(f.name)}</span><i aria-hidden="true">→</i><span>조언 · ${escapeHTML(a.name)}</span></div>
     <p class="pair-lead">${escapeHTML(m.lead)}</p>
-    <p class="pair-focus">${escapeHTML(m.focus)}</p>
-    <p class="pair-question"><b>오늘 특히 생각해 볼 질문</b><span>“${escapeHTML(m.question)}”</span></p>`;
+    <p class="pair-focus">${escapeHTML(m.focus)}</p>`;
 }
 function showResult(){
   const [f,a]=picked;
@@ -3101,7 +3119,7 @@ function showResult(){
   $("#adviceCard").innerHTML=readingHTML(a,"오늘의 조언 카드",a.advice);
 
   $("#pairReading").innerHTML=renderTwoCardMeaning(f,a);
-  const integratedTip=buildIntegratedTip(f,a);
+  const integratedTip=[v22OneLineTip(f,a)];
   $("#tipIntegrated").innerHTML=integratedTip.map(t=>`<p class="tipline">${t}</p>`).join("");
 
   currentReading={
@@ -3266,7 +3284,7 @@ function openHistory(){
     const flowCard=cards.find(c=>c.id===v.flowId)||cards.find(c=>c.name===v.flowName);
     const adviceCard=cards.find(c=>c.id===v.adviceId)||cards.find(c=>c.name===v.adviceName);
     const tip=(flowCard&&adviceCard)
-      ? buildIntegratedTip(flowCard,adviceCard).join(" ")
+      ? v22OneLineTip(flowCard,adviceCard)
       : ((v.integratedTip&&v.integratedTip.length)
         ? v.integratedTip.join(" ")
         : [...(v.tipFlow||[]),...(v.tipAdvice||[])].join(" "));
