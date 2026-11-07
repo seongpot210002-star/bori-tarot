@@ -851,8 +851,72 @@ footer{color:#8b828f}
 .pair-reading .pair-lead{font-weight:500;line-height:1.82}
 .pair-reading .pair-focus{font-weight:500;line-height:1.85}
 @media(max-width:679px){.pair-reading .pair-lead,.pair-reading .pair-focus{line-height:1.76}}
+
+/* ===== v24: optional real-deck card entry ===== */
+[hidden]{display:none!important}
+.draw-method{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:460px;margin:0 auto 15px}
+.method-btn{min-height:45px;border:1px solid rgba(83,58,94,.17);background:#fffdfb;color:#725e79;border-radius:14px;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 5px 16px rgba(68,49,76,.04)}
+.method-btn span{margin-right:5px;color:#bb974a}
+.method-btn.is-active{background:#59415f;color:#fff;box-shadow:0 7px 17px rgba(63,44,72,.14)}
+.method-btn.is-active span{color:#e2c47b}
+.method-btn:focus-visible,.physical-card-btn:focus-visible,.physical-picker button:focus-visible{outline:3px solid #dbac65;outline-offset:3px}
+.physical-stage{background:rgba(255,253,251,.93);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);padding:19px 18px 17px}
+.physical-intro{margin:0 0 17px;text-align:center;color:#5b4863;font-size:15px;font-weight:850}
+.physical-slots{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:425px;margin:0 auto}
+.physical-place{text-align:center;min-width:0}
+.physical-title{font-size:13px;color:#55415d;font-weight:900;margin-bottom:9px}
+.physical-card-btn{display:flex;align-items:center;justify-content:center;width:120px;height:196px;max-width:100%;margin:0 auto;padding:5px;border:2px dashed #d8c9e1;border-radius:14px;background:linear-gradient(180deg,#fbf8fb,#f0eaf3);cursor:pointer;overflow:hidden;box-shadow:0 8px 22px rgba(62,42,71,.07);position:relative}
+.physical-card-btn:disabled{cursor:not-allowed;opacity:.59}
+.physical-card-btn.has-card{border:3px solid #cda955;background:#fff}
+.physical-card-btn img{display:block;width:100%;height:100%;object-fit:contain;border-radius:8px}
+.physical-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;color:#6f5a7a;font-weight:900}
+.physical-empty>span{font-size:32px;font-weight:300;line-height:1}
+.physical-name{min-height:37px;max-width:165px;margin:9px auto 0;font-size:11px;font-weight:800;color:#88778d;line-height:1.5}
+.physical-place.is-filled .physical-name{color:#4d3c55;font-size:12px}
+.physical-status{margin:14px auto 0;min-height:21px;text-align:center;color:#846d8a;font-size:12px;font-weight:700}
+.physical-modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.physical-modal-backdrop{position:absolute;inset:0;background:rgba(40,28,47,.55);backdrop-filter:blur(3px)}
+.physical-picker{position:relative;width:min(680px,100%);max-height:min(88dvh,850px);min-height:260px;display:flex;flex-direction:column;background:#fffdfc;border-radius:23px 23px 0 0;box-shadow:0 -12px 50px rgba(40,28,47,.24);padding:17px 15px max(15px,env(safe-area-inset-bottom));overflow:hidden}
+.physical-picker-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.physical-picker-header h2{margin:0;font-size:18px;color:#493451;letter-spacing:-.035em}
+.picker-close{width:38px;height:38px;flex:0 0 auto;border:1px solid #e6dfea;background:#faf6fb;color:#715b79;border-radius:50%;cursor:pointer;font-size:17px}
+.picker-search-wrap{display:flex;align-items:center;gap:8px;border:1.5px solid #dbcde1;border-radius:12px;background:#faf7fb;padding:0 12px;height:45px;color:#937e9c}
+.picker-search-wrap span{font-size:22px;line-height:1}
+.picker-search-wrap input{background:transparent;border:0;outline:0;min-width:0;width:100%;height:100%;font-size:14px;color:#3c3042}
+.picker-filters{display:flex;gap:7px;overflow-x:auto;padding:12px 2px 8px;scrollbar-width:thin;flex:0 0 auto}
+.filter-chip{white-space:nowrap;flex:0 0 auto;padding:8px 11px;border-radius:99px;border:1px solid #e5dce9;background:#fff;color:#67536e;font-size:11px;font-weight:900;cursor:pointer}
+.filter-chip.is-active{color:#fff;background:#72547d;border-color:#72547d}
+.picker-count{margin:0;padding:3px 1px 9px;font-size:11px;color:#95889c;flex:0 0 auto}
+.picker-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;overflow-y:auto;overscroll-behavior:contain;padding:2px 1px 10px;min-height:60px}
+.picker-card{border:1px solid #e4d9e8;background:#fcfafc;color:#47394e;border-radius:13px;padding:9px 5px 8px;cursor:pointer;text-align:center;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.picker-card:active{transform:scale(.98)}
+.picker-card img{width:58px;max-width:90%;aspect-ratio:7/12;object-fit:contain;background:#f2edf3;border-radius:5px;box-shadow:0 3px 8px rgba(63,39,70,.12)}
+.picker-card.image-missing::before{content:"이미지 확인 불가";display:grid;place-items:center;width:58px;aspect-ratio:7/12;background:#eee8f2;border-radius:5px;color:#84728c;font-size:9px;line-height:1.4;text-align:center;word-break:keep-all;padding:5px}
+.picker-card strong{font-size:11px;line-height:1.35;word-break:keep-all}
+.picker-card small{font-size:10px;color:#96879d;line-height:1.2}
+.picker-card.is-selected{border-color:#b99546;background:#fff8e9}
+.picker-card:disabled{opacity:.38;cursor:default}
+.picker-empty{grid-column:1/-1;text-align:center;color:#827286;padding:30px 5px;font-size:13px}
+.picker-more{flex:0 0 auto;margin:7px auto 0;padding:10px 18px;border:1px solid #dfd0e4;border-radius:22px;background:#fbf6fc;color:#57415f;font-size:12px;font-weight:900;cursor:pointer}
+.hist-mode{display:inline-block;margin-left:8px;font-size:10px;color:#8a708f;background:#eee7f1;border-radius:99px;padding:2px 6px}
+@media(max-width:620px){
+ .draw-method{margin:0 auto 10px;gap:7px;max-width:400px}
+ .method-btn{min-height:39px;font-size:11px;border-radius:12px}
+ body.bori-picking .stage{min-height:clamp(350px,calc(100svh - 255px),610px)}
+ .physical-stage{padding:16px 11px}
+ .physical-intro{font-size:12px;margin-bottom:15px}
+ .physical-slots{gap:10px;max-width:340px}
+ .physical-title{font-size:12px}
+ .physical-card-btn{width:102px;height:169px}
+ .physical-name{font-size:10px}
+ .physical-picker{max-height:90dvh;padding:15px 12px max(12px,env(safe-area-inset-bottom))}
+ .physical-picker-header h2{font-size:17px}
+ .picker-grid{gap:8px}
+}
+@media(max-width:350px){.method-btn{font-size:10px}.physical-card-btn{width:92px;height:153px}.picker-card img{width:50px}}
+
 </style>
-<title>오늘, 보리타로 · v23 상황과 대응</title>
+<title>오늘, 보리타로 · v24 실물카드 입력</title>
 </head>
 <body>
 <header class="wrap top">
@@ -868,6 +932,10 @@ footer{color:#8b828f}
     </div>
     <div class="en">TODAY · TWO CARDS</div>
   </section>
+  <div class="draw-method" role="group" aria-label="타로카드 선택 방식">
+    <button type="button" class="method-btn is-active" id="onlineModeBtn" aria-pressed="true"><span aria-hidden="true">✦</span> 온라인으로 뽑기</button>
+    <button type="button" class="method-btn" id="physicalModeBtn" aria-pressed="false"><span aria-hidden="true">▤</span> 실물카드 입력</button>
+  </div>
   <section class="stage" id="stage">
     <div class="step">
       <small id="stepSmall"></small><h2 id="stepTitle"></h2><p id="stepDesc"></p>
@@ -891,6 +959,27 @@ footer{color:#8b828f}
     <div class="deck" id="deck" aria-label="선택할 카드 10장"></div>
   </section>
 
+  <section class="physical-stage" id="physicalStage" hidden aria-label="실물 타로카드 선택">
+    <p class="physical-intro">실제로 뽑은 카드 두 장을 선택해 주세요.</p>
+    <div class="physical-slots">
+      <div class="physical-place" id="physicalFlowPlace">
+        <div class="physical-title">1. 오늘의 흐름</div>
+        <button type="button" class="physical-card-btn" id="physicalFlowBtn" aria-label="오늘의 흐름 카드 선택">
+          <span class="physical-empty"><span aria-hidden="true">＋</span>첫 카드 선택</span>
+        </button>
+        <div class="physical-name" id="physicalFlowName">아직 선택하지 않았어요</div>
+      </div>
+      <div class="physical-place" id="physicalAdvicePlace">
+        <div class="physical-title">2. 오늘의 조언</div>
+        <button type="button" class="physical-card-btn" id="physicalAdviceBtn" aria-label="오늘의 조언 카드 선택" disabled>
+          <span class="physical-empty"><span aria-hidden="true">＋</span>두 번째 카드 선택</span>
+        </button>
+        <div class="physical-name" id="physicalAdviceName">첫 카드를 먼저 골라주세요</div>
+      </div>
+    </div>
+    <p class="physical-status" id="physicalStatus" role="status" aria-live="polite">첫 번째 카드를 선택해 주세요.</p>
+  </section>
+
   <section class="results" id="results">
     <article class="reading" id="flowCard"></article>
     <article class="reading" id="adviceCard"></article>
@@ -907,8 +996,29 @@ footer{color:#8b828f}
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v23</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v24</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
+<div class="physical-modal" id="physicalModal" hidden>
+  <div class="physical-modal-backdrop" id="physicalBackdrop"></div>
+  <section class="physical-picker" role="dialog" aria-modal="true" aria-labelledby="physicalPickerTitle">
+    <div class="physical-picker-header">
+      <h2 id="physicalPickerTitle">오늘의 흐름 카드 선택</h2>
+      <button type="button" class="picker-close" id="physicalClose" aria-label="닫기">✕</button>
+    </div>
+    <label class="picker-search-wrap"><span aria-hidden="true">⌕</span><input id="physicalSearch" type="search" autocomplete="off" placeholder="카드 이름 검색 (예: 소드 나이트)" aria-label="카드 이름 검색"></label>
+    <div class="picker-filters" id="physicalFilters" role="group" aria-label="카드 종류">
+      <button type="button" class="filter-chip is-active" data-group="all" aria-pressed="true">전체 78</button>
+      <button type="button" class="filter-chip" data-group="major" aria-pressed="false">메이저 22</button>
+      <button type="button" class="filter-chip" data-group="완드" aria-pressed="false">완드</button>
+      <button type="button" class="filter-chip" data-group="컵" aria-pressed="false">컵</button>
+      <button type="button" class="filter-chip" data-group="검" aria-pressed="false">검·소드</button>
+      <button type="button" class="filter-chip" data-group="펜타클" aria-pressed="false">펜타클</button>
+    </div>
+    <p class="picker-count" id="physicalCount" aria-live="polite"></p>
+    <div class="picker-grid" id="physicalGrid"></div>
+    <button type="button" class="picker-more" id="physicalMore" hidden>더 보기</button>
+  </section>
+</div>
 <div class="toast" id="toast"></div>
 <script>
 window.TAROT_CARDS = [
@@ -2873,6 +2983,8 @@ const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 const HISTORY_KEY = "boritarot.history.v2";
 let picked = [], spread = [], step = "flow", currentReading = null, shareBlob = null, shareFile = null, clipboardBlob = null;
+let readingMode="online";
+let physicalCards=[null,null], activePhysicalSlot=0, physicalFilter="all", physicalPage=1, physicalReturnFocus=null;
 
 const now = () => new Date();
 const keyDate = (d=now()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -2978,7 +3090,161 @@ function reshuffleVisible(){
     ? '카드를 다시 섞었어요. 오늘 하루를 생각하며 한 장을 뽑아주세요.'
     : '카드를 다시 섞었어요. 오늘을 도와줄 한 장을 뽑아주세요.';
 }
+
+const physicalModal=$("#physicalModal");
+const physicalSearch=$("#physicalSearch");
+const physicalGrid=$("#physicalGrid");
+const physicalNumberWords={"에이스":"ace","페이지":"page","나이트":"knight","퀸":"queen","킹":"king"};
+const cardSearchAliases={
+  "고위여사제":["여사제","하이프리스트리스"],
+  "0 바보":["광대","바보카드","풀"],
+  "12 거꾸로 매달린 사람":["매달린사람","행맨"],
+  "20 심판":["저지먼트","저지멘트"],
+  "11 정의":["저스티스"],
+  "8 힘":["스트렝스"],
+  "9 은둔자":["허밋"],
+  "10 운명의 수레바퀴":["운명의수레바퀴","수레바퀴"],
+  "15 악마":["데빌"],
+  "21 세계":["월드"]
+};
+function normalizeCardSearch(value){
+  return String(value||"").toLowerCase()
+    .replace(/swords?|소드|스워드|칼/g,"검")
+    .replace(/wands?|지팡이/g,"완드")
+    .replace(/cups?|잔\b/g,"컵")
+    .replace(/pentacles?|coins?|동전/g,"펜타클")
+    .replace(/knight|기사/g,"나이트")
+    .replace(/queen|여왕/g,"퀸")
+    .replace(/king|왕(?!의)/g,"킹")
+    .replace(/page|시종/g,"페이지")
+    .replace(/ace|원오브/g,"에이스")
+    .replace(/[\s\-_.·,()]/g,"");
+}
+function cardSearchText(c){
+  const aliases=cardSearchAliases[c.name]||[];
+  return normalizeCardSearch([c.name,c.english,c.group,...aliases].join(" "));
+}
+function pickerThumb(c){
+  return c.imageUrl.replace("/1400px-","/200px-");
+}
+function filteredPhysicalCards(){
+  const query=normalizeCardSearch(physicalSearch.value);
+  return cards.filter(c=>{
+    const groupOK=physicalFilter==="all" || (physicalFilter==="major"?c.group==="메이저 아르카나":c.name.startsWith(physicalFilter+" "));
+    return groupOK && (!query || cardSearchText(c).includes(query));
+  });
+}
+function renderPhysicalGrid(){
+  const all=filteredPhysicalCards();
+  const visible=all.slice(0,physicalPage*24);
+  const lockedId=physicalCards[1-activePhysicalSlot]?.id;
+  $("#physicalCount").textContent=all.length+"장 중 선택";
+  physicalGrid.innerHTML=visible.map(c=>{
+    const selected=physicalCards[activePhysicalSlot]?.id===c.id;
+    const locked=lockedId===c.id;
+    return `<button type="button" class="picker-card ${selected?"is-selected":""}" data-card-id="${c.id}" ${locked?"disabled aria-label='이미 다른 자리에 놓인 카드'":""}>
+      <img src="${pickerThumb(c)}" loading="lazy" decoding="async" alt="" onerror="if(this.dataset.fallback){this.hidden=true;this.parentElement.classList.add('image-missing')}else{this.dataset.fallback='1';this.src='${c.originalUrl}'}">
+      <strong>${escapeHTML(c.name)}</strong><small>${selected?"현재 선택":locked?"이미 선택됨":"카드 선택"}</small>
+    </button>`;
+  }).join("") || '<div class="picker-empty">검색 결과가 없어요. 다른 이름으로 찾아보세요.</div>';
+  $("#physicalMore").hidden=visible.length>=all.length;
+  physicalGrid.querySelectorAll("button[data-card-id]").forEach(btn=>btn.addEventListener("click",()=>choosePhysicalCard(btn.dataset.cardId)));
+}
+function openPhysicalPicker(index){
+  if(readingMode!=="physical" || (index===1&&!physicalCards[0])) return;
+  activePhysicalSlot=index;
+  physicalReturnFocus=document.activeElement;
+  $("#physicalPickerTitle").textContent=index===0?"오늘의 흐름 카드 선택":"오늘의 조언 카드 선택";
+  physicalSearch.value="";physicalFilter="all";physicalPage=1;
+  $("#physicalFilters").querySelectorAll("button").forEach(b=>{const active=b.dataset.group==="all";b.classList.toggle("is-active",active);b.setAttribute("aria-pressed",String(active));});
+  renderPhysicalGrid();
+  physicalModal.hidden=false;
+  document.body.style.overflow="hidden";
+  physicalSearch.focus();
+}
+function closePhysicalPicker(){
+  physicalModal.hidden=true;
+  document.body.style.overflow="";
+  if(physicalReturnFocus && physicalReturnFocus.isConnected) physicalReturnFocus.focus();
+}
+function renderPhysicalSelection(){
+  physicalCards.forEach((c,i)=>{
+    const button=$(i===0?"#physicalFlowBtn":"#physicalAdviceBtn");
+    const name=$(i===0?"#physicalFlowName":"#physicalAdviceName");
+    const place=$(i===0?"#physicalFlowPlace":"#physicalAdvicePlace");
+    button.disabled=i===1&&!physicalCards[0];
+    place.classList.toggle("is-filled",!!c);
+    button.classList.toggle("has-card",!!c);
+    button.innerHTML=c?`<img src="${c.imageUrl}" alt="${escapeHTML(c.name)} 카드 그림" onerror="this.onerror=null;this.src='${c.originalUrl}'">`:
+      `<span class="physical-empty"><span aria-hidden="true">＋</span>${i===0?"첫 카드 선택":"두 번째 카드 선택"}</span>`;
+    name.textContent=c?c.name+" · 눌러서 변경":i===0?"아직 선택하지 않았어요":"첫 카드를 먼저 골라주세요";
+    button.setAttribute("aria-label",i===0?"오늘의 흐름 카드 "+(c?c.name+" 변경":"선택"):"오늘의 조언 카드 "+(c?c.name+" 변경":"선택"));
+  });
+  $("#physicalStatus").textContent=physicalCards[0]&&physicalCards[1]?"두 카드를 선택했어요. 카드를 누르면 변경할 수 있어요.":physicalCards[0]?"이제 오늘의 조언 카드를 골라주세요.":"오늘의 흐름 카드부터 골라주세요.";
+}
+function choosePhysicalCard(id){
+  const card=cards.find(c=>c.id===id);
+  if(!card || physicalCards[1-activePhysicalSlot]?.id===id) return;
+  physicalCards[activePhysicalSlot]=card;
+  closePhysicalPicker();
+  renderPhysicalSelection();
+  if(physicalCards[0]&&physicalCards[1]){
+    picked=[physicalCards[0],physicalCards[1]];
+    currentReading=null;shareBlob=null;shareFile=null;clipboardBlob=null;
+    document.body.classList.remove("bori-picking");
+    showResult();
+  } else {
+    $("#results").classList.remove("show");
+  }
+}
+function resetPhysical(){
+  physicalCards=[null,null];
+  picked=[];currentReading=null;shareBlob=null;shareFile=null;clipboardBlob=null;
+  $("#results").classList.remove("show");
+  document.body.classList.remove("bori-picking");
+  renderPhysicalSelection();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function setReadingMode(mode){
+  if(mode!=="online"&&mode!=="physical") return;
+  if(!physicalModal.hidden) closePhysicalPicker();
+  readingMode=mode;
+  $("#onlineModeBtn").classList.toggle("is-active",mode==="online");
+  $("#physicalModeBtn").classList.toggle("is-active",mode==="physical");
+  $("#onlineModeBtn").setAttribute("aria-pressed",String(mode==="online"));
+  $("#physicalModeBtn").setAttribute("aria-pressed",String(mode==="physical"));
+  $("#stage").hidden=mode!=="online";
+  $("#physicalStage").hidden=mode!=="physical";
+  $("#resetBtn").textContent=mode==="physical"?"다시 입력":"다시 뽑기";
+  if(mode==="online") start(); else resetPhysical();
+}
+$("#onlineModeBtn").addEventListener("click",()=>{if(readingMode!=="online")setReadingMode("online")});
+$("#physicalModeBtn").addEventListener("click",()=>{if(readingMode!=="physical")setReadingMode("physical")});
+$("#physicalFlowBtn").addEventListener("click",()=>openPhysicalPicker(0));
+$("#physicalAdviceBtn").addEventListener("click",()=>openPhysicalPicker(1));
+$("#physicalClose").addEventListener("click",closePhysicalPicker);
+$("#physicalBackdrop").addEventListener("click",closePhysicalPicker);
+physicalSearch.addEventListener("input",()=>{physicalPage=1;renderPhysicalGrid()});
+$("#physicalFilters").querySelectorAll("button").forEach(btn=>btn.addEventListener("click",()=>{
+  physicalFilter=btn.dataset.group;physicalPage=1;
+  $("#physicalFilters").querySelectorAll("button").forEach(b=>{const yes=b===btn;b.classList.toggle("is-active",yes);b.setAttribute("aria-pressed",String(yes))});
+  physicalGrid.scrollTop=0;renderPhysicalGrid();
+}));
+$("#physicalMore").addEventListener("click",()=>{physicalPage++;renderPhysicalGrid()});
+document.addEventListener("keydown",e=>{
+  if(physicalModal.hidden) return;
+  if(e.key==="Escape") {closePhysicalPicker();return;}
+  if(e.key==="Tab"){
+    const candidates=[...physicalModal.querySelectorAll("button:not([disabled]):not([hidden]), input:not([disabled])")].filter(el=>el.offsetParent!==null);
+    if(!candidates.length)return;
+    const first=candidates[0],last=candidates[candidates.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  }
+});
+
 function start(){
+  if(readingMode==="physical") { resetPhysical(); return; }
   document.body.classList.add("bori-picking");
   picked=[]; currentReading=null; shareBlob=null; shareFile=null; clipboardBlob=null; $("#results").classList.remove("show");
   spread=shuffle(cards).slice(0,10); setStep("flow"); renderChosen(false); renderDeck(); window.scrollTo({top:0,behavior:"smooth"});
@@ -3147,6 +3413,7 @@ function showResult(){
   currentReading={
     flowId:f.id,flowName:f.name,
     adviceId:a.id,adviceName:a.name,
+    method:readingMode,
     integratedTip
   };
   persistReading();
@@ -3170,6 +3437,7 @@ async function makeCanvas(){
   x.textAlign="right";x.fillStyle="#f1d786";x.font="700 22px sans-serif";x.fillText(compactDate(),1016,76);
   x.textAlign="center";x.fillStyle="#2d2730";x.font="900 56px sans-serif";x.fillText("두 장으로, 오늘 보리",W/2,174);
   x.fillStyle="#ad8741";x.font="800 19px sans-serif";x.fillText("TODAY · TWO CARDS",W/2,216);
+  if(readingMode==="physical"){x.fillStyle="#6b5273";x.font="700 17px sans-serif";x.fillText("실물카드로 뽑은 오늘의 두 장",W/2,253);}
   let fi=null,ai=null; try{[fi,ai]=await Promise.all([loadImage(f.originalUrl||f.imageUrl),loadImage(a.originalUrl||a.imageUrl)]);}catch{}
   const cardW=310,cardH=531,gap=70,sx=(W-(cardW*2+gap))/2, cy=290;
   function drawCard(im,left,label,card){
@@ -3310,7 +3578,7 @@ function openHistory(){
       : ((v.integratedTip&&v.integratedTip.length)
         ? v.integratedTip.join(" ")
         : [...(v.tipFlow||[]),...(v.tipAdvice||[])].join(" "));
-    return `<div class="hist"><div class="histdate">${prettyDate(d)}</div><div class="histcards">${v.flowName} → ${v.adviceName}</div><div class="histtip">${tip}</div></div>`;
+    return `<div class="hist"><div class="histdate">${prettyDate(d)}<span class="hist-mode">${v.method==="physical"?"실물카드":"온라인"}</span></div><div class="histcards">${v.flowName} → ${v.adviceName}</div><div class="histtip">${tip}</div></div>`;
   }).join(""):`<div class="empty">아직 저장된 기록이 없어요.<br>오늘의 두 카드를 뽑으면 자동으로 기록됩니다.</div>`;
   $("#historyOverlay").classList.add("show");
 }
