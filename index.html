@@ -916,12 +916,12 @@ footer{color:#8b828f}
 @media(max-width:350px){.method-btn{font-size:10px}.physical-card-btn{width:92px;height:153px}.picker-card img{width:50px}}
 
 
-/* v25: full reading image export and separate share / save actions */
+/* Two simple result actions: save photo / draw again */
 .bori-share-actions{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
-.bori-share-actions .bori-restart{grid-column:1/-1;min-height:42px;padding:10px 16px;background:transparent;border:1px solid rgba(93,70,104,.19);box-shadow:none;color:#6a536e}
+.bori-share-actions .bori-restart{grid-column:auto;min-height:42px;padding:10px 16px;background:transparent;border:1px solid rgba(93,70,104,.19);box-shadow:none;color:#6a536e}
 .share-help{background:#fbf4e7;color:#5a465f;border:1px solid rgba(190,154,81,.4);font-size:13px;line-height:1.75;border-radius:14px;margin-top:12px;padding:11px 14px;text-align:center}
 .share-help[hidden]{display:none!important}
-@media (max-width:360px){.bori-share-actions .btn{font-size:12px;padding:12px 8px}}
+@media (max-width:360px){.bori-share-actions{grid-template-columns:1fr}.bori-share-actions .btn{font-size:13px;padding:12px 8px}}
 
 /* v26: 모바일 호환을 우선한 JPEG 사진 미리보기 */
 .photo-preview[hidden]{display:none!important}
@@ -939,21 +939,19 @@ footer{color:#8b828f}
 .photo-preview-footer button{background:#60466d;color:white;border-color:#60466d}
 @media(min-width:660px){.photo-preview{align-items:center}.photo-preview-panel{height:min(89dvh,850px);border-radius:22px}}
 
-/* v30: Mobile native photo share with restored PNG clipboard fallback; desktop unchanged. */
+/* v31: Full-resolution photo save, without Kakao sharing UI. */
 .photo-preview-footer{gap:6px}
 .photo-preview-footer a,.photo-preview-footer button{font-size:12px;padding:8px 5px;min-width:0;max-width:none}
-#photoCopy{background:#f1eaf4;color:#5a4164;border-color:#e3d5e8}
-#photoCopy[hidden]{display:none!important}
 @media(max-width:365px){.photo-preview-footer{padding-left:7px;padding-right:7px}.photo-preview-footer a,.photo-preview-footer button{font-size:11px}}
 
 
-/* v28: 한 번 누르면 이미지 복사 → 한 줄 안내. 중복 복사 버튼 없음 */
+/* Photo export status notice */
 .share-help{background:#f6f0f8;border-color:#dcd0e3;color:#563d60;font-weight:700;font-size:14px;padding:13px 16px}
 .share-help.success{background:#f4edf6;border-color:#d4c2db}
 .photo-preview-footer a{max-width:320px;font-size:13px}
 
 </style>
-<title>오늘, 보리타로 · v30 모바일 공유 호환성 개선</title>
+<title>오늘, 보리타로 · v31 사진 저장</title>
 </head>
 <body>
 <header class="wrap top">
@@ -1027,7 +1025,6 @@ footer{color:#8b828f}
     </section>
     <div class="actions bori-share-actions">
       <button class="btn primary" id="saveBtn" type="button">사진으로 저장</button>
-      <button class="btn secondary" id="shareBtn" type="button">사진 공유하기</button>
       <button class="btn secondary bori-restart" id="resetBtn" type="button">다시 뽑기</button>
     </div>
     <div class="share-help" id="shareHelp" hidden role="status" aria-live="polite"></div>
@@ -1035,7 +1032,7 @@ footer{color:#8b828f}
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v30</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v31</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="physical-modal" id="physicalModal" hidden>
   <div class="physical-modal-backdrop" id="physicalBackdrop"></div>
@@ -3029,7 +3026,7 @@ const cards = window.TAROT_CARDS;
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 const HISTORY_KEY = "boritarot.history.v2";
-let picked = [], spread = [], step = "flow", currentReading = null, shareBlob = null, shareFile = null, clipboardBlob = null;
+let picked = [], spread = [], step = "flow", currentReading = null, shareBlob = null, shareFile = null;
 let readingMode="online";
 let physicalCards=[null,null], activePhysicalSlot=0, physicalFilter="all", physicalPage=1, physicalReturnFocus=null;
 
@@ -3237,7 +3234,7 @@ function choosePhysicalCard(id){
   renderPhysicalSelection();
   if(physicalCards[0]&&physicalCards[1]){
     picked=[physicalCards[0],physicalCards[1]];
-    currentReading=null;shareBlob=null;shareFile=null;clipboardBlob=null;
+    currentReading=null;shareBlob=null;shareFile=null;
     document.body.classList.remove("bori-picking");
     showResult();
   } else {
@@ -3246,7 +3243,7 @@ function choosePhysicalCard(id){
 }
 function resetPhysical(){
   physicalCards=[null,null];
-  picked=[];currentReading=null;shareBlob=null;shareFile=null;clipboardBlob=null;
+  picked=[];currentReading=null;shareBlob=null;shareFile=null;
   $("#results").classList.remove("show");
   document.body.classList.remove("bori-picking");
   renderPhysicalSelection();
@@ -3293,7 +3290,7 @@ document.addEventListener("keydown",e=>{
 function start(){
   if(readingMode==="physical") { resetPhysical(); return; }
   document.body.classList.add("bori-picking");
-  picked=[]; currentReading=null; shareBlob=null; shareFile=null; clipboardBlob=null; $("#results").classList.remove("show");
+  picked=[]; currentReading=null; shareBlob=null; shareFile=null;  $("#results").classList.remove("show");
   spread=shuffle(cards).slice(0,10); setStep("flow"); renderChosen(false); renderDeck(); window.scrollTo({top:0,behavior:"smooth"});
 }
 function choose(i,btn){
@@ -3466,7 +3463,7 @@ function showResult(){
   persistReading();
   $("#results").classList.add("show");
   setTimeout(()=>$("#results").scrollIntoView({behavior:"smooth",block:"start"}),620);
-  prepareShareImage();
+  preparePhotoImage();
 }
 function loadImage(src){
   return new Promise((resolve,reject)=>{
@@ -3481,7 +3478,7 @@ function wrap(ctx,text,max){
   const words=text.split(" "), out=[]; let line="";
   for(const w of words){const t=line?line+" "+w:w;if(ctx.measureText(t).width>max&&line){out.push(line);line=w;} else line=t;} if(line)out.push(line); return out;
 }
-// 모든 공유 방식에서 같은 카드·해석을 사용합니다. 전송/저장은 JPG, 클립보드 복사는 PNG입니다.
+// 사진 저장 시 두 카드와 전체 해석을 JPG에 담습니다.
 // 실물/온라인 카드의 해석은 같은 picked 배열에서 가져옵니다.
 function shareWrap(ctx,raw,maxWidth,font){
   const text=String(raw||"").replace(/\s+/g," ").trim();
@@ -3614,9 +3611,8 @@ async function makeCanvas(){
   tx('Rider–Waite–Smith Tarot · Wikimedia Commons 공개 이미지',W/2,cursor+47,'500 17px sans-serif','#8b818d','center');
   return canvas;
 }
-// Android 카카오톡 인앱 브라우저 등에서 Blob 다운로드를 지원하지 않거나
-// 네이티브 사진 공유의 사용자 활성화가 끊기는 문제를 피합니다.
-// 기본 사진은 모바일 호환성이 높은 진짜 JPEG이며, 공유 호출은 클릭 순간 동기적으로 시작합니다.
+// 모바일에서는 사진 미리보기와 길게 눌러 저장 기능을 제공합니다.
+// JPG 변환은 카드 해석이 완성될 때 미리 준비합니다.
 let sharePreparing=null, shareDataURL=null;
 function dataURLFromBlob(blob){
   return new Promise((resolve,reject)=>{
@@ -3626,11 +3622,11 @@ function dataURLFromBlob(blob){
     reader.readAsDataURL(blob);
   });
 }
-function prepareShareImage(){
-  const shareBtn=$('#shareBtn'),saveBtn=$('#saveBtn');
-  shareBlob=null;shareFile=null;clipboardBlob=null;shareDataURL=null;
-  shareBtn.disabled=true;saveBtn.disabled=true;
-  shareBtn.textContent='이미지 준비 중…';saveBtn.textContent='이미지 준비 중…';
+function preparePhotoImage(){
+  const saveBtn=$('#saveBtn');
+  shareBlob=null;shareFile=null;shareDataURL=null;
+  saveBtn.disabled=true;
+  saveBtn.textContent='이미지 준비 중…';
   $('#shareHelp').hidden=true; $('#shareHelp').classList.remove('success');
   const job=makeCanvas()
     .then(async canvas=>{
@@ -3641,21 +3637,14 @@ function prepareShareImage(){
       shareDataURL=await dataURLFromBlob(jpeg);
       shareBlob=jpeg;
       shareFile=new File([jpeg],`bori-tarot-${keyDate()}.jpg`,{type:'image/jpeg',lastModified:Date.now()});
-      // 이미지 붙여넣기는 JPEG가 아니라 PNG MIME을 요구하는 브라우저가 많습니다.
-      try{
-        const png=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('PNG 생성 실패')),'image/png'));
-        const signature=new Uint8Array(await png.slice(0,8).arrayBuffer());
-        const valid=[137,80,78,71,13,10,26,10].every((v,i)=>signature[i]===v);
-        clipboardBlob=(valid && png.type==='image/png')?png:null;
-      }catch(e){console.warn('사진 복사용 PNG 생성 생략',e);clipboardBlob=null;}
       return jpeg;
     }).catch(e=>{
-      console.error('공유 이미지 생성 실패',e);shareBlob=null;shareFile=null;clipboardBlob=null;shareDataURL=null;
+      console.error('저장 사진 생성 실패',e);shareBlob=null;shareFile=null;shareDataURL=null;
       tellShareHelp('사진을 만들지 못했어요. 인터넷 연결을 확인한 뒤 다시 뽑아주세요.');
       throw e;
     }).finally(()=>{
-      shareBtn.disabled=false;saveBtn.disabled=false;
-      shareBtn.textContent='사진 공유하기';saveBtn.textContent='사진으로 저장';
+      saveBtn.disabled=false;
+      saveBtn.textContent='사진으로 저장';
     });
   sharePreparing=job;
   job.catch(()=>{});
@@ -3663,21 +3652,13 @@ function prepareShareImage(){
 }
 function tellShareHelp(msg,success=false){const el=$('#shareHelp');el.textContent=msg;el.classList.toggle('success',success);el.hidden=false;}
 function onMobileBrowser(){return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'') || !!navigator.userAgentData?.mobile;}
-function supportsImageClipboard(){
-  return !!(clipboardBlob && window.isSecureContext && navigator.clipboard &&
-    typeof navigator.clipboard.write==='function' && window.ClipboardItem);
-}
-function showPhotoPreview(reason='save'){
+function showPhotoPreview(){
   if(!shareDataURL||!shareFile){tellShareHelp('사진을 준비 중이에요. 잠시 후 다시 눌러주세요.');return;}
   const modal=$('#photoPreview');
   $('#photoPreviewImage').src=shareDataURL;
   const a=$('#photoDownload');a.href=shareDataURL;a.download=shareFile.name;
   const info=$('#photoInstructions');
-  if(reason==='share'){
-    info.innerHTML='이 브라우저에서는 사진 직접 공유가 지원되지 않아요.<br>사진을 길게 눌러 저장한 뒤 카카오톡 채팅창에 사진으로 첨부해 주세요.';
-  }else{
-    info.innerHTML='아래 사진을 <strong>길게 눌러 ‘이미지 저장’</strong>을 선택하세요.<br>사진 저장이 제한되면 크롬 또는 삼성 인터넷에서 열어보세요.';
-  }
+  info.innerHTML='아래 사진을 <strong>길게 눌러 ‘이미지 저장’</strong>을 선택하세요.<br>사진 저장이 제한되면 크롬 또는 삼성 인터넷에서 열어보세요.';
   modal.hidden=false;
   document.body.style.overflow='hidden';
 }
@@ -3692,94 +3673,8 @@ function directlyDownloadJPEG(){
 function saveReadingImage(){
   persistReading();
   if(!shareFile){tellShareHelp('이미지를 준비 중이에요. 잠시 후 다시 눌러주세요.');return;}
-  if(onMobileBrowser()) showPhotoPreview('save');
+  if(onMobileBrowser()) showPhotoPreview();
   else {directlyDownloadJPEG();toast('전체 해석을 JPG 사진으로 저장했어요.');}
-}
-function copyFullImage(){
-  // user gesture 중에 직접 호출: clipboard API는 다른 async 작업이 선행되면 거부될 수 있습니다.
-  if(!supportsImageClipboard())return Promise.reject(new Error('image/png clipboard unavailable'));
-  return navigator.clipboard.write([new ClipboardItem({'image/png':clipboardBlob})]);
-}
-function mobileClipboardFallback(){
-  // v28에서 사용하던 PNG 비트맵 복사를 복원합니다.
-  // 공유창을 제공하지 않는 Android 카카오톡 인앱 브라우저 등에서 시도합니다.
-  // 복사가 되었다고 해도 카카오톡 입력창이 이미지 붙여넣기를 허용하는지는 별개입니다.
-  if(!supportsImageClipboard()){
-    tellShareHelp('이 브라우저에서는 직접 공유와 이미지 복사가 제한돼요. ‘사진으로 저장’을 눌러 카카오톡에 사진으로 첨부해 주세요.');
-    return;
-  }
-  try{
-    // 터치 이벤트 흐름에서 추가 await 없이 클립보드 API를 바로 호출합니다.
-    const job=copyFullImage();
-    Promise.resolve(job).then(()=>{
-      tellShareHelp('사진이 복사되었어요. 카카오톡 채팅창에서 붙여넣기를 시도해 주세요. 붙여넣기가 안 되면 ‘사진으로 저장’ 후 첨부할 수 있어요.',true);
-    }).catch(err=>{
-      console.warn('모바일 PNG 클립보드 복사 실패',err);
-      tellShareHelp('이 브라우저에서는 사진 복사가 제한돼요. ‘사진으로 저장’을 눌러 채팅창에 첨부해 주세요.');
-    });
-  }catch(err){
-    console.warn('모바일 PNG 클립보드 복사 시작 실패',err);
-    tellShareHelp('사진 복사를 시작할 수 없어요. ‘사진으로 저장’ 후 채팅창에 첨부해 주세요.');
-  }
-}
-function mobileNativeShare(){
-  // 1. 휴대폰이 실제 이미지 파일 공유를 지원하면 OS 공유창을 우선 사용합니다.
-  // 2. 카카오톡 인앱 웹뷰 등에서 지원하지 않을 때는 예전에 쓰던 PNG 복사를 시도합니다.
-  // 3. 두 방법 모두 안 될 때만 이미 제공되는 '사진으로 저장'을 안내합니다.
-  if(!shareFile){
-    tellShareHelp('사진을 준비하는 중이에요. 준비가 끝나면 다시 눌러주세요.');
-    return;
-  }
-  const data={files:[shareFile],title:'오늘, 보리타로'};
-  let supported=false;
-  try{
-    supported=!!(window.isSecureContext && navigator.share &&
-      (!navigator.canShare || navigator.canShare({files:[shareFile]})));
-  }catch(e){supported=false;}
-  if(!supported){
-    mobileClipboardFallback();
-    return;
-  }
-  try{
-    // 사용자의 클릭 직후 호출합니다. 다른 async 연산으로 사용자 활성화를 소모하지 않습니다.
-    const job=navigator.share(data);
-    Promise.resolve(job).then(()=>{
-      // 실제 공유 상대방에게 전송됐는지는 OS/대상 앱이 결정합니다.
-      $('#shareHelp').hidden=true;
-    }).catch(err=>{
-      if(err && err.name==='AbortError')return; // 사용자가 공유창 닫음
-      console.warn('휴대폰 파일 공유 실패, PNG 복사 시도',err);
-      // 공유창 실패 콜백에서의 클립보드 접근은 활성화가 만료될 수 있습니다.
-      // 실패한 경우에는 '사진으로 저장' 안내가 나타납니다.
-      mobileClipboardFallback();
-    });
-  }catch(err){
-    console.warn('휴대폰 파일 공유 시작 실패, PNG 복사 시도',err);
-    mobileClipboardFallback();
-  }
-}
-function desktopClipboardShare(){
-  // PC: 검증된 이미지 클립보드 복사 기능을 유지합니다.
-  if(!supportsImageClipboard()){
-    tellShareHelp('이 브라우저는 사진 복사를 지원하지 않아요. ‘사진으로 저장’ 후 카카오톡에 첨부해 주세요.');
-    return;
-  }
-  try{
-    Promise.resolve(copyFullImage()).then(()=>{
-      tellShareHelp('사진이 복사되었어요. 카카오톡 채팅창에서 Ctrl + V로 붙여넣기 해주세요.',true);
-    }).catch(err=>{
-      console.warn('PC 사진 복사 실패',err);
-      tellShareHelp('사진을 복사하지 못했어요. ‘사진으로 저장’ 후 채팅창에 첨부해 주세요.');
-    });
-  }catch(err){
-    tellShareHelp('사진을 복사하지 못했어요. ‘사진으로 저장’을 이용해 주세요.');
-  }
-}
-function nativeShare(){
-  persistReading();
-  $('#shareHelp').hidden=true;
-  if(onMobileBrowser()) mobileNativeShare();
-  else desktopClipboardShare();
 }
 $('#photoClose').addEventListener('click',hidePhotoPreview);
 $('#photoBackdrop').addEventListener('click',hidePhotoPreview);
@@ -3801,7 +3696,6 @@ function openHistory(){
 
 $("#resetBtn").addEventListener("click",start);
 $("#saveBtn").addEventListener("click",saveReadingImage);
-$("#shareBtn").addEventListener("click",nativeShare);
 $("#historyBtn").addEventListener("click",openHistory);
 $("#historyClose").addEventListener("click",()=>$("#historyOverlay").classList.remove("show"));
 $("#historyOverlay").addEventListener("click",e=>{if(e.target.id==="historyOverlay")$("#historyOverlay").classList.remove("show")});
