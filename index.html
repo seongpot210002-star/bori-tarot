@@ -939,7 +939,7 @@ footer{color:#8b828f}
 .photo-preview-footer button{background:#60466d;color:white;border-color:#60466d}
 @media(min-width:660px){.photo-preview{align-items:center}.photo-preview-panel{height:min(89dvh,850px);border-radius:22px}}
 
-/* v28: Share a real PNG bitmap with a single successful-copy notice. */
+/* v29: Mobile native share uses the JPEG File; desktop retains PNG clipboard. */
 .photo-preview-footer{gap:6px}
 .photo-preview-footer a,.photo-preview-footer button{font-size:12px;padding:8px 5px;min-width:0;max-width:none}
 #photoCopy{background:#f1eaf4;color:#5a4164;border-color:#e3d5e8}
@@ -953,7 +953,7 @@ footer{color:#8b828f}
 .photo-preview-footer a{max-width:320px;font-size:13px}
 
 </style>
-<title>오늘, 보리타로 · v28 간편 복사 공유</title>
+<title>오늘, 보리타로 · v29 모바일 사진 직접 공유</title>
 </head>
 <body>
 <header class="wrap top">
@@ -1027,7 +1027,7 @@ footer{color:#8b828f}
     </section>
     <div class="actions bori-share-actions">
       <button class="btn primary" id="saveBtn" type="button">사진으로 저장</button>
-      <button class="btn secondary" id="shareBtn" type="button">카카오톡 등 공유</button>
+      <button class="btn secondary" id="shareBtn" type="button">사진 공유하기</button>
       <button class="btn secondary bori-restart" id="resetBtn" type="button">다시 뽑기</button>
     </div>
     <div class="share-help" id="shareHelp" hidden role="status" aria-live="polite"></div>
@@ -1035,7 +1035,7 @@ footer{color:#8b828f}
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v28</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v29</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="physical-modal" id="physicalModal" hidden>
   <div class="physical-modal-backdrop" id="physicalBackdrop"></div>
@@ -3655,7 +3655,7 @@ function prepareShareImage(){
       throw e;
     }).finally(()=>{
       shareBtn.disabled=false;saveBtn.disabled=false;
-      shareBtn.textContent='카카오톡 등 공유';saveBtn.textContent='사진으로 저장';
+      shareBtn.textContent='사진 공유하기';saveBtn.textContent='사진으로 저장';
     });
   sharePreparing=job;
   job.catch(()=>{});
@@ -3674,7 +3674,7 @@ function showPhotoPreview(reason='save'){
   const a=$('#photoDownload');a.href=shareDataURL;a.download=shareFile.name;
   const info=$('#photoInstructions');
   if(reason==='share'){
-    info.innerHTML='현재 브라우저에서 사진을 복사할 수 없어요.<br>사진을 길게 눌러 저장한 뒤 카카오톡에 첨부하거나 아래 JPG 다운로드를 이용해 주세요.';
+    info.innerHTML='이 브라우저에서는 사진 직접 공유가 지원되지 않아요.<br>사진을 길게 눌러 저장한 뒤 카카오톡 채팅창에 사진으로 첨부해 주세요.';
   }else{
     info.innerHTML='아래 사진을 <strong>길게 눌러 ‘이미지 저장’</strong>을 선택하세요.<br>사진 저장이 제한되면 크롬 또는 삼성 인터넷에서 열어보세요.';
   }
@@ -3700,31 +3700,59 @@ function copyFullImage(){
   if(!supportsImageClipboard())return Promise.reject(new Error('image/png clipboard unavailable'));
   return navigator.clipboard.write([new ClipboardItem({'image/png':clipboardBlob})]);
 }
-function nativeShare(){
-  // 카카오톡 등의 앱에 붙여넣을 실제 사진 비트맵을 한 번의 터치로 복사합니다.
-  // 복사 버튼을 다시 누르게 하거나 전체 이미지 미리보기를 자동으로 열지 않습니다.
-  persistReading();
+function mobileNativeShare(){
+  // 모바일: 카카오톡 클립보드 붙여넣기에 의존하지 않고 OS 공유창에 JPG 파일을 전달합니다.
+  // 미리 준비된 이미지 File을 동기적으로 navigator.share에 넘겨 사용자 활성화를 보존합니다.
   if(!shareFile){
-    tellShareHelp('사진 준비가 끝나면 다시 눌러주세요.');
+    tellShareHelp('사진을 준비하는 중이에요. 잠시 후 다시 눌러주세요.');
     return;
   }
-  if(!supportsImageClipboard()){
-    tellShareHelp('이 브라우저는 사진 복사를 지원하지 않아요. 왼쪽 ‘사진으로 저장’을 눌러 카카오톡에 첨부해 주세요.');
+  const data={files:[shareFile], title:'오늘, 보리타로'};
+  let supported=false;
+  try{
+    supported=!!(navigator.share && (!navigator.canShare || navigator.canShare({files:[shareFile]})));
+  }catch(e){supported=false;}
+  if(!supported){
+    tellShareHelp('현재 브라우저에서는 사진 직접 공유가 지원되지 않아요. 카카오톡 안에서 열었다면 메뉴에서 ‘다른 브라우저로 열기’를 선택하거나, ‘사진으로 저장’ 후 채팅창에 첨부해 주세요.');
     return;
   }
   try{
-    // 클릭 이벤트에서 곧바로 실행해야 모바일 클립보드 권한이 유지됩니다.
-    const copying=copyFullImage();
-    Promise.resolve(copying).then(()=>{
-      tellShareHelp('사진이 복사되었어요. 카카오톡 채팅창에서 붙여넣기 해주세요.',true);
-    }).catch(error=>{
-      console.warn('카카오톡 붙여넣기용 사진 복사 제한',error);
-      tellShareHelp('이 브라우저에서는 사진을 복사하지 못했어요. 왼쪽 ‘사진으로 저장’을 눌러 카카오톡에 첨부해 주세요.');
+    const promise=navigator.share(data);
+    Promise.resolve(promise).then(()=>{
+      // 전송 여부는 공유 대상 앱이 결정합니다. 완료되었다고 과장하지 않습니다.
+      $('#shareHelp').hidden=true;
+    }).catch(err=>{
+      if(err && err.name==='AbortError')return; // 사용자가 공유창 닫음
+      console.warn('휴대폰 파일 공유 실패',err);
+      tellShareHelp('사진을 바로 공유하지 못했어요. ‘사진으로 저장’한 뒤 카카오톡 채팅창에 사진을 첨부해 주세요.');
     });
-  }catch(error){
-    console.warn('사진 복사 시작 오류',error);
-    tellShareHelp('이 브라우저에서는 사진을 복사하지 못했어요. 왼쪽 ‘사진으로 저장’을 이용해 주세요.');
+  }catch(err){
+    console.warn('휴대폰 파일 공유 시작 실패',err);
+    tellShareHelp('이 브라우저에서는 사진 직접 공유가 제한돼요. ‘사진으로 저장’ 후 카카오톡에서 첨부해 주세요.');
   }
+}
+function desktopClipboardShare(){
+  // PC: 검증된 이미지 클립보드 복사 기능을 유지합니다.
+  if(!supportsImageClipboard()){
+    tellShareHelp('이 브라우저는 사진 복사를 지원하지 않아요. ‘사진으로 저장’ 후 카카오톡에 첨부해 주세요.');
+    return;
+  }
+  try{
+    Promise.resolve(copyFullImage()).then(()=>{
+      tellShareHelp('사진이 복사되었어요. 카카오톡 채팅창에서 Ctrl + V로 붙여넣기 해주세요.',true);
+    }).catch(err=>{
+      console.warn('PC 사진 복사 실패',err);
+      tellShareHelp('사진을 복사하지 못했어요. ‘사진으로 저장’ 후 채팅창에 첨부해 주세요.');
+    });
+  }catch(err){
+    tellShareHelp('사진을 복사하지 못했어요. ‘사진으로 저장’을 이용해 주세요.');
+  }
+}
+function nativeShare(){
+  persistReading();
+  $('#shareHelp').hidden=true;
+  if(onMobileBrowser()) mobileNativeShare();
+  else desktopClipboardShare();
 }
 $('#photoClose').addEventListener('click',hidePhotoPreview);
 $('#photoBackdrop').addEventListener('click',hidePhotoPreview);
