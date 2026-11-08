@@ -915,6 +915,13 @@ footer{color:#8b828f}
 }
 @media(max-width:350px){.method-btn{font-size:10px}.physical-card-btn{width:92px;height:153px}.picker-card img{width:50px}}
 
+
+/* v25: full reading image export and separate share / save actions */
+.bori-share-actions{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.bori-share-actions .bori-restart{grid-column:1/-1;min-height:42px;padding:10px 16px;background:transparent;border:1px solid rgba(93,70,104,.19);box-shadow:none;color:#6a536e}
+.share-help{background:#fbf4e7;color:#5a465f;border:1px solid rgba(190,154,81,.4);font-size:13px;line-height:1.75;border-radius:14px;margin-top:12px;padding:11px 14px;text-align:center}
+.share-help[hidden]{display:none!important}
+@media (max-width:360px){.bori-share-actions .btn{font-size:12px;padding:12px 8px}}
 </style>
 <title>오늘, 보리타로 · v24 실물카드 입력</title>
 </head>
@@ -988,15 +995,17 @@ footer{color:#8b828f}
       <div class="tiptitle">오늘보리 TIP</div>
       <div class="integrated-tip" id="tipIntegrated"></div>
     </section>
-    <div class="actions">
-      <button class="btn primary" id="shareBtn">공유하기</button>
-      <button class="btn secondary" id="resetBtn">다시 뽑기</button>
+    <div class="actions bori-share-actions">
+      <button class="btn primary" id="saveBtn" type="button">사진으로 저장</button>
+      <button class="btn secondary" id="shareBtn" type="button">카카오톡 등 공유</button>
+      <button class="btn secondary bori-restart" id="resetBtn" type="button">다시 뽑기</button>
     </div>
+    <div class="share-help" id="shareHelp" hidden role="status" aria-live="polite"></div>
     <div class="auto-note">결과는 자동으로 오늘 기록에 저장됩니다.</div>
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v24</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v25</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="physical-modal" id="physicalModal" hidden>
   <div class="physical-modal-backdrop" id="physicalBackdrop"></div>
@@ -3429,143 +3438,208 @@ function wrap(ctx,text,max){
   const words=text.split(" "), out=[]; let line="";
   for(const w of words){const t=line?line+" "+w:w;if(ctx.measureText(t).width>max&&line){out.push(line);line=w;} else line=t;} if(line)out.push(line); return out;
 }
-async function makeCanvas(){
-  const [f,a]=picked; const W=1080,H=1920, c=document.createElement("canvas"); c.width=W;c.height=H; const x=c.getContext("2d");
-  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#e9e0ee");g.addColorStop(.55,"#f5edf4");g.addColorStop(1,"#fbf0db");x.fillStyle=g;x.fillRect(0,0,W,H);
-  x.fillStyle="rgba(92,70,103,.11)";for(let yy=80;yy<H;yy+=150)for(let xx=65;xx<W;xx+=165){x.beginPath();x.arc(xx+((yy/150)%2)*45,yy,2,0,Math.PI*2);x.fill();}
-  x.fillStyle="#66536f";x.fillRect(0,0,W,118);x.textAlign="left";x.fillStyle="#fffaf7";x.font="800 31px sans-serif";x.fillText("오늘, 보리타로",64,76);
-  x.textAlign="right";x.fillStyle="#f1d786";x.font="700 22px sans-serif";x.fillText(compactDate(),1016,76);
-  x.textAlign="center";x.fillStyle="#2d2730";x.font="900 56px sans-serif";x.fillText("두 장으로, 오늘 보리",W/2,174);
-  x.fillStyle="#ad8741";x.font="800 19px sans-serif";x.fillText("TODAY · TWO CARDS",W/2,216);
-  if(readingMode==="physical"){x.fillStyle="#6b5273";x.font="700 17px sans-serif";x.fillText("실물카드로 뽑은 오늘의 두 장",W/2,253);}
-  let fi=null,ai=null; try{[fi,ai]=await Promise.all([loadImage(f.originalUrl||f.imageUrl),loadImage(a.originalUrl||a.imageUrl)]);}catch{}
-  const cardW=310,cardH=531,gap=70,sx=(W-(cardW*2+gap))/2, cy=290;
-  function drawCard(im,left,label,card){
-    x.fillStyle="rgba(255,255,255,.83)";rr(x,left-15,cy-16,cardW+30,cardH+117,25);x.fill();
-    if(im)x.drawImage(im,left,cy,cardW,cardH);else{x.fillStyle="#e6dbea";x.fillRect(left,cy,cardW,cardH);}
-    x.textAlign="center";x.fillStyle="#ad8741";x.font="800 20px sans-serif";x.fillText(label,left+cardW/2,cy+cardH+39);
-    x.fillStyle="#2d2730";x.font="900 29px sans-serif";x.fillText(card.name,left+cardW/2,cy+cardH+79);
+// 모든 공유 방식이 한 장의 동일한 고화질 PNG 파일을 사용합니다.
+// 실물/온라인 카드의 해석은 같은 picked 배열에서 가져옵니다.
+function shareWrap(ctx,raw,maxWidth,font){
+  const text=String(raw||"").replace(/\s+/g," ").trim();
+  if(!text) return [];
+  ctx.font=font;
+  const result=[];
+  let line="";
+  // 단어 단위 줄바꿈 + 너무 긴 단어(영문 링크 등)는 글자 단위 분할
+  for(const word of text.split(" ")){
+    const candidate=line?line+" "+word:word;
+    if(ctx.measureText(candidate).width<=maxWidth){line=candidate;continue;}
+    if(line){result.push(line);line="";}
+    if(ctx.measureText(word).width<=maxWidth){line=word;continue;}
+    let part="";
+    for(const ch of Array.from(word)){
+      if(part && ctx.measureText(part+ch).width>maxWidth){result.push(part);part="";}
+      part+=ch;
+    }
+    line=part;
   }
-  drawCard(fi,sx,"오늘의 흐름",f);drawCard(ai,sx+cardW+gap,"오늘의 조언",a);
-
-  const by=1000, bh=660; x.fillStyle="rgba(244,231,204,.76)";x.strokeStyle="rgba(173,135,65,.34)";x.lineWidth=2;rr(x,62,by,956,bh,34);x.fill();x.stroke();
-  x.textAlign="center";x.fillStyle="#ad8741";x.font="900 30px sans-serif";x.fillText("오늘보리 TIP",W/2,by+60);
-  x.textAlign="left";
-  let y=by+132;
-  const tipLines=(currentReading.integratedTip||[]);
-  tipLines.forEach((t,i)=>{
-    const isAction=i===tipLines.length-1;
-    x.fillStyle=isAction?"#d97706":"#342c38";
-    x.font=isAction?"900 29px sans-serif":"700 29px sans-serif";
-    for(const ln of wrap(x,t,850)){x.fillText(ln,112,y);y+=47;}
-    y+=13;
-  });
-  x.textAlign="center";x.fillStyle="#ad8741";x.font="800 23px sans-serif";x.fillText("G O B O R I",W/2,1790);
-  x.fillStyle="#827987";x.font="500 17px sans-serif";x.fillText("오늘을 가볍게 돌아보는 두 장의 카드 메시지",W/2,1830);
-  x.fillStyle="#9a929d";x.font="500 13px sans-serif";x.fillText("Rider–Waite–Smith Tarot · Pamela Colman Smith · Public domain",W/2,1870);
-  return c;
+  if(line) result.push(line);
+  return result;
 }
-async function prepareShareImage(){
-  $("#shareBtn").disabled=false;
-  $("#shareBtn").textContent="공유하기";
-  try{
-    const canvas=await makeCanvas();
-    shareBlob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",.94));
-    clipboardBlob=await new Promise(r=>canvas.toBlob(r,"image/png",1));
-    if(!shareBlob) throw new Error("share image encoding failed");
-    shareFile=new File([shareBlob],`bori-tarot-${keyDate()}.jpg`,{type:"image/jpeg",lastModified:Date.now()});
-    $("#shareBtn").textContent="공유하기";
-    $("#shareBtn").disabled=false;
-  }catch(e){
-    console.warn(e);
-    $("#shareBtn").textContent="공유하기";
-    $("#shareBtn").disabled=false; // 이미지 없이도 텍스트와 주소를 공유할 수 있습니다.
+async function loadShareCard(card){
+  for(const url of [card.originalUrl,card.imageUrl]){
+    if(!url)continue;
+    try{return await loadImage(url)}catch(e){}
   }
+  return null;
+}
+async function makeCanvas(){
+  if(picked.length!==2)throw new Error("두 장의 카드가 필요합니다.");
+  const [f,a]=picked;
+  const flow=CARD_STORIES_V21[f.id], advice=CARD_STORIES_V21[a.id];
+  const depthFlow=CARD_DEPTH[f.id], depthAdvice=CARD_DEPTH[a.id];
+  const together=v23PairInterpretation(f,a);
+  const tip=v23OneLineTip(f,a);
+  const W=1080, margin=60, contentW=W-2*margin;
+  const measure=document.createElement("canvas").getContext("2d");
+  const font={title:'900 51px sans-serif',heading:'900 35px sans-serif',sub:'800 24px sans-serif',body:'500 27px sans-serif',small:'500 24px sans-serif',tip:'900 31px sans-serif'};
+  const lh={body:45,small:40,tip:48};
+  function rows(text,ft,max){return shareWrap(measure,text,max,ft)}
+  function sectionSpec(card,st,depth,isAdvice){
+    const story=rows(isAdvice?st.advice:st.flow,font.body,contentW-90);
+    const caution=rows(isAdvice?st.adviceCaution:st.flowCaution,font.small,contentW-126);
+    const examples=(isAdvice?depth.actions:depth.scenes).map(t=>rows('• '+t,font.small,contentW-125));
+    const question=rows('“'+depth.question+'”',font.small,contentW-125);
+    const cautionH=66+caution.length*lh.small+22;
+    const examplesH=59+examples.reduce((sum,a)=>sum+a.length*lh.small+12,0);
+    const questionH=60+question.length*lh.small;
+    const height=38+52+34+story.length*lh.body+24+cautionH+24+examplesH+questionH+37;
+    return {card,isAdvice,story,caution,examples,question,cautionH,examplesH,questionH,height};
+  }
+  const flowSpec=sectionSpec(f,flow,depthFlow,false);
+  const adviceSpec=sectionSpec(a,advice,depthAdvice,true);
+  const pairLead=rows(together.lead,font.body,contentW-90);
+  const pairFocus=rows(together.focus,font.body,contentW-90);
+  const pairH=105+pairLead.length*lh.body+24+pairFocus.length*lh.body+39;
+  const tipLines=rows(tip,font.tip,contentW-110);
+  const tipH=98+tipLines.length*lh.tip+35;
+  const cardsEnd=714;
+  const H=Math.ceil(cardsEnd+flowSpec.height+20+adviceSpec.height+20+pairH+22+tipH+135);
+  if(H>10000)throw new Error('이미지 높이가 너무 큽니다.');
+  const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  const gradient=ctx.createLinearGradient(0,0,W,H);
+  gradient.addColorStop(0,'#ede4f0');gradient.addColorStop(.5,'#fbf6fa');gradient.addColorStop(1,'#f8f0e3');
+  ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);
+  ctx.textBaseline='top';
+  function roundBox(x,y,w,h,r,fill,stroke){
+    rr(ctx,x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}
+  }
+  function tx(text,x,y,ft,color,align='left'){
+    ctx.font=ft;ctx.fillStyle=color;ctx.textAlign=align;ctx.fillText(String(text),x,y);
+  }
+  function textLines(lines,x,y,ft,lineHeight,color){
+    for(const line of lines){tx(line,x,y,ft,color);y+=lineHeight;}
+    return y;
+  }
+  ctx.fillStyle='#604a6d';ctx.fillRect(0,0,W,122);
+  tx('오늘, 보리타로',69,39,'900 36px sans-serif','#fffaf7');
+  tx(compactDate(),W-65,44,'700 23px sans-serif','#f0d48e','right');
+  tx('두 장으로, 오늘 보리',W/2,156,font.title,'#46334f','center');
+  tx(readingMode==='physical'?'실물카드 입력':'온라인으로 뽑기',W/2,227,'700 23px sans-serif','#9a814b','center');
+  const [fi,ai]=await Promise.all([loadShareCard(f),loadShareCard(a)]);
+  const cardW=175,cardH=298,cardY=286;
+  function drawSmallCard(card,im,left,role){
+    roundBox(left-17,cardY-12,cardW+34,cardH+100,19,'#fffdfb','rgba(108,83,120,.12)');
+    if(im){ctx.drawImage(im,left,cardY,cardW,cardH)}
+    else{roundBox(left,cardY,cardW,cardH,8,'#ede6ef');tx('카드 이미지',left+cardW/2,cardY+120,'600 20px sans-serif','#6f6177','center');tx('불러오기 실패',left+cardW/2,cardY+147,'600 17px sans-serif','#6f6177','center')}
+    tx(role,left+cardW/2,cardY+cardH+19,'800 23px sans-serif','#9d793d','center');
+    tx(card.name,left+cardW/2,cardY+cardH+53,'900 27px sans-serif','#45384e','center');
+  }
+  drawSmallCard(f,fi,285,'오늘의 흐름');drawSmallCard(a,ai,620,'오늘의 조언');
+  let cursor=cardsEnd;
+  function renderCardSection(spec){
+    const top=cursor;
+    roundBox(margin,top,contentW,spec.height,27,'#fffefd','rgba(106,82,114,.14)');
+    let y=top+33;const x=margin+43, inner=contentW-86;
+    tx(spec.isAdvice?'2. 오늘의 조언 — '+spec.card.name:'1. 오늘의 흐름 — '+spec.card.name,x,y,font.heading,'#48344f');y+=62;
+    const keys=(spec.card.keywords||[]).slice(0,4).join('  ·  ');
+    if(keys)tx(keys,x,y,font.sub,'#987e45');y+=51;
+    y=textLines(spec.story,x,y,font.body,lh.body,'#403549');y+=18;
+    const cautTitle=spec.isAdvice?'조언을 적용할 때':'오늘의 주의점';
+    roundBox(x,y,inner,spec.cautionH,19,'#f5f0f8','rgba(102,81,110,.10)');
+    tx(cautTitle,x+21,y+18,font.sub,'#74577f');
+    textLines(spec.caution,x+21,y+56,font.small,lh.small,'#564a5a');
+    y+=spec.cautionH+21;
+    tx(spec.isAdvice?'조언을 생활에 적용하면':'오늘 이런 모습으로 나타날 수 있어요',x,y,font.sub,'#7b6483');y+=51;
+    for(const ex of spec.examples){y=textLines(ex,x+12,y,font.small,lh.small,'#574a5d')+12;}
+    y+=5;
+    tx('나에게 던지는 질문',x,y,font.sub,'#987e45');y+=45;
+    textLines(spec.question,x+8,y,font.small,lh.small,'#5b4961');
+    cursor+=spec.height+20;
+  }
+  renderCardSection(flowSpec);
+  renderCardSection(adviceSpec);
+  roundBox(margin,cursor,contentW,pairH,27,'#fffefd','rgba(106,82,114,.14)');
+  let py=cursor+34;
+  tx('두 카드가 전하는 오늘의 이야기',W/2,py,font.heading,'#47334e','center');py+=75;
+  py=textLines(pairLead,margin+43,py,font.body,lh.body,'#433849')+24;
+  textLines(pairFocus,margin+43,py,font.body,lh.body,'#433849');
+  cursor+=pairH+22;
+  roundBox(margin,cursor,contentW,tipH,27,'#fff4df','rgba(192,146,61,.44)');
+  tx('오늘보리 TIP',W/2,cursor+26,'900 30px sans-serif','#b58433','center');
+  textLines(tipLines,margin+53,cursor+88,font.tip,lh.tip,'#d97706');
+  cursor+=tipH+39;
+  tx('G O B O R I',W/2,cursor,'900 24px sans-serif','#ae853e','center');
+  tx('Rider–Waite–Smith Tarot · Wikimedia Commons 공개 이미지',W/2,cursor+47,'500 17px sans-serif','#8b818d','center');
+  return canvas;
+}
+let sharePreparing=null;
+function prepareShareImage(){
+  const shareBtn=$('#shareBtn'),saveBtn=$('#saveBtn');
+  shareBtn.disabled=true;saveBtn.disabled=true;
+  shareBtn.textContent='이미지 준비 중…';saveBtn.textContent='이미지 준비 중…';
+  $('#shareHelp').hidden=true;
+  const job=makeCanvas().then(canvas=>new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('PNG 이미지 변환 실패')),'image/png'))).then(blob=>{
+    shareBlob=blob;clipboardBlob=null;
+    shareFile=new File([blob],`bori-tarot-${keyDate()}.png`,{type:'image/png',lastModified:Date.now()});
+    return blob;
+  }).catch(e=>{
+    console.error('공유 이미지 생성 실패',e);shareBlob=null;shareFile=null;
+    $('#shareHelp').textContent='이미지를 준비하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.';
+    $('#shareHelp').hidden=false;
+    throw e;
+  }).finally(()=>{
+    shareBtn.disabled=false;saveBtn.disabled=false;
+    shareBtn.textContent='카카오톡 등 공유';saveBtn.textContent='사진으로 저장';
+  });
+  sharePreparing=job;
+  job.catch(()=>{});
+  return job;
+}
+async function ensureShareImage(){
+  if(shareBlob&&shareFile)return shareBlob;
+  if(sharePreparing){try{return await sharePreparing}catch(e){}}
+  return await prepareShareImage();
+}
+function saveShareBlob(blob){
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;link.download=`bori-tarot-${keyDate()}.png`;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+function tellShareHelp(msg){
+  const node=$('#shareHelp');node.textContent=msg;node.hidden=false;
+}
+async function saveReadingImage(){
+  persistReading();
+  try{const blob=await ensureShareImage();saveShareBlob(blob);toast('전체 해석 이미지를 PNG로 저장했어요.');}
+  catch(e){toast('이미지 저장에 실패했어요. 다시 시도해 주세요.');}
 }
 async function nativeShare(){
   persistReading();
-
-  const mobileByUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
-  const mobileByData = navigator.userAgentData && typeof navigator.userAgentData.mobile === "boolean"
-    ? navigator.userAgentData.mobile : false;
-  const isMobile = mobileByUA || mobileByData;
-
-  // PC(Chrome/Edge): Windows 공유창으로 "파일"을 넘기면 카카오톡 PC가
-  // 파일을 클립보드 중계 방식으로 처리하면서 붙여넣기가 실패하는 경우가 있습니다.
-  // 대신 실제 PNG 비트맵을 브라우저 클립보드에 복사하여 Ctrl+V로 바로 붙여넣게 합니다.
-  if(!isMobile){
-    if(clipboardBlob && window.isSecureContext && navigator.clipboard && navigator.clipboard.write && window.ClipboardItem){
-      try{
-        await navigator.clipboard.write([
-          new ClipboardItem({"image/png": clipboardBlob})
-        ]);
-        toast("오늘 카드 이미지가 클립보드에 복사됐어요. 카카오톡 채팅창에서 Ctrl+V로 붙여넣어 주세요.");
-        return;
-      }catch(e){
-        console.warn("image clipboard failed", e);
-      }
-    }
-
-    // 이미지 클립보드가 안 되면 텍스트+주소를 복사합니다.
-    const [f,a]=picked;
-    const shareText =
-      `오늘, 보리타로\n`+
-      `흐름 카드: ${f.name}\n조언 카드: ${a.name}\n\n`+
-      `${(currentReading.integratedTip||[]).join("\n")}\n\n`+
-      `${location.href}`;
-    try{
-      await navigator.clipboard.writeText(shareText);
-      toast("이 브라우저에서는 이미지 복사가 제한되어 결과와 웹주소를 복사했어요. 카카오톡에서 Ctrl+V 해주세요.");
-      return;
-    }catch(e){
-      toast("공유가 제한됐어요. 브라우저 주소를 복사해 카카오톡으로 보내주세요.");
-      return;
-    }
-  }
-
-  // 휴대폰: JPG 파일을 OS 기본 공유창으로 전달 → 카카오톡 선택.
-  // 이미지가 아직 준비되지 않았다면 아래의 텍스트·주소 공유로 넘어갑니다.
-
-  const canShareFile = !!(shareFile && window.isSecureContext && navigator.share &&
-    (!navigator.canShare || navigator.canShare({files:[shareFile]})));
-
-  if(canShareFile){
-    try{
-      await navigator.share({files:[shareFile]});
-      toast("공유창에서 카카오톡을 선택하면 오늘의 카드 이미지가 전송돼요.");
-      return;
-    }catch(e){
-      if(e && e.name==="AbortError") return;
-      console.warn("mobile file share failed", e);
-    }
-  }
-
-  // 모바일 파일 공유 실패 시 결과 요약 + 주소 공유.
-  if(navigator.share){
-    try{
-      const [f,a]=picked;
-      const shareText =
-        `오늘, 보리타로\n`+
-        `흐름 카드: ${f.name}\n조언 카드: ${a.name}\n\n`+
-        `${(currentReading.integratedTip||[]).join("\n")}`;
-      await navigator.share({
-        title:"오늘, 보리타로",
-        text:shareText,
-        url:location.href
-      });
-      toast("이미지 대신 오늘의 결과와 웹주소를 공유했어요.");
-      return;
-    }catch(e){
-      if(e && e.name==="AbortError") return;
-      console.warn("mobile link share failed", e);
-    }
-  }
-
   try{
-    await navigator.clipboard.writeText(location.href);
-    toast("웹주소를 복사했어요. 카카오톡에 붙여넣어 주세요.");
+    const blob=await ensureShareImage();
+    const mobileByUA=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');
+    const mobileByData=!!(navigator.userAgentData&&navigator.userAgentData.mobile);
+    // Windows KakaoTalk Desktop의 네이티브 공유창은 '파일 복사'만 되고
+    // 붙여넣기가 실패하는 경우가 있어 PC에서는 실제 PNG 저장 + 파일 첨부를 안내합니다.
+    if(mobileByUA||mobileByData){
+      if(navigator.share&&shareFile&&window.isSecureContext&&(!navigator.canShare||navigator.canShare({files:[shareFile]}))){
+        try{
+          await navigator.share({files:[shareFile]});
+          toast('공유창에서 카카오톡을 선택해 사진을 전송할 수 있어요.');
+          return;
+        }catch(e){if(e?.name==='AbortError')return;console.warn('파일 공유 실패',e);}
+      }
+      saveShareBlob(blob);
+      tellShareHelp('이 기기에서는 사진 직접 공유가 지원되지 않아 이미지를 저장했어요. 카카오톡에서 사진 첨부로 보내주세요.');
+      return;
+    }
+    saveShareBlob(blob);
+    tellShareHelp('PC 카카오톡은 브라우저에서 사진을 자동 전송할 수 없어요. 방금 저장한 PNG 이미지를 카카오톡 채팅창에 끌어 놓거나 [+] → 파일/사진 첨부로 보내주세요.');
+    toast('사진 파일을 저장했어요. 카카오톡 대화방에 첨부해 주세요.');
   }catch(e){
-    toast("직접 공유를 지원하지 않는 기기예요. 브라우저 주소를 복사해 보내주세요.");
+    console.warn(e);
+    tellShareHelp('사진을 만들지 못했어요. 아래의 사진으로 저장 버튼을 다시 눌러보세요.');
   }
 }
 function openHistory(){
@@ -3584,6 +3658,7 @@ function openHistory(){
 }
 
 $("#resetBtn").addEventListener("click",start);
+$("#saveBtn").addEventListener("click",saveReadingImage);
 $("#shareBtn").addEventListener("click",nativeShare);
 $("#historyBtn").addEventListener("click",openHistory);
 $("#historyClose").addEventListener("click",()=>$("#historyOverlay").classList.remove("show"));
