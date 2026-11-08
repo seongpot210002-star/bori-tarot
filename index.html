@@ -938,8 +938,16 @@ footer{color:#8b828f}
 .photo-preview-footer a,.photo-preview-footer button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;flex:1;max-width:240px;border:1px solid #dcd0df;border-radius:14px;text-decoration:none;font-size:13px;font-weight:850;background:#fff;color:#563e60;cursor:pointer}
 .photo-preview-footer button{background:#60466d;color:white;border-color:#60466d}
 @media(min-width:660px){.photo-preview{align-items:center}.photo-preview-panel{height:min(89dvh,850px);border-radius:22px}}
+
+/* v27: Share a real PNG bitmap with Kakao's paste path where supported. */
+.photo-preview-footer{gap:6px}
+.photo-preview-footer a,.photo-preview-footer button{font-size:12px;padding:8px 5px;min-width:0;max-width:none}
+#photoCopy{background:#f1eaf4;color:#5a4164;border-color:#e3d5e8}
+#photoCopy[hidden]{display:none!important}
+@media(max-width:365px){.photo-preview-footer{padding-left:7px;padding-right:7px}.photo-preview-footer a,.photo-preview-footer button{font-size:11px}}
+
 </style>
-<title>오늘, 보리타로 · v26 사진 공유 개선</title>
+<title>오늘, 보리타로 · v27 사진 공유 개선</title>
 </head>
 <body>
 <header class="wrap top">
@@ -1021,7 +1029,7 @@ footer{color:#8b828f}
     <p class="disclaimer">타로는 미래를 확정하는 예언이라기보다 오늘의 상황과 마음을 돌아보고 선택을 돕는 참고 도구로 활용합니다.</p>
   </section>
 </main>
-<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v26</span></div></footer>
+<footer class="wrap"><div class="by">by 고보리</div><div class="credit">Rider–Waite–Smith Tarot · Pamela Colman Smith · Wikimedia Commons 공개 이미지 <span class="app-version">· v27</span></div></footer>
 <div class="overlay" id="historyOverlay"><section class="panel"><div class="panelhead"><h3>나의 보리타로 기록</h3><button class="close" id="historyClose">×</button></div><div class="history" id="history"></div><p class="disclaimer">기록은 계정이 아니라 현재 기기의 브라우저에만 저장됩니다.</p></section></div>
 <div class="physical-modal" id="physicalModal" hidden>
   <div class="physical-modal-backdrop" id="physicalBackdrop"></div>
@@ -1049,7 +1057,7 @@ footer{color:#8b828f}
   <section class="photo-preview-panel" role="dialog" aria-modal="true" aria-labelledby="photoPreviewTitle">
     <header class="photo-preview-top"><h2 id="photoPreviewTitle">오늘보리 사진 전체 보기</h2><button type="button" class="photo-close" id="photoClose" aria-label="닫기">×</button></header>
     <div class="photo-preview-body"><p class="photo-instructions" id="photoInstructions">사진을 길게 누른 후 <strong>이미지 저장</strong>을 선택하세요.<br>휴대폰에 따라 ‘사진 다운로드’로 표시될 수 있어요.</p><img id="photoPreviewImage" alt="오늘보리 두 카드와 전체 해석을 담은 사진" draggable="false"></div>
-    <footer class="photo-preview-footer"><a id="photoDownload" download="bori-tarot.jpg">JPG 파일 다운로드</a><button type="button" id="photoNativeShare">카카오톡 등 공유</button></footer>
+    <footer class="photo-preview-footer"><a id="photoDownload" download="bori-tarot.jpg">사진 다운로드</a><button type="button" id="photoCopy">사진 복사</button><button type="button" id="photoNativeShare">카카오톡 등 공유</button></footer>
   </section>
 </div>
 <div class="toast" id="toast"></div>
@@ -3455,14 +3463,19 @@ function showResult(){
   prepareShareImage();
 }
 function loadImage(src){
-  return new Promise((resolve,reject)=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>resolve(im);im.onerror=reject;im.src=src;});
+  return new Promise((resolve,reject)=>{
+    const im=new Image();let finished=false;
+    const timeout=setTimeout(()=>{if(!finished){finished=true;im.onload=im.onerror=null;im.src='';reject(new Error('타로 이미지 불러오기 시간 초과'));}},4500);
+    const done=(error)=>{if(finished)return;finished=true;clearTimeout(timeout);im.onload=im.onerror=null;if(error)reject(error);else resolve(im)};
+    im.crossOrigin='anonymous';im.onload=()=>done(null);im.onerror=()=>done(new Error('이미지를 불러오지 못했습니다.'));im.src=src;
+  });
 }
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function wrap(ctx,text,max){
   const words=text.split(" "), out=[]; let line="";
   for(const w of words){const t=line?line+" "+w:w;if(ctx.measureText(t).width>max&&line){out.push(line);line=w;} else line=t;} if(line)out.push(line); return out;
 }
-// 모든 공유 방식이 한 장의 동일한 고화질 PNG 파일을 사용합니다.
+// 모든 공유 방식에서 같은 카드·해석을 사용합니다. 전송/저장은 JPG, 클립보드 복사는 PNG입니다.
 // 실물/온라인 카드의 해석은 같은 picked 배열에서 가져옵니다.
 function shareWrap(ctx,raw,maxWidth,font){
   const text=String(raw||"").replace(/\s+/g," ").trim();
@@ -3609,23 +3622,29 @@ function dataURLFromBlob(blob){
 }
 function prepareShareImage(){
   const shareBtn=$('#shareBtn'),saveBtn=$('#saveBtn');
-  shareBlob=null;shareFile=null;shareDataURL=null;
+  shareBlob=null;shareFile=null;clipboardBlob=null;shareDataURL=null;
   shareBtn.disabled=true;saveBtn.disabled=true;
   shareBtn.textContent='이미지 준비 중…';saveBtn.textContent='이미지 준비 중…';
   $('#shareHelp').hidden=true;
   const job=makeCanvas()
-    .then(canvas=>new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('JPEG 이미지 생성 실패')),'image/jpeg',.92)))
-    .then(async blob=>{
-      if(blob.type!=='image/jpeg' || blob.size<1000)throw new Error('올바른 JPEG 사진을 생성하지 못했습니다.');
-      // JPEG 헤더 확인: 임의의 파일을 .jpg 확장자로 저장하지 않습니다.
-      const head=new Uint8Array(await blob.slice(0,3).arrayBuffer());
+    .then(async canvas=>{
+      const jpeg=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('JPEG 이미지 생성 실패')),'image/jpeg',.92));
+      if(jpeg.type!=='image/jpeg' || jpeg.size<1000)throw new Error('올바른 JPEG 사진을 생성하지 못했습니다.');
+      const head=new Uint8Array(await jpeg.slice(0,3).arrayBuffer());
       if(head[0]!==255||head[1]!==216||head[2]!==255)throw new Error('JPEG 파일 검증 실패');
-      shareDataURL=await dataURLFromBlob(blob);
-      shareBlob=blob;clipboardBlob=null;
-      shareFile=new File([blob],`bori-tarot-${keyDate()}.jpg`,{type:'image/jpeg',lastModified:Date.now()});
-      return blob;
+      shareDataURL=await dataURLFromBlob(jpeg);
+      shareBlob=jpeg;
+      shareFile=new File([jpeg],`bori-tarot-${keyDate()}.jpg`,{type:'image/jpeg',lastModified:Date.now()});
+      // 이미지 붙여넣기는 JPEG가 아니라 PNG MIME을 요구하는 브라우저가 많습니다.
+      try{
+        const png=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('PNG 생성 실패')),'image/png'));
+        const signature=new Uint8Array(await png.slice(0,8).arrayBuffer());
+        const valid=[137,80,78,71,13,10,26,10].every((v,i)=>signature[i]===v);
+        clipboardBlob=(valid && png.type==='image/png')?png:null;
+      }catch(e){console.warn('사진 복사용 PNG 생성 생략',e);clipboardBlob=null;}
+      return jpeg;
     }).catch(e=>{
-      console.error('공유 이미지 생성 실패',e);shareBlob=null;shareFile=null;shareDataURL=null;
+      console.error('공유 이미지 생성 실패',e);shareBlob=null;shareFile=null;clipboardBlob=null;shareDataURL=null;
       tellShareHelp('사진을 만들지 못했어요. 인터넷 연결을 확인한 뒤 다시 뽑아주세요.');
       throw e;
     }).finally(()=>{
@@ -3638,14 +3657,24 @@ function prepareShareImage(){
 }
 function tellShareHelp(msg){const el=$('#shareHelp');el.textContent=msg;el.hidden=false;}
 function onMobileBrowser(){return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'') || !!navigator.userAgentData?.mobile;}
+function supportsImageClipboard(){
+  return !!(clipboardBlob && window.isSecureContext && navigator.clipboard &&
+    typeof navigator.clipboard.write==='function' && window.ClipboardItem);
+}
 function showPhotoPreview(reason='save'){
-  if(!shareDataURL||!shareFile){tellShareHelp('이미지를 준비 중이에요. 잠시 후 다시 눌러주세요.');return;}
+  if(!shareDataURL||!shareFile){tellShareHelp('사진을 준비 중이에요. 잠시 후 다시 눌러주세요.');return;}
   const modal=$('#photoPreview');
   $('#photoPreviewImage').src=shareDataURL;
   const a=$('#photoDownload');a.href=shareDataURL;a.download=shareFile.name;
-  $('#photoInstructions').innerHTML=reason==='share'
-    ? '현재 브라우저가 카카오톡으로 사진을 바로 보내는 기능을 지원하지 않아요.<br><strong>사진을 길게 눌러 저장</strong>한 다음 카카오톡에서 사진으로 첨부해 주세요. 크롬이나 삼성 인터넷에서 열면 공유 기능이 더 잘 작동할 수 있어요.'
-    : '아래 사진을 <strong>길게 누른 뒤 ‘이미지 저장’</strong>을 선택하세요.<br>지원하지 않는 파일 형식 오류가 나면, 카카오톡 안이 아닌 <strong>크롬·삼성 인터넷</strong>으로 열어주세요.';
+  $('#photoCopy').hidden=!supportsImageClipboard();
+  const info=$('#photoInstructions');
+  if(reason==='copied'){
+    info.innerHTML='<strong>사진 전체가 클립보드에 복사됐어요.</strong><br>카카오톡 채팅창으로 이동해 입력창을 길게 눌러 <strong>붙여넣기</strong>를 시도하세요.<br><small>카카오톡이 사진 붙여넣기를 지원하지 않는 환경이라면 아래에서 사진을 저장해 첨부할 수 있어요.</small>';
+  }else if(reason==='share'){
+    info.innerHTML='이 브라우저에서는 사진을 카카오톡으로 직접 보내거나 복사하는 기능이 제한돼 있어요.<br>아래 사진을 <strong>길게 눌러 저장</strong>한 뒤 카카오톡 채팅에 사진으로 첨부해 주세요. 크롬이나 삼성 인터넷에서 열면 공유 기능이 더 잘 작동할 수 있어요.';
+  }else{
+    info.innerHTML='아래 사진을 <strong>길게 누른 뒤 ‘이미지 저장’</strong>을 선택하세요.<br>지원하지 않는 파일 형식 오류가 나면, 카카오톡 안이 아닌 <strong>크롬·삼성 인터넷</strong>으로 열어주세요.';
+  }
   modal.hidden=false;
   document.body.style.overflow='hidden';
 }
@@ -3653,8 +3682,6 @@ function hidePhotoPreview(){
   $('#photoPreview').hidden=true;document.body.style.overflow='';
 }
 function directlyDownloadJPEG(){
-  // 노트북 브라우저에서만 자동 다운로드. 인앱 브라우저에서는 blob/data 링크
-  // 다운로드가 잘못 처리될 수 있으므로 이미지 미리보기와 길게 누르기를 사용합니다.
   if(!shareDataURL||!shareFile)return;
   const a=document.createElement('a');a.href=shareDataURL;a.download=shareFile.name;
   document.body.appendChild(a);a.click();a.remove();
@@ -3662,37 +3689,68 @@ function directlyDownloadJPEG(){
 function saveReadingImage(){
   persistReading();
   if(!shareFile){tellShareHelp('이미지를 준비 중이에요. 잠시 후 다시 눌러주세요.');return;}
-  if(onMobileBrowser()){
-    showPhotoPreview('save');
-  }else{
-    directlyDownloadJPEG();
-    toast('전체 해석을 JPG 사진으로 저장했어요.');
+  if(onMobileBrowser()) showPhotoPreview('save');
+  else {directlyDownloadJPEG();toast('전체 해석을 JPG 사진으로 저장했어요.');}
+}
+function copyFullImage(){
+  // user gesture 중에 직접 호출: clipboard API는 다른 async 작업이 선행되면 거부될 수 있습니다.
+  if(!supportsImageClipboard())return Promise.reject(new Error('image/png clipboard unavailable'));
+  return navigator.clipboard.write([new ClipboardItem({'image/png':clipboardBlob})]);
+}
+function fallbackToCopyOrPhoto(){
+  if(!supportsImageClipboard()){
+    showPhotoPreview('share');
+    return;
   }
+  try{
+    const p=copyFullImage();
+    Promise.resolve(p).then(()=>{
+      toast('사진을 복사했어요. 카카오톡 채팅창에서 붙여넣어 주세요.');
+      showPhotoPreview('copied');
+    }).catch(e=>{
+      console.warn('사진 복사 제한',e);
+      showPhotoPreview('share');
+    });
+  }catch(e){console.warn('사진 복사 실패',e);showPhotoPreview('share');}
 }
 function nativeShare(){
   persistReading();
   if(!shareFile){tellShareHelp('이미지를 준비 중이에요. 잠시 후 다시 눌러주세요.');return;}
-  // await 이전에 사용자 제스처 안에서 navigator.share를 바로 호출해야 합니다.
-  if(onMobileBrowser() && window.isSecureContext && typeof navigator.share==='function'){
-    let supported=false;
-    try{supported=typeof navigator.canShare==='function' && navigator.canShare({files:[shareFile]})}catch(e){}
-    if(supported){
-      try{
-        const promise=navigator.share({files:[shareFile],title:'오늘, 보리타로'});
-        Promise.resolve(promise).catch(err=>{
-          if(err?.name!=='AbortError'){
-            console.warn('사진 공유 실패',err);
-            showPhotoPreview('share');
-          }
-        });
-        return;
-      }catch(e){console.warn('공유 시작 실패',e);}
-    }
+  // PC: 이전 버전처럼 카카오톡에 Ctrl+V할 수 있는 실제 사진 비트맵부터 복사합니다.
+  if(!onMobileBrowser()){
+    fallbackToCopyOrPhoto();
+    return;
   }
-  showPhotoPreview('share');
+  // 휴대폰: 파일 자체를 OS 공유창에 전달하는 것을 첫 번째로 시도합니다.
+  // 파일을 직접 지원하지 않는 카카오톡 내장 브라우저는 PNG 클립보드로 내려갑니다.
+  let supported=false;
+  try{supported=window.isSecureContext && typeof navigator.share==='function' &&
+      typeof navigator.canShare==='function' && navigator.canShare({files:[shareFile]});}catch(e){}
+  if(supported){
+    try{
+      const p=navigator.share({files:[shareFile],title:'오늘, 보리타로'});
+      Promise.resolve(p).catch(e=>{
+        if(e?.name==='AbortError')return;
+        console.warn('직접 공유 실패',e);
+        // 공유 권한 거절 후에는 사용자 제스처가 종료됐을 수 있으므로, 복사는 다시 클릭으로 실행.
+        showPhotoPreview('share');
+      });
+      return;
+    }catch(e){console.warn('공유 시작 오류',e);}
+  }
+  fallbackToCopyOrPhoto();
 }
 $('#photoClose').addEventListener('click',hidePhotoPreview);
 $('#photoBackdrop').addEventListener('click',hidePhotoPreview);
+$('#photoCopy').addEventListener('click',()=>{
+  try{
+    const p=copyFullImage();
+    Promise.resolve(p).then(()=>showPhotoPreview('copied')).catch(e=>{
+      console.warn('PNG 클립보드 복사 거부',e);
+      $('#photoInstructions').textContent='이 브라우저에서는 이미지 복사를 허용하지 않아요. 사진을 길게 눌러 저장한 뒤 카카오톡에 첨부해 주세요.';
+    });
+  }catch(e){showPhotoPreview('share');}
+});
 $('#photoNativeShare').addEventListener('click',nativeShare);
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#photoPreview').hidden)hidePhotoPreview();});
 function openHistory(){
